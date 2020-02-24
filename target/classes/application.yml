@@ -1,0 +1,61 @@
+debug: true
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  datasource:
+    name: test
+    url: jdbc:mysql://127.0.0.1:3306/grant?characterEncoding=UTF-8&userSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+
+server:
+  max-http-header-size: 1024000
+  servlet:
+    context-path: /yf1804
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+  port: 8022
+  tomcat:
+      uri-encoding: UTF-8
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  config-location: classpath:config.xml
+  type-aliases-package: com.zktr.crmproject.pojos
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
