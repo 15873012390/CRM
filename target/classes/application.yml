@@ -8,9 +8,9 @@ spring:
 
   datasource:
     name: test
-    url: jdbc:mysql://127.0.0.1:3306/grant?characterEncoding=UTF-8&userSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://118.31.13.117:33306/crm?characterEncoding=UTF-8&userSSL=false&serverTimezone=UTC
     username: root
-    password: 123456
+    password: beginnercong
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
     filters: stat
