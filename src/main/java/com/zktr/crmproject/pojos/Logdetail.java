@@ -68,7 +68,7 @@ public class Logdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "log_id", referencedColumnName = "log_id")
+    @JoinColumn(referencedColumnName = "log_id")
     public Log getLog() {
         return log;
     }

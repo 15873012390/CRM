@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class Repair {
-    private Integer repairId;
+    private int repairId;
     private String title;
     private Integer cusId;
     private String accepter;
@@ -17,7 +17,7 @@ public class Repair {
     private Customer customer;
     private Fitdetail fitdetail;
     private List<Actionhistory> actionhistory;
-
+    @Id
     @Basic
     @Column(name = "repair_id")
     public Integer getRepairId() {
@@ -108,7 +108,7 @@ public class Repair {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -118,7 +118,7 @@ public class Repair {
     }
 
     @ManyToOne
-    @JoinColumn(name = "apd_id", referencedColumnName = "fd_id")
+    @JoinColumn(referencedColumnName = "fd_id")
     public Fitdetail getFitdetail() {
         return fitdetail;
     }

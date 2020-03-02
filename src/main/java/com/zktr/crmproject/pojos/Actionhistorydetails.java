@@ -57,7 +57,7 @@ public class Actionhistorydetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ah_id", referencedColumnName = "ah_id", nullable = false)
+    @JoinColumn(referencedColumnName = "ah_id", nullable = false)
     public Actionhistory getActionhistory() {
         return actionhistory;
     }
@@ -67,7 +67,7 @@ public class Actionhistorydetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

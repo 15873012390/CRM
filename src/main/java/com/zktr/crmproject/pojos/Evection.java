@@ -231,7 +231,7 @@ public class Evection {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }
@@ -241,7 +241,7 @@ public class Evection {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id")
+    @JoinColumn(referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }
@@ -251,7 +251,7 @@ public class Evection {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cos_id", referencedColumnName = "cos_id")
+    @JoinColumn(referencedColumnName = "cos_id")
     public Cost getCost() {
         return cost;
     }

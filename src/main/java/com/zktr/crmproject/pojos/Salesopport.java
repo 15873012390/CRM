@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class Salesopport {
-    private Integer soId;
+    private int soId;
     private String soTheme;
     private Timestamp updateDate;
     private Integer status;
@@ -34,7 +34,7 @@ public class Salesopport {
     private List<Solution> solution;
     private List<Competitor> competitor;
     private List<Quote> quote;
-
+    @Id
     @Basic
     @Column(name = "so_id")
     public Integer getSoId() {
@@ -268,7 +268,7 @@ public class Salesopport {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -278,7 +278,7 @@ public class Salesopport {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

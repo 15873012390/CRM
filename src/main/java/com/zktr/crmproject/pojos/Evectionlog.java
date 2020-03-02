@@ -69,7 +69,7 @@ public class Evectionlog {
     }
 
     @ManyToOne
-    @JoinColumn(name = "eve_id", referencedColumnName = "eve_id", nullable = false)
+    @JoinColumn(referencedColumnName = "eve_id", nullable = false)
     public Evection getEvection() {
         return evection;
     }

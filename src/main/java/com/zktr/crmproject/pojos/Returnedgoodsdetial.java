@@ -106,7 +106,7 @@ public class Returnedgoodsdetial {
     }
 
     @ManyToOne
-    @JoinColumn(name = "reg_id", referencedColumnName = "reg_id")
+    @JoinColumn(referencedColumnName = "reg_id")
     public Returnedgoods getReturnedgoods() {
         return returnedgoods;
     }
@@ -116,7 +116,7 @@ public class Returnedgoodsdetial {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

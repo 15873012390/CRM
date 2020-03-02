@@ -219,7 +219,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(name = "so_id", referencedColumnName = "so_id", nullable = false)
+    @JoinColumn(referencedColumnName = "so_id", nullable = false)
     public Salesopport getSalesopport() {
         return salesopport;
     }
@@ -229,7 +229,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id", nullable = false)
+    @JoinColumn(referencedColumnName = "cus_id", nullable = false)
     public Customer getCustomer() {
         return customer;
     }
@@ -239,7 +239,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -249,7 +249,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id")
+    @JoinColumn(referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

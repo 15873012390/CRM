@@ -93,7 +93,7 @@ public class Pedetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pe_id", referencedColumnName = "pe_id")
+    @JoinColumn(referencedColumnName = "pe_id")
     public Purchaseenter getPurchaseenter() {
         return purchaseenter;
     }
@@ -103,7 +103,7 @@ public class Pedetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

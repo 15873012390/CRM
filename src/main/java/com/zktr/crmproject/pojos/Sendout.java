@@ -157,7 +157,7 @@ public class Sendout {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -167,7 +167,7 @@ public class Sendout {
     }
 
     @ManyToOne
-    @JoinColumn(name = "add_id", referencedColumnName = "add_id")
+    @JoinColumn(referencedColumnName = "add_id")
     public Address getAddress() {
         return address;
     }
@@ -177,7 +177,7 @@ public class Sendout {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ord_id", referencedColumnName = "ord_id")
+    @JoinColumn(referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }

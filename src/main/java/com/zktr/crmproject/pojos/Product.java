@@ -359,7 +359,7 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(name = "classification_id", referencedColumnName = "cla_id")
+    @JoinColumn(referencedColumnName = "cla_id")
     public Productclassification getProductclassification() {
         return productclassification;
     }
@@ -369,7 +369,7 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
+    @JoinColumn(referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }

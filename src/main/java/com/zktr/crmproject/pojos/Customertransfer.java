@@ -108,7 +108,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -118,7 +118,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "now_u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser3() {
         return user3;
     }
@@ -128,7 +128,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "operation_u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser2() {
         return user2;
     }
@@ -138,7 +138,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "original_u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser1() {
         return user1;
     }

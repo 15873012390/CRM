@@ -92,7 +92,7 @@ public class Productspecification {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

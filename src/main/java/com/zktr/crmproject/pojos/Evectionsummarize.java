@@ -82,7 +82,7 @@ public class Evectionsummarize {
     }
 
     @ManyToOne
-    @JoinColumn(name = "eve_id", referencedColumnName = "eve_id", nullable = false)
+    @JoinColumn(referencedColumnName = "eve_id", nullable = false)
     public Evection getEvection() {
         return evection;
     }
@@ -92,7 +92,7 @@ public class Evectionsummarize {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

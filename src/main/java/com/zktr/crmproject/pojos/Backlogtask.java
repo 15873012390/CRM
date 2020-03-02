@@ -170,7 +170,7 @@ public class Backlogtask {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -180,7 +180,7 @@ public class Backlogtask {
     }
 
     @ManyToOne
-    @JoinColumn(name = "creator", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

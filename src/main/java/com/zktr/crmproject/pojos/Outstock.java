@@ -170,7 +170,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -180,7 +180,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "preturn_id", referencedColumnName = "preturn_id")
+    @JoinColumn(referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }
@@ -190,7 +190,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "consignor_id", referencedColumnName = "warehouse_id")
+    @JoinColumn(referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -200,7 +200,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "ord_id")
+    @JoinColumn(referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }

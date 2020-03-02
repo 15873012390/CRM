@@ -145,7 +145,7 @@ public class Purchasereturn {
     }
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
+    @JoinColumn(referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }

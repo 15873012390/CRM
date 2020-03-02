@@ -82,7 +82,7 @@ public class Costauditdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ca_id", referencedColumnName = "cd_id", nullable = false)
+    @JoinColumn(referencedColumnName = "cd_id", nullable = false)
     public Costaudit getCostaudit() {
         return costaudit;
     }
@@ -92,7 +92,7 @@ public class Costauditdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

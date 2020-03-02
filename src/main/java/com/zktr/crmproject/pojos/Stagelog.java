@@ -94,7 +94,7 @@ public class Stagelog {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -104,7 +104,7 @@ public class Stagelog {
     }
 
     @ManyToOne
-    @JoinColumn(name = "so_id", referencedColumnName = "so_id", nullable = false)
+    @JoinColumn(referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

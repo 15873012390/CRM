@@ -169,7 +169,7 @@ public class Purchaseplan {
     }
 
     @ManyToOne
-    @JoinColumn(name = "dept_id", referencedColumnName = "d_id")
+    @JoinColumn(referencedColumnName = "d_id")
     public Department getDepartment() {
         return department;
     }
@@ -179,7 +179,7 @@ public class Purchaseplan {
     }
 
     @ManyToOne
-    @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
+    @JoinColumn(referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -189,7 +189,7 @@ public class Purchaseplan {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id")
+    @JoinColumn(referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

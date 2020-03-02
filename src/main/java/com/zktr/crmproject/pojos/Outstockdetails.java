@@ -93,7 +93,7 @@ public class Outstockdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -103,7 +103,7 @@ public class Outstockdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "out_id", referencedColumnName = "out_id")
+    @JoinColumn(referencedColumnName = "out_id")
     public Outstock getOutstock() {
         return outstock;
     }

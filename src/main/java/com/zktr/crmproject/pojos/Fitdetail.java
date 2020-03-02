@@ -226,7 +226,7 @@ public class Fitdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -236,7 +236,7 @@ public class Fitdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "customize_id", referencedColumnName = "customize_id")
+    @JoinColumn(referencedColumnName = "customize_id")
     public Fitcustom getFitcustom() {
         return fitcustom;
     }
@@ -246,7 +246,7 @@ public class Fitdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aprt_id", referencedColumnName = "d_id")
+    @JoinColumn(referencedColumnName = "d_id")
     public Department getDepartment() {
         return department;
     }

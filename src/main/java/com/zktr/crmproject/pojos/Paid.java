@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 public class Paid {
-    private Integer paidId;
+    private int paidId;
     private String period;
     private Timestamp payTime;
     private Integer payMoney;
@@ -20,7 +20,7 @@ public class Paid {
     private String remarks;
     private Customer customer;
     private Purchasereturn purchasereturn;
-
+    @Id
     @Basic
     @Column(name = "paid_id")
     public Integer getPaidId() {
@@ -166,7 +166,7 @@ public class Paid {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -176,7 +176,7 @@ public class Paid {
     }
 
     @ManyToOne
-    @JoinColumn(name = "return_goods", referencedColumnName = "preturn_id")
+    @JoinColumn(referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }

@@ -108,7 +108,7 @@ public class Costaudit {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cd_id", referencedColumnName = "cd_id")
+    @JoinColumn(referencedColumnName = "cd_id")
     public Costdetails getCostdetails() {
         return costdetails;
     }
@@ -118,7 +118,7 @@ public class Costaudit {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

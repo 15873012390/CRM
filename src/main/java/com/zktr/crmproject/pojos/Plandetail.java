@@ -81,7 +81,7 @@ public class Plandetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pur_id", referencedColumnName = "pur_id")
+    @JoinColumn(referencedColumnName = "pur_id")
     public Purchaseplan getPurchaseplan() {
         return purchaseplan;
     }
@@ -91,7 +91,7 @@ public class Plandetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

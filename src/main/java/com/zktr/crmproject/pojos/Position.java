@@ -58,7 +58,7 @@ public class Position {
     }
 
     @ManyToMany
-    @JoinTable(name = "position_power", catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "power_id", referencedColumnName = "power_id"))
+    @JoinTable(catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "power_id", referencedColumnName = "power_id"))
     public List<Power> getPower() {
         return power;
     }
@@ -68,7 +68,7 @@ public class Position {
     }
 
     @ManyToMany
-    @JoinTable(name = "user_position", catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "u_id", referencedColumnName = "u_id"))
+    @JoinTable(catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "u_id", referencedColumnName = "u_id"))
     public List<User> getUser() {
         return user;
     }

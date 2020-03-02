@@ -157,7 +157,7 @@ public class Purchaseenter {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pi_number", referencedColumnName = "pi_number")
+    @JoinColumn(referencedColumnName = "pi_number")
     public Purchaseinvoice getPurchaseInvoice() {
         return purchaseInvoice;
     }
@@ -167,7 +167,7 @@ public class Purchaseenter {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pco_id", referencedColumnName = "pco_id")
+    @JoinColumn(referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }
@@ -177,7 +177,7 @@ public class Purchaseenter {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id")
+    @JoinColumn(referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

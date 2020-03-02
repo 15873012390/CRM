@@ -119,7 +119,7 @@ public class Costdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cos_id", referencedColumnName = "cos_id", nullable = false)
+    @JoinColumn(referencedColumnName = "cos_id", nullable = false)
     public Cost getCost() {
         return cost;
     }

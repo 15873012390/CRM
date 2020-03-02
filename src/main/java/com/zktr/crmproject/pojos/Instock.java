@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class Instock {
-    private Integer insId;
+    private int insId;
     private String title;
     private Integer warehouseId;
     private Timestamp fillTime;
@@ -24,7 +24,7 @@ public class Instock {
     private Returnedgoods returnedgoods;
     private Supplier supplier;
     private List<Instockdetail> instockdetail;
-
+    @Id
     @Basic
     @Column(name = "ins_id")
     public Integer getInsId() {
@@ -170,7 +170,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
+    @JoinColumn(referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -180,7 +180,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pe_id", referencedColumnName = "pco_id")
+    @JoinColumn(referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }
@@ -190,7 +190,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ar_id", referencedColumnName = "reg_id")
+    @JoinColumn(referencedColumnName = "reg_id")
     public Returnedgoods getReturnedgoods() {
         return returnedgoods;
     }
@@ -200,7 +200,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
+    @JoinColumn(referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }

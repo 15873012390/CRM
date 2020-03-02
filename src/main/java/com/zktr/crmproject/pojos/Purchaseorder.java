@@ -135,7 +135,7 @@ public class Purchaseorder {
     }
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
+    @JoinColumn(referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }
@@ -145,7 +145,7 @@ public class Purchaseorder {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id")
+    @JoinColumn(referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

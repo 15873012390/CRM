@@ -93,7 +93,7 @@ public class Instockdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -103,7 +103,7 @@ public class Instockdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ins_id", referencedColumnName = "ins_id")
+    @JoinColumn(referencedColumnName = "ins_id")
     public Instock getInstock() {
         return instock;
     }

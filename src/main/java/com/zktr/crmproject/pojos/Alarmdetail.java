@@ -82,7 +82,7 @@ public class Alarmdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -92,7 +92,7 @@ public class Alarmdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "stock_id", referencedColumnName = "stock_id")
+    @JoinColumn(referencedColumnName = "stock_id")
     public Stock getStock() {
         return stock;
     }
@@ -102,7 +102,7 @@ public class Alarmdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "alarm_id", referencedColumnName = "alarm_id")
+    @JoinColumn(referencedColumnName = "alarm_id")
     public Alarm getAlarm() {
         return alarm;
     }

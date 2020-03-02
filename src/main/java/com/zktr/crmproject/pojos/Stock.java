@@ -6,14 +6,14 @@ import java.util.Objects;
 
 @Entity
 public class Stock {
-    private Integer stockId;
+    private int stockId;
     private Integer proId;
     private Integer warehouseId;
     private Integer stockQuantity;
     private Product product;
     private Warehouse warehouse;
     private List<Alarmdetail> alarmdetail;
-
+    @Id
     @Basic
     @Column(name = "stock_id")
     public Integer getStockId() {
@@ -71,7 +71,7 @@ public class Stock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -81,7 +81,7 @@ public class Stock {
     }
 
     @ManyToOne
-    @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
+    @JoinColumn(referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }

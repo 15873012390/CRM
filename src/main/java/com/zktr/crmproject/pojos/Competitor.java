@@ -177,7 +177,7 @@ public class Competitor {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -187,7 +187,7 @@ public class Competitor {
     }
 
     @ManyToOne
-    @JoinColumn(name = "so_id", referencedColumnName = "so_id")
+    @JoinColumn(referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

@@ -93,7 +93,7 @@ public class Pcrdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "preturn_id", referencedColumnName = "preturn_id")
+    @JoinColumn(referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }
@@ -103,7 +103,7 @@ public class Pcrdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

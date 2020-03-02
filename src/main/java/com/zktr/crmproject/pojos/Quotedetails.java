@@ -141,7 +141,7 @@ public class Quotedetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -151,7 +151,7 @@ public class Quotedetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "quo_id", referencedColumnName = "quo_id", nullable = false)
+    @JoinColumn(referencedColumnName = "quo_id", nullable = false)
     public Quote getQuote() {
         return quote;
     }

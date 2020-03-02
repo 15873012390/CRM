@@ -145,7 +145,7 @@ public class Actionhistory {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id", nullable = false)
+    @JoinColumn(referencedColumnName = "cus_id", nullable = false)
     public Customer getCustomer() {
         return customer;
     }
@@ -155,7 +155,7 @@ public class Actionhistory {
     }
 
     @ManyToOne
-    @JoinColumn(name = "mai_id", referencedColumnName = "repair_id")
+    @JoinColumn(referencedColumnName = "repair_id")
     public Repair getRepair() {
         return repair;
     }
@@ -165,7 +165,7 @@ public class Actionhistory {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

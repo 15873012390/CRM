@@ -107,7 +107,7 @@ public class Sendoutdetial {
     }
 
     @ManyToOne
-    @JoinColumn(name = "sen_id", referencedColumnName = "sen_id")
+    @JoinColumn(referencedColumnName = "sen_id")
     public Sendout getSendout() {
         return sendout;
     }
@@ -117,7 +117,7 @@ public class Sendoutdetial {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

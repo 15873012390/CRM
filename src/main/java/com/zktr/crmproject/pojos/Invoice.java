@@ -156,7 +156,7 @@ public class Invoice {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -166,7 +166,7 @@ public class Invoice {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ord_id", referencedColumnName = "ord_id")
+    @JoinColumn(referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -176,7 +176,7 @@ public class Invoice {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

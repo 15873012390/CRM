@@ -94,7 +94,7 @@ public class Auditdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "aud_id", referencedColumnName = "aud_id", nullable = false)
+    @JoinColumn(referencedColumnName = "aud_id", nullable = false)
     public Audit getAudit() {
         return audit;
     }
@@ -104,7 +104,7 @@ public class Auditdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

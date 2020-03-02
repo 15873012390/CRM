@@ -57,7 +57,7 @@ public class Evectiondetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "eve_id", referencedColumnName = "eve_id", nullable = false)
+    @JoinColumn(referencedColumnName = "eve_id", nullable = false)
     public Evection getEvection() {
         return evection;
     }
@@ -67,7 +67,7 @@ public class Evectiondetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

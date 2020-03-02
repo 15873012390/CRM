@@ -82,7 +82,7 @@ public class Backlogtaskdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "blt_id", referencedColumnName = "blt_id", nullable = false)
+    @JoinColumn(referencedColumnName = "blt_id", nullable = false)
     public Backlogtask getBacklogtask() {
         return backlogtask;
     }
@@ -92,7 +92,7 @@ public class Backlogtaskdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

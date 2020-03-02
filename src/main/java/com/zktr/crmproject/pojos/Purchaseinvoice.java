@@ -188,7 +188,7 @@ public class Purchaseinvoice {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pco_id", referencedColumnName = "pco_id")
+    @JoinColumn(referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }

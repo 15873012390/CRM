@@ -144,7 +144,7 @@ public class Orderdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ord_id", referencedColumnName = "ord_id")
+    @JoinColumn(referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -154,7 +154,7 @@ public class Orderdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
+    @JoinColumn(referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -164,7 +164,7 @@ public class Orderdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -174,7 +174,7 @@ public class Orderdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

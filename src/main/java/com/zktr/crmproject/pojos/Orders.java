@@ -257,7 +257,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    @JoinColumn(referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -267,7 +267,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(name = "u_id", referencedColumnName = "u_id")
+    @JoinColumn(referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -277,7 +277,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(name = "quo_id", referencedColumnName = "quo_id")
+    @JoinColumn(referencedColumnName = "quo_id")
     public Quote getQuote() {
         return quote;
     }
