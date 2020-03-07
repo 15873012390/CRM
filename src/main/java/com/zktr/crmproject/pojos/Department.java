@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -11,8 +13,11 @@ public class Department {
     private String dFunction;
     private Integer dBoss;
     private Integer lowerLevel;
+    @JsonIgnoreProperties("department")
     private List<Purchaseplan> purchaseplan;
+    @JsonIgnoreProperties("department")
     private List<Fitdetail> fitdetail;
+    @JsonIgnoreProperties("department")
     private List<User> user;
 
     @Id

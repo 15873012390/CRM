@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Alarmdetail {
     private int adId;
-    private Integer proId;
-    private String stockId;
     private Integer check;
-    private Integer alarmId;
+    @JsonIgnoreProperties("alarmdetail")
     private Product product;
+    @JsonIgnoreProperties("alarmdetail")
     private Stock stock;
+    @JsonIgnoreProperties("alarmdetail")
     private Alarm alarm;
 
     @Id
@@ -24,25 +25,6 @@ public class Alarmdetail {
         this.adId = adId;
     }
 
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
-
-    @Basic
-    @Column(name = "stock_id")
-    public String getStockId() {
-        return stockId;
-    }
-
-    public void setStockId(String stockId) {
-        this.stockId = stockId;
-    }
 
     @Basic
     @Column(name = "check")
@@ -54,35 +36,9 @@ public class Alarmdetail {
         this.check = check;
     }
 
-    @Basic
-    @Column(name = "alarm_id")
-    public Integer getAlarmId() {
-        return alarmId;
-    }
-
-    public void setAlarmId(Integer alarmId) {
-        this.alarmId = alarmId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Alarmdetail that = (Alarmdetail) o;
-        return adId == that.adId &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(stockId, that.stockId) &&
-                Objects.equals(check, that.check) &&
-                Objects.equals(alarmId, that.alarmId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(adId, proId, stockId, check, alarmId);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -92,7 +48,7 @@ public class Alarmdetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "stock_id")
+    @JoinColumn(name="stock_id",referencedColumnName = "stock_id")
     public Stock getStock() {
         return stock;
     }
@@ -102,7 +58,7 @@ public class Alarmdetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "alarm_id")
+    @JoinColumn(name="alarm_id",referencedColumnName = "alarm_id")
     public Alarm getAlarm() {
         return alarm;
     }

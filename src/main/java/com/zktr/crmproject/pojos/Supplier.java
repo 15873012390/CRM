@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -15,8 +17,11 @@ public class Supplier {
     private String qq;
     private String weixin;
     private Integer useStatus;
+    @JsonIgnoreProperties("supplier")
     private List<Purchaseorder> purchaseorder;
+    @JsonIgnoreProperties("supplier")
     private List<Purchasereturn> purchasereturn;
+    @JsonIgnoreProperties("supplier")
     private List<Instock> instock;
 
     @Id
@@ -100,7 +105,7 @@ public class Supplier {
     }
 
     @Basic
-    @Column(name = "useStatus")
+    @Column(name = "use_status")
     public Integer getUseStatus() {
         return useStatus;
     }

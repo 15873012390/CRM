@@ -1,11 +1,12 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Backlogtask {
@@ -14,15 +15,16 @@ public class Backlogtask {
     private Date finishDate;
     private Time finishTime;
     private Integer precedence;
-    private Integer cusId;
     private String conName;
     private String conPhone;
-    private Integer creator;
     private Integer status;
     private Timestamp creationTime;
     private Integer delStatus;
+    @JsonIgnoreProperties("backlogtask")
     private Customer customer;
+    @JsonIgnoreProperties("backlogtask")
     private User user;
+    @JsonIgnoreProperties("backlogtask")
     private List<Backlogtaskdetails> backlogtaskdetails;
 
     @Id
@@ -75,15 +77,6 @@ public class Backlogtask {
         this.precedence = precedence;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "con_name")
@@ -105,15 +98,6 @@ public class Backlogtask {
         this.conPhone = conPhone;
     }
 
-    @Basic
-    @Column(name = "creator")
-    public Integer getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
 
     @Basic
     @Column(name = "status")
@@ -145,32 +129,8 @@ public class Backlogtask {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Backlogtask that = (Backlogtask) o;
-        return bltId == that.bltId &&
-                Objects.equals(bltDescription, that.bltDescription) &&
-                Objects.equals(finishDate, that.finishDate) &&
-                Objects.equals(finishTime, that.finishTime) &&
-                Objects.equals(precedence, that.precedence) &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(conName, that.conName) &&
-                Objects.equals(conPhone, that.conPhone) &&
-                Objects.equals(creator, that.creator) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(creationTime, that.creationTime) &&
-                Objects.equals(delStatus, that.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(bltId, bltDescription, finishDate, finishTime, precedence, cusId, conName, conPhone, creator, status, creationTime, delStatus);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -180,7 +140,7 @@ public class Backlogtask {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="creator",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

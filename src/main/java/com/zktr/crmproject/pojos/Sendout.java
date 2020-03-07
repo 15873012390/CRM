@@ -1,16 +1,14 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Sendout {
     private int senId;
-    private Integer cusId;
-    private Integer addId;
-    private Integer ordId;
     private String senReceiving;
     private Timestamp senDate;
     private Integer senFreight;
@@ -18,9 +16,13 @@ public class Sendout {
     private String senWay;
     private String senRemark;
     private Integer senDelState;
+    @JsonIgnoreProperties("sendout")
     private Customer customer;
+    @JsonIgnoreProperties("sendout")
     private Address address;
+    @JsonIgnoreProperties("sendout")
     private Orders orders;
+    @JsonIgnoreProperties("sendout")
     private List<Sendoutdetial> sendoutdetial;
 
     @Id
@@ -31,36 +33,6 @@ public class Sendout {
 
     public void setSenId(int senId) {
         this.senId = senId;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "add_id")
-    public Integer getAddId() {
-        return addId;
-    }
-
-    public void setAddId(Integer addId) {
-        this.addId = addId;
-    }
-
-    @Basic
-    @Column(name = "ord_id")
-    public Integer getOrdId() {
-        return ordId;
-    }
-
-    public void setOrdId(Integer ordId) {
-        this.ordId = ordId;
     }
 
     @Basic
@@ -133,31 +105,8 @@ public class Sendout {
         this.senDelState = senDelState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sendout sendout = (Sendout) o;
-        return senId == sendout.senId &&
-                Objects.equals(cusId, sendout.cusId) &&
-                Objects.equals(addId, sendout.addId) &&
-                Objects.equals(ordId, sendout.ordId) &&
-                Objects.equals(senReceiving, sendout.senReceiving) &&
-                Objects.equals(senDate, sendout.senDate) &&
-                Objects.equals(senFreight, sendout.senFreight) &&
-                Objects.equals(senState, sendout.senState) &&
-                Objects.equals(senWay, sendout.senWay) &&
-                Objects.equals(senRemark, sendout.senRemark) &&
-                Objects.equals(senDelState, sendout.senDelState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(senId, cusId, addId, ordId, senReceiving, senDate, senFreight, senState, senWay, senRemark, senDelState);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -167,7 +116,7 @@ public class Sendout {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "add_id")
+    @JoinColumn(name="add_id",referencedColumnName = "add_id")
     public Address getAddress() {
         return address;
     }
@@ -177,7 +126,7 @@ public class Sendout {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }

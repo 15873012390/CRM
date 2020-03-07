@@ -1,25 +1,27 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Invoice {
     private int invId;
-    private Integer cusId;
-    private Integer ordId;
     private String invContent;
     private BigDecimal invMoney;
     private String invType;
     private Timestamp invDate;
-    private Integer uId;
     private String invRm;
     private String invPlan;
+    @JsonIgnoreProperties("invoice")
     private String invRemark;
+    @JsonIgnoreProperties("invoice")
     private Customer customer;
+    @JsonIgnoreProperties("invoice")
     private Orders orders;
+    @JsonIgnoreProperties("invoice")
     private User user;
 
     @Id
@@ -32,25 +34,6 @@ public class Invoice {
         this.invId = invId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "ord_id")
-    public Integer getOrdId() {
-        return ordId;
-    }
-
-    public void setOrdId(Integer ordId) {
-        this.ordId = ordId;
-    }
 
     @Basic
     @Column(name = "inv_content")
@@ -93,16 +76,6 @@ public class Invoice {
     }
 
     @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
-
-    @Basic
     @Column(name = "inv_rm")
     public String getInvRm() {
         return invRm;
@@ -132,31 +105,9 @@ public class Invoice {
         this.invRemark = invRemark;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Invoice invoice = (Invoice) o;
-        return invId == invoice.invId &&
-                Objects.equals(cusId, invoice.cusId) &&
-                Objects.equals(ordId, invoice.ordId) &&
-                Objects.equals(invContent, invoice.invContent) &&
-                Objects.equals(invMoney, invoice.invMoney) &&
-                Objects.equals(invType, invoice.invType) &&
-                Objects.equals(invDate, invoice.invDate) &&
-                Objects.equals(uId, invoice.uId) &&
-                Objects.equals(invRm, invoice.invRm) &&
-                Objects.equals(invPlan, invoice.invPlan) &&
-                Objects.equals(invRemark, invoice.invRemark);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(invId, cusId, ordId, invContent, invMoney, invType, invDate, uId, invRm, invPlan, invRemark);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -166,7 +117,7 @@ public class Invoice {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -176,7 +127,7 @@ public class Invoice {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

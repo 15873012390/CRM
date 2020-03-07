@@ -1,18 +1,16 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Quote {
     private int quoId;
     private String quoTheme;
     private Integer toOrder;
-    private int cusId;
-    private int soId;
-    private Integer uId;
     private String quoPhone;
     private Timestamp quoDate;
     private Integer totalMoney;
@@ -20,14 +18,19 @@ public class Quote {
     private String instructions;
     private String remarks;
     private Integer approver;
-    private Integer audId;
     private Integer auditStatus;
     private Integer delStatus;
+    @JsonIgnoreProperties("quote")
     private Salesopport salesopport;
+    @JsonIgnoreProperties("quote")
     private Customer customer;
+    @JsonIgnoreProperties("quote")
     private User user;
+    @JsonIgnoreProperties("quote")
     private Audit audit;
+    @JsonIgnoreProperties("quote")
     private List<Quotedetails> quotedetails;
+    @JsonIgnoreProperties("quote")
     private List<Orders> orders;
 
     @Id
@@ -58,36 +61,6 @@ public class Quote {
 
     public void setToOrder(Integer toOrder) {
         this.toOrder = toOrder;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public int getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(int cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "so_id")
-    public int getSoId() {
-        return soId;
-    }
-
-    public void setSoId(int soId) {
-        this.soId = soId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
     }
 
     @Basic
@@ -161,16 +134,6 @@ public class Quote {
     }
 
     @Basic
-    @Column(name = "aud_id")
-    public Integer getAudId() {
-        return audId;
-    }
-
-    public void setAudId(Integer audId) {
-        this.audId = audId;
-    }
-
-    @Basic
     @Column(name = "audit_status")
     public Integer getAuditStatus() {
         return auditStatus;
@@ -190,36 +153,8 @@ public class Quote {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Quote quote = (Quote) o;
-        return quoId == quote.quoId &&
-                cusId == quote.cusId &&
-                soId == quote.soId &&
-                Objects.equals(quoTheme, quote.quoTheme) &&
-                Objects.equals(toOrder, quote.toOrder) &&
-                Objects.equals(uId, quote.uId) &&
-                Objects.equals(quoPhone, quote.quoPhone) &&
-                Objects.equals(quoDate, quote.quoDate) &&
-                Objects.equals(totalMoney, quote.totalMoney) &&
-                Objects.equals(grossProfit, quote.grossProfit) &&
-                Objects.equals(instructions, quote.instructions) &&
-                Objects.equals(remarks, quote.remarks) &&
-                Objects.equals(approver, quote.approver) &&
-                Objects.equals(audId, quote.audId) &&
-                Objects.equals(auditStatus, quote.auditStatus) &&
-                Objects.equals(delStatus, quote.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(quoId, quoTheme, toOrder, cusId, soId, uId, quoPhone, quoDate, totalMoney, grossProfit, instructions, remarks, approver, audId, auditStatus, delStatus);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "so_id", nullable = false)
+    @JoinColumn(name="so_id",referencedColumnName = "so_id", nullable = false)
     public Salesopport getSalesopport() {
         return salesopport;
     }
@@ -229,7 +164,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id", nullable = false)
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id", nullable = false)
     public Customer getCustomer() {
         return customer;
     }
@@ -239,7 +174,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -249,7 +184,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "aud_id")
+    @JoinColumn(name="aud_id",referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -10,34 +12,63 @@ public class User {
     private String uName;
     private String uPass;
     private Integer uStatus;
+    @JsonIgnoreProperties("user")
     private List<Customer> customer;
+    @JsonIgnoreProperties("user3")
     private List<Customertransfer> customertransfer3;
+    @JsonIgnoreProperties("user2")
     private List<Customertransfer> customertransfer2;
+    @JsonIgnoreProperties("user1")
     private List<Customertransfer> customertransfer1;
+    @JsonIgnoreProperties("user")
     private List<Customerupdatelog> customerupdatelog;
+    @JsonIgnoreProperties("user")
     private List<Salesopport> salesopport;
+    @JsonIgnoreProperties("user")
     private List<Stagelog> stagelog;
+    @JsonIgnoreProperties("user")
     private List<Backlogtask> backlogtask;
+    @JsonIgnoreProperties("user")
     private List<Backlogtaskdetails> backlogtaskdetails;
+    @JsonIgnoreProperties("user")
     private List<Actionhistory> actionhistory;
+    @JsonIgnoreProperties("user")
     private List<Actionhistorydetails> actionhistorydetails;
+    @JsonIgnoreProperties("user")
     private List<Evection> evection;
+    @JsonIgnoreProperties("user")
     private List<Evectionsummarize> eventionsummarize;
+    @JsonIgnoreProperties("user")
     private List<Quote> quote;
+    @JsonIgnoreProperties("user")
     private List<Auditdetails> auditdetails;
+    @JsonIgnoreProperties("user")
     private List<Costaudit> costaudit;
+    @JsonIgnoreProperties("user")
     private List<Costauditdetails> coatauditdetails;
+    @JsonIgnoreProperties("user")
     private List<UserMessage> userMessage;
+    @JsonIgnoreProperties("user")
     private List<Position> position;
+    @JsonIgnoreProperties("user")
     private Department department;
+    @JsonIgnoreProperties("user")
     private List<Leaved> leaved;
+    @JsonIgnoreProperties("user")
     private List<Log> log;
+    @JsonIgnoreProperties("user")
     private List<Orders> orders;
+    @JsonIgnoreProperties("user")
     private List<Orderdetail> orderdetail;
+    @JsonIgnoreProperties("user")
     private List<Contract> contract;
+    @JsonIgnoreProperties("user")
     private List<Returnedgoods> returnedgoods;
+    @JsonIgnoreProperties("user")
     private List<Returnedmoney> returnedmoney;
+    @JsonIgnoreProperties("user")
     private List<Returnedmoneyplan> returnedmoneyplan;
+    @JsonIgnoreProperties("user")
     private List<Invoice> invoice;
 
     @Id

@@ -1,8 +1,9 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Stagelog {
@@ -10,13 +11,14 @@ public class Stagelog {
     private String slNote;
     private Timestamp recordTime;
     private String stageName;
-    private int uId;
-    private int soId;
+    @JsonIgnoreProperties("stagelog")
     private User user;
+    @JsonIgnoreProperties("stagelog")
     private Salesopport salesopport;
 
     @Id
     @Column(name = "sl_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getSlId() {
         return slId;
     }
@@ -55,46 +57,8 @@ public class Stagelog {
         this.stageName = stageName;
     }
 
-    @Basic
-    @Column(name = "u_id")
-    public int getuId() {
-        return uId;
-    }
-
-    public void setuId(int uId) {
-        this.uId = uId;
-    }
-
-    @Basic
-    @Column(name = "so_id")
-    public int getSoId() {
-        return soId;
-    }
-
-    public void setSoId(int soId) {
-        this.soId = soId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Stagelog stagelog = (Stagelog) o;
-        return slId == stagelog.slId &&
-                uId == stagelog.uId &&
-                soId == stagelog.soId &&
-                Objects.equals(slNote, stagelog.slNote) &&
-                Objects.equals(recordTime, stagelog.recordTime) &&
-                Objects.equals(stageName, stagelog.stageName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(slId, slNote, recordTime, stageName, uId, soId);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -103,13 +67,28 @@ public class Stagelog {
         this.user = user;
     }
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "so_id")
+    @ManyToOne(cascade = {CascadeType.MERGE})//Cascade设置级联
+    @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }
 
     public void setSalesopport(Salesopport salesopport) {
         this.salesopport = salesopport;
+    }
+
+    public Stagelog() {
+    }
+
+    @Override
+    public String toString() {
+        return "Stagelog{" +
+                "slId=" + slId +
+                ", slNote='" + slNote + '\'' +
+                ", recordTime=" + recordTime +
+                ", stageName='" + stageName + '\'' +
+                ", user=" + user +
+                ", salesopport=" + salesopport +
+                '}';
     }
 }

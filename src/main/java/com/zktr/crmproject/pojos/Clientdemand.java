@@ -1,21 +1,22 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Clientdemand {
     private int cdId;
     private String cdTheme;
     private String cdPeople;
-    private Integer cusId;
-    private Integer soId;
     private Timestamp recordTime;
     private Integer importance;
     private String cdContent;
     private Integer delStatus;
+    @JsonIgnoreProperties("clientdemand")
     private Customer customer;
+    @JsonIgnoreProperties("clientdemand")
     private Salesopport salesopport;
 
     @Id
@@ -48,25 +49,6 @@ public class Clientdemand {
         this.cdPeople = cdPeople;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "so_id")
-    public Integer getSoId() {
-        return soId;
-    }
-
-    public void setSoId(Integer soId) {
-        this.soId = soId;
-    }
 
     @Basic
     @Column(name = "record_time")
@@ -108,29 +90,9 @@ public class Clientdemand {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Clientdemand that = (Clientdemand) o;
-        return cdId == that.cdId &&
-                Objects.equals(cdTheme, that.cdTheme) &&
-                Objects.equals(cdPeople, that.cdPeople) &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(soId, that.soId) &&
-                Objects.equals(recordTime, that.recordTime) &&
-                Objects.equals(importance, that.importance) &&
-                Objects.equals(cdContent, that.cdContent) &&
-                Objects.equals(delStatus, that.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cdId, cdTheme, cdPeople, cusId, soId, recordTime, importance, cdContent, delStatus);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -140,7 +102,7 @@ public class Clientdemand {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "so_id")
+    @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

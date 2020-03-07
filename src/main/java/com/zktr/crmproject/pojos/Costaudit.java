@@ -1,51 +1,33 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Costaudit {
-    private int costAudit;
-    private Integer cdId;
-    private Integer uId;
+    private int caId;
     private String caContent;
     private Timestamp caTime;
     private Integer approvalStatus;
     private Integer delStatus;
+    @JsonIgnoreProperties("costaudit")
     private Costdetails costdetails;
+    @JsonIgnoreProperties("costaudit")
     private User user;
+    @JsonIgnoreProperties("costaudit")
     private List<Costauditdetails> costauditdetails;
 
     @Id
-    @Column(name = "costAudit")
-    public int getCostAudit() {
-        return costAudit;
+    @Column(name = "ca_id")
+    public int getCaId() {
+        return caId;
     }
 
-    public void setCostAudit(int costAudit) {
-        this.costAudit = costAudit;
-    }
-
-    @Basic
-    @Column(name = "cd_id")
-    public Integer getCdId() {
-        return cdId;
-    }
-
-    public void setCdId(Integer cdId) {
-        this.cdId = cdId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
+    public void setCaId(int caId) {
+        this.caId = caId;
     }
 
     @Basic
@@ -88,27 +70,8 @@ public class Costaudit {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Costaudit costaudit = (Costaudit) o;
-        return costAudit == costaudit.costAudit &&
-                Objects.equals(cdId, costaudit.cdId) &&
-                Objects.equals(uId, costaudit.uId) &&
-                Objects.equals(caContent, costaudit.caContent) &&
-                Objects.equals(caTime, costaudit.caTime) &&
-                Objects.equals(approvalStatus, costaudit.approvalStatus) &&
-                Objects.equals(delStatus, costaudit.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(costAudit, cdId, uId, caContent, caTime, approvalStatus, delStatus);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cd_id")
+    @JoinColumn(name = "cd_id",referencedColumnName = "cd_id")
     public Costdetails getCostdetails() {
         return costdetails;
     }
@@ -118,7 +81,7 @@ public class Costaudit {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name = "u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

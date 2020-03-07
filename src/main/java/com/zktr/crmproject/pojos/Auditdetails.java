@@ -1,18 +1,19 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Auditdetails {
     private int adId;
-    private int audId;
-    private int uId;
     private String adOpinion;
     private Timestamp adTime;
     private int adOperation;
+    @JsonIgnoreProperties("auditdetails")
     private Audit audit;
+    @JsonIgnoreProperties("auditdetails")
     private User user;
 
     @Id
@@ -25,25 +26,6 @@ public class Auditdetails {
         this.adId = adId;
     }
 
-    @Basic
-    @Column(name = "aud_id")
-    public int getAudId() {
-        return audId;
-    }
-
-    public void setAudId(int audId) {
-        this.audId = audId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public int getuId() {
-        return uId;
-    }
-
-    public void setuId(int uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "ad_opinion")
@@ -75,26 +57,8 @@ public class Auditdetails {
         this.adOperation = adOperation;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Auditdetails that = (Auditdetails) o;
-        return adId == that.adId &&
-                audId == that.audId &&
-                uId == that.uId &&
-                adOperation == that.adOperation &&
-                Objects.equals(adOpinion, that.adOpinion) &&
-                Objects.equals(adTime, that.adTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(adId, audId, uId, adOpinion, adTime, adOperation);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "aud_id", nullable = false)
+    @JoinColumn(name="aud_id",referencedColumnName = "aud_id", nullable = false)
     public Audit getAudit() {
         return audit;
     }
@@ -104,7 +68,7 @@ public class Auditdetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(name="u_id",referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

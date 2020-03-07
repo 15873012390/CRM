@@ -1,24 +1,25 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Returnedmoney {
     private int remId;
-    private Integer cusId;
-    private Integer ordId;
-    private Integer uId;
     private BigDecimal remMoney;
     private String remRem;
     private String remBilling;
     private String remClassify;
     private Timestamp remDate;
     private String remRemark;
+    @JsonIgnoreProperties("returnedmoney")
     private Customer customer;
+    @JsonIgnoreProperties("returnedmoney")
     private Orders orders;
+    @JsonIgnoreProperties("returnedmoney")
     private User user;
 
     @Id
@@ -31,35 +32,6 @@ public class Returnedmoney {
         this.remId = remId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "ord_id")
-    public Integer getOrdId() {
-        return ordId;
-    }
-
-    public void setOrdId(Integer ordId) {
-        this.ordId = ordId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "rem_money")
@@ -121,30 +93,8 @@ public class Returnedmoney {
         this.remRemark = remRemark;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Returnedmoney that = (Returnedmoney) o;
-        return remId == that.remId &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(ordId, that.ordId) &&
-                Objects.equals(uId, that.uId) &&
-                Objects.equals(remMoney, that.remMoney) &&
-                Objects.equals(remRem, that.remRem) &&
-                Objects.equals(remBilling, that.remBilling) &&
-                Objects.equals(remClassify, that.remClassify) &&
-                Objects.equals(remDate, that.remDate) &&
-                Objects.equals(remRemark, that.remRemark);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(remId, cusId, ordId, uId, remMoney, remRem, remBilling, remClassify, remDate, remRemark);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -154,7 +104,7 @@ public class Returnedmoney {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -164,7 +114,7 @@ public class Returnedmoney {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

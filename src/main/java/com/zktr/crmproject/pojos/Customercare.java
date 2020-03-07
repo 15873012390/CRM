@@ -1,13 +1,13 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Customercare {
     private int ccId;
-    private Integer cusId;
     private String contacts;
     private Timestamp ccDate;
     private String executor;
@@ -15,6 +15,7 @@ public class Customercare {
     private String ccContent;
     private String cusFeedback;
     private String remarks;
+    @JsonIgnoreProperties("customercare")
     private Customer customer;
 
     @Id
@@ -25,16 +26,6 @@ public class Customercare {
 
     public void setCcId(int ccId) {
         this.ccId = ccId;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
     }
 
     @Basic
@@ -107,29 +98,9 @@ public class Customercare {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customercare that = (Customercare) o;
-        return ccId == that.ccId &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(contacts, that.contacts) &&
-                Objects.equals(ccDate, that.ccDate) &&
-                Objects.equals(executor, that.executor) &&
-                Objects.equals(type, that.type) &&
-                Objects.equals(ccContent, that.ccContent) &&
-                Objects.equals(cusFeedback, that.cusFeedback) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ccId, cusId, contacts, ccDate, executor, type, ccContent, cusFeedback, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

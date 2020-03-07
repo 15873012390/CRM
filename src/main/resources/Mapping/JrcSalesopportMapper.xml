@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcSalesOpportMDao">
+    
+    <resultMap id="salesopportMap" type="Salesopport">
+        <id property="soId" column="so_id"/>
+        <result property="soTheme" column="so_theme"/>
+        <result property="updateDate" column="update_date"/>
+        <!--状态-->
+        <result property="status" column="status"/>
+        <result property="conName" column="con_name"/>
+        <result property="conPhone" column="con_phone"/>
+        <!--类型-->
+        <result property="architecture" column="architecture"/>
+        <result property="cusSource" column="cus_source"/>
+
+        <result property="priority" column="priority"/>
+        <!--阶段-->
+        <result property="stage" column="stage"/>
+        <result property="disTime" column="dis_time"/>
+        <result property="provider" column="provider"/>
+        <result property="cusDemand" column="cus_demand"/>
+        <result property="signingTime" column="signing_time"/>
+        <result property="possibility" column="possibility"/>
+
+        <result property="amount" column="amount"/>
+        <result property="starTarget" column="star_target"/>
+
+        <association property="customer" javaType="Customer">
+            <id property="cusId" column="cus_id"/>
+            <result property="cusName" column="cus_name"/>
+        </association>
+
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+        </association>
+    </resultMap>
+    
+    <select id="queryAll" resultMap="salesopportMap">
+        select
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
+        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
+        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        from salesopport s
+        left join customer c on s.cus_id = c.cus_id
+        left join user u on s.u_id = u.u_id
+        where s.del_status=1
+        order by s.so_id desc
+    </select>
+
+    <select id="queryByLikeSearch" resultMap="salesopportMap">
+        select
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
+        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
+        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        from salesopport s
+        left join customer c on s.cus_id = c.cus_id
+        left join user u on s.u_id = u.u_id where 1=1
+        and s.del_status=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='初期沟通' || value=='需求分析' || value=='需求分析' || value=='方案制定'
+                or value=='投招标/竞争'  || value=='商务谈判' || value=='合同签约'">
+                    and s.stage =#{value}
+                </when>
+                <when test="value=='跟踪'|| value=='成功' || value=='失败'
+                || value=='搁置' || value=='失效'">
+                    <if test="value=='跟踪'">
+                        and s.status =1
+                    </if>
+                    <if test="value=='成功'">
+                        and s.status =2
+                    </if>
+                    <if test="value=='失败'">
+                        and s.status =3
+                    </if>
+                    <if test="value=='搁置'">
+                        and s.status =4
+                    </if>
+                    <if test="value=='失效'">
+                        and s.status =5
+                    </if>
+                </when>
+                <when test="value=='办公建筑' || value=='住宅建筑' || value=='商业建筑'
+                || value=='医疗教育' || value=='文化健身' ">
+                    and s.architecture=#{value}
+                </when>
+                <when test="value=='一级' || value=='二级' || value=='三级' ">
+                    and s.priority=#{value}
+                </when>
+                <otherwise>
+                    and s.star_target=#{value}
+                </otherwise>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='机会主题'">
+                and s.so_theme like #{input}
+            </when>
+            <when test="input!=null and select=='客户名称'">
+                and c.cus_name like #{input}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by s.so_id desc
+    </select>
+
+
+    <select id="queryByAdvancedSearch"  resultMap="salesopportMap" parameterType="com.zktr.crmproject.vo.SalesOpportAdvancedSearch">
+        select
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
+        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
+        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        from salesopport s
+        left join user u on s.u_id = u.u_id
+        left join customer c on s.cus_id = c.cus_id
+        left join contacts c2 on c.cus_id = c2.cus_id
+        where s.del_status=1
+        <trim prefix="where" prefixOverrides="and">
+            <if test="cusId!=0">
+                and c.cus_id=#{cusId}
+            </if>
+            <if test="conName!=null and conName!=''">
+                and c2.con_name=#{conName}
+            </if>
+            <if test="opportunitiesThem!=null and opportunitiesThem!=''">
+                <choose>
+                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect!='' and opportunitiesThemSelect=='包含'">
+                        and s.so_theme like #{opportunitiesThem}
+                    </when>
+                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect!='' and opportunitiesThemSelect=='不包含'">
+                        and s.so_theme not like #{opportunitiesThem}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+
+            <if test="signingTimeStart!=null">
+                and s.signing_time &gt;=#{signingTimeStart}
+            </if>
+
+            <if test="signingTimeEnd!=null">
+                and s.signing_time &lt;=#{signingTimeEnd}
+            </if>
+
+            <if test="amount!=null">
+                <choose>
+                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='大于'">
+                        and s.amount &gt;#{amount}
+                    </when>
+                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='小于'">
+                        and s.amount &lt;#{amount}
+                    </when>
+                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='不等于'">
+                        and s.amount &gt;#{amount} and s.amount &lt;#{amount}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+
+            <if test="possibility!=null and possibility!=''">
+                <choose>
+                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='大于'">
+                        and s.possibility &gt;#{possibility}
+                    </when>
+                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='小于'">
+                        and s.possibility &lt;#{possibility}
+                    </when>
+                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='不等于'">
+                        and s.possibility &gt;#{possibility} and s.possibility &lt;#{possibility}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+
+            <if test="updateTimeStart!=null">
+                and s.update_date &gt;= #{updateTimeStart}
+            </if>
+            <if test="updateTimeEnd!=null">
+                and s.update_date &lt;=#{updateTimeEnd}
+            </if>
+
+            <if test="checkedCustomerSource!=null and checkedCustomerSource!=''">
+                and s.cus_source in
+                <foreach collection="checkedCustomerSource" index="index" item="customerSource"
+                         open="(" separator="," close=")">
+                        #{customerSource}
+                </foreach>
+            </if>
+
+            <if test="checkedStage!=null and checkedStage!=''">
+                and s.stage in
+                <foreach collection="checkedStage" index="index" item="stage"
+                         open="(" separator="," close=")">
+                    #{stage}
+                </foreach>
+            </if>
+
+            <if test="checkedUser!=null and checkedUser!=''">
+                and u.u_id in
+                <foreach collection="checkedUser" index="index" item="user"
+                         open="(" separator="," close=")">
+                    #{user}
+                </foreach>
+            </if>
+
+            <if test="checkedStatus!=null and checkedStatus!=''">
+                and s.status in
+                <foreach collection="checkedStatus" index="index" item="status"
+                         open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <if test="checkedPriority!=null and checkedPriority!=''">
+                and s.priority in
+                <foreach collection="checkedPriority" index="index" item="priority"
+                         open="(" separator=",i" close=")">
+                    #{priority}
+                </foreach>
+            </if>
+            <if test="checkedStarTarget!=null and checkedStarTarget!=''">
+                and s.star_target in
+                <foreach collection="checkedStarTarget" index="index" item="starTarget"
+                         open="(" separator="," close=")">
+                    #{starTarget}
+                </foreach>
+            </if>
+
+            <if test="checkedType!=null and checkedType!=''">
+                and s.architecture in
+                <foreach collection="checkedType" index="index" item="type"
+                         open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+
+            <if test="createTimeStart!=null">
+                and s.dis_time &gt;=#{createTimeStart}
+            </if>
+            <if test="createTimeEnd!=null">
+                and s.dis_time &lt;=#{createTimeEnd}
+            </if>
+
+        </trim>
+        group by s.so_id
+        order by s.so_id desc
+    </select>
+
+    <select id="queryBySoid" resultMap="salesopportMap">
+        select
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
+        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
+        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        from salesopport s
+        left join user u on s.u_id = u.u_id
+        left join customer c on s.cus_id = c.cus_id
+        left join contacts c2 on c.cus_id = c2.cus_id
+        where s.del_status=1 and so_id=#{soid}
+        group by s.so_id
+        order by s.so_id desc
+    </select>
+
+
+</mapper>

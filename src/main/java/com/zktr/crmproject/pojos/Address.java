@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -7,13 +9,14 @@ import java.util.Objects;
 @Entity
 public class Address {
     private int addId;
-    private Integer cusId;
     private String addName;
     private String addPhone;
     private String addAddress;
     private String addType;
     private Integer addPostcode;
+    @JsonIgnoreProperties("address")
     private List<Sendout> sendout;
+    @JsonIgnoreProperties("address")
     private Customer customer;
 
     @Id
@@ -26,15 +29,6 @@ public class Address {
         this.addId = addId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "add_name")
@@ -92,7 +86,6 @@ public class Address {
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
         return addId == address.addId &&
-                Objects.equals(cusId, address.cusId) &&
                 Objects.equals(addName, address.addName) &&
                 Objects.equals(addPhone, address.addPhone) &&
                 Objects.equals(addAddress, address.addAddress) &&
@@ -102,7 +95,7 @@ public class Address {
 
     @Override
     public int hashCode() {
-        return Objects.hash(addId, cusId, addName, addPhone, addAddress, addType, addPostcode);
+        return Objects.hash(addId,addName, addPhone, addAddress, addType, addPostcode);
     }
 
     @OneToMany(mappedBy = "address")
@@ -115,7 +108,7 @@ public class Address {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

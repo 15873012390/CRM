@@ -1,18 +1,19 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Customerchurnwarning {
     private int ccwId;
-    private Integer cusId;
     private Timestamp churnTime;
     private Timestamp warningTel;
     private String ccwMeasures;
     private String ccwResult;
     private String ccwState;
+    @JsonIgnoreProperties("customerchurnwarning")
     private Customer customer;
 
     @Id
@@ -25,15 +26,6 @@ public class Customerchurnwarning {
         this.ccwId = ccwId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "churn_time")
@@ -85,27 +77,9 @@ public class Customerchurnwarning {
         this.ccwState = ccwState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customerchurnwarning that = (Customerchurnwarning) o;
-        return ccwId == that.ccwId &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(churnTime, that.churnTime) &&
-                Objects.equals(warningTel, that.warningTel) &&
-                Objects.equals(ccwMeasures, that.ccwMeasures) &&
-                Objects.equals(ccwResult, that.ccwResult) &&
-                Objects.equals(ccwState, that.ccwState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ccwId, cusId, churnTime, warningTel, ccwMeasures, ccwResult, ccwState);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

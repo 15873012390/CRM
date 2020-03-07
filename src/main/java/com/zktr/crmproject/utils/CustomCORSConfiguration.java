@@ -15,6 +15,7 @@ public class CustomCORSConfiguration {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setMaxAge(3600L);
         return corsConfiguration;
     }
     @Bean

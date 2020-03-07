@@ -1,14 +1,16 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Actionhistorydetails {
     private int ahdId;
-    private int ahId;
-    private int uId;
+    @JsonIgnoreProperties("actionhistorydetails")
     private Actionhistory actionhistory;
+    @JsonIgnoreProperties("actionhistorydetails")
     private User user;
 
     @Id
@@ -21,43 +23,24 @@ public class Actionhistorydetails {
         this.ahdId = ahdId;
     }
 
-    @Basic
-    @Column(name = "ah_id")
-    public int getAhId() {
-        return ahId;
-    }
 
-    public void setAhId(int ahId) {
-        this.ahId = ahId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public int getuId() {
-        return uId;
-    }
-
-    public void setuId(int uId) {
-        this.uId = uId;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Actionhistorydetails that = (Actionhistorydetails) o;
-        return ahdId == that.ahdId &&
-                ahId == that.ahId &&
-                uId == that.uId;
+        return ahdId == that.ahdId ;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ahdId, ahId, uId);
+        return Objects.hash(ahdId);
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ah_id", nullable = false)
+    @JoinColumn(name="ah_id",referencedColumnName = "ah_id", nullable = false)
     public Actionhistory getActionhistory() {
         return actionhistory;
     }
@@ -67,7 +50,7 @@ public class Actionhistorydetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(name="u_id",referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

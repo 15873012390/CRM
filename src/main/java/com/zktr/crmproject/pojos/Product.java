@@ -1,16 +1,15 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Product {
     private int proId;
-    private Integer classificationId;
-    private Integer warehouseId;
     private String proName;
     private String proImage;
     private String proMode;
@@ -25,21 +24,37 @@ public class Product {
     private String durableYears;
     private String proRemark;
     private Integer proDelState;
+    @JsonIgnoreProperties("product")
     private List<Plandetail> plandetail;
+    @JsonIgnoreProperties("product")
     private List<Pcodetail> pcodetail;
+    @JsonIgnoreProperties("product")
     private List<Pcrdetail> pcrdetail;
+    @JsonIgnoreProperties("product")
     private List<Pedetail> pedetail;
+    @JsonIgnoreProperties("product")
     private List<Outstockdetails> outstockdetail;
+    @JsonIgnoreProperties("product")
     private List<Stock> stock;
+    @JsonIgnoreProperties("product")
     private List<Instockdetail> instockdetail;
+    @JsonIgnoreProperties("product")
     private List<Alarmdetail> alarmdetail;
+    @JsonIgnoreProperties("product")
     private List<Fitdetail> fitdetail;
+    @JsonIgnoreProperties("product")
     private List<Quotedetails> quotedetails;
+    @JsonIgnoreProperties("product")
     private List<Orderdetail> orderdetail;
+    @JsonIgnoreProperties("product")
     private List<Sendoutdetial> sendoutdetial;
+    @JsonIgnoreProperties("product")
     private List<Returnedgoodsdetial> returnedgoodsdetial;
+    @JsonIgnoreProperties("product")
     private Productclassification productclassification;
+    @JsonIgnoreProperties("product")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("product")
     private List<Productspecification> productspecification;
 
     @Id
@@ -50,26 +65,6 @@ public class Product {
 
     public void setProId(int proId) {
         this.proId = proId;
-    }
-
-    @Basic
-    @Column(name = "classification_id")
-    public Integer getClassificationId() {
-        return classificationId;
-    }
-
-    public void setClassificationId(Integer classificationId) {
-        this.classificationId = classificationId;
-    }
-
-    @Basic
-    @Column(name = "warehouse_id")
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
     }
 
     @Basic
@@ -212,34 +207,6 @@ public class Product {
         this.proDelState = proDelState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return proId == product.proId &&
-                Objects.equals(classificationId, product.classificationId) &&
-                Objects.equals(warehouseId, product.warehouseId) &&
-                Objects.equals(proName, product.proName) &&
-                Objects.equals(proImage, product.proImage) &&
-                Objects.equals(proMode, product.proMode) &&
-                Objects.equals(proState, product.proState) &&
-                Objects.equals(proPrice, product.proPrice) &&
-                Objects.equals(proCostprice, product.proCostprice) &&
-                Objects.equals(proUnit, product.proUnit) &&
-                Objects.equals(proBarcode, product.proBarcode) &&
-                Objects.equals(proWeight, product.proWeight) &&
-                Objects.equals(proGroup, product.proGroup) &&
-                Objects.equals(proDate, product.proDate) &&
-                Objects.equals(durableYears, product.durableYears) &&
-                Objects.equals(proRemark, product.proRemark) &&
-                Objects.equals(proDelState, product.proDelState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(proId, classificationId, warehouseId, proName, proImage, proMode, proState, proPrice, proCostprice, proUnit, proBarcode, proWeight, proGroup, proDate, durableYears, proRemark, proDelState);
-    }
 
     @OneToMany(mappedBy = "product")
     public List<Plandetail> getPlandetail() {
@@ -359,7 +326,7 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cla_id")
+    @JoinColumn(name="cla_id",referencedColumnName = "cla_id")
     public Productclassification getProductclassification() {
         return productclassification;
     }
@@ -369,7 +336,7 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }

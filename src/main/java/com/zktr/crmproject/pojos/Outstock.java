@@ -1,28 +1,30 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Outstock {
     private int outId;
     private String outNumber;
     private String status;
-    private Integer cusId;
     private String payWay;
-    private Integer preturnId;
-    private Integer consignorId;
     private String deliveryAddress;
     private String passPerson;
     private Timestamp passTime;
-    private Integer orderId;
     private String remarks;
+    @JsonIgnoreProperties("outstock")
     private Customer customer;
+    @JsonIgnoreProperties("outstock")
     private Purchasereturn purchasereturn;
+    @JsonIgnoreProperties("outstock")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("outstock")
     private Orders orders;
+    @JsonIgnoreProperties("outstock")
     private List<Outstockdetails> outstockdetail;
 
     @Id
@@ -56,16 +58,6 @@ public class Outstock {
     }
 
     @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
     @Column(name = "pay_way")
     public String getPayWay() {
         return payWay;
@@ -73,26 +65,6 @@ public class Outstock {
 
     public void setPayWay(String payWay) {
         this.payWay = payWay;
-    }
-
-    @Basic
-    @Column(name = "preturn_id")
-    public Integer getPreturnId() {
-        return preturnId;
-    }
-
-    public void setPreturnId(Integer preturnId) {
-        this.preturnId = preturnId;
-    }
-
-    @Basic
-    @Column(name = "consignor_id")
-    public Integer getConsignorId() {
-        return consignorId;
-    }
-
-    public void setConsignorId(Integer consignorId) {
-        this.consignorId = consignorId;
     }
 
     @Basic
@@ -126,16 +98,6 @@ public class Outstock {
     }
 
     @Basic
-    @Column(name = "order_id")
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    @Basic
     @Column(name = "remarks")
     public String getRemarks() {
         return remarks;
@@ -145,32 +107,9 @@ public class Outstock {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Outstock outstock = (Outstock) o;
-        return outId == outstock.outId &&
-                Objects.equals(outNumber, outstock.outNumber) &&
-                Objects.equals(status, outstock.status) &&
-                Objects.equals(cusId, outstock.cusId) &&
-                Objects.equals(payWay, outstock.payWay) &&
-                Objects.equals(preturnId, outstock.preturnId) &&
-                Objects.equals(consignorId, outstock.consignorId) &&
-                Objects.equals(deliveryAddress, outstock.deliveryAddress) &&
-                Objects.equals(passPerson, outstock.passPerson) &&
-                Objects.equals(passTime, outstock.passTime) &&
-                Objects.equals(orderId, outstock.orderId) &&
-                Objects.equals(remarks, outstock.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(outId, outNumber, status, cusId, payWay, preturnId, consignorId, deliveryAddress, passPerson, passTime, orderId, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -180,7 +119,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "preturn_id")
+    @JoinColumn(name="preturn_id",referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }
@@ -190,7 +129,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -200,7 +139,7 @@ public class Outstock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }

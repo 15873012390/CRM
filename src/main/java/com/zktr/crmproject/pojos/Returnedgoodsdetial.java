@@ -1,19 +1,20 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 public class Returnedgoodsdetial {
     private int rgdId;
-    private Integer regId;
-    private Integer proId;
     private String rgdCause;
     private Integer rgdAmount;
     private BigDecimal rgdMoney;
     private String rgdRemark;
+    @JsonIgnoreProperties("returnedgoodsdetial")
     private Returnedgoods returnedgoods;
+    @JsonIgnoreProperties("returnedgoodsdetial")
     private Product product;
 
     @Id
@@ -24,26 +25,6 @@ public class Returnedgoodsdetial {
 
     public void setRgdId(int rgdId) {
         this.rgdId = rgdId;
-    }
-
-    @Basic
-    @Column(name = "reg_id")
-    public Integer getRegId() {
-        return regId;
-    }
-
-    public void setRegId(Integer regId) {
-        this.regId = regId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
     }
 
     @Basic
@@ -86,27 +67,8 @@ public class Returnedgoodsdetial {
         this.rgdRemark = rgdRemark;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Returnedgoodsdetial that = (Returnedgoodsdetial) o;
-        return rgdId == that.rgdId &&
-                Objects.equals(regId, that.regId) &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(rgdCause, that.rgdCause) &&
-                Objects.equals(rgdAmount, that.rgdAmount) &&
-                Objects.equals(rgdMoney, that.rgdMoney) &&
-                Objects.equals(rgdRemark, that.rgdRemark);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(rgdId, regId, proId, rgdCause, rgdAmount, rgdMoney, rgdRemark);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "reg_id")
+    @JoinColumn(name="reg_id",referencedColumnName = "reg_id")
     public Returnedgoods getReturnedgoods() {
         return returnedgoods;
     }
@@ -116,7 +78,7 @@ public class Returnedgoodsdetial {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

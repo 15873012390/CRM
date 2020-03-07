@@ -1,26 +1,31 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Purchaseorder {
     private int pcoId;
     private Integer pcoNumber;
-    private Integer supplierId;
     private Timestamp orderTime;
     private String buyer;
     private String pcoAddress;
     private String operator;
-    private Integer audId;
     private Integer deal;
+    @JsonIgnoreProperties("purchaseorder")
     private Supplier supplier;
+    @JsonIgnoreProperties("purchaseorder")
     private Audit audit;
+    @JsonIgnoreProperties("purchaseorder")
     private List<Pcodetail> pcodetail;
+    @JsonIgnoreProperties("purchaseorder")
     private List<Purchaseenter> purchaseenter;
+    @JsonIgnoreProperties("purchaseorder")
     private List<Purchaseinvoice> purchaseinvoice;
+    @JsonIgnoreProperties("purchaseorder")
     private List<Instock> instock;
 
     @Id
@@ -43,15 +48,6 @@ public class Purchaseorder {
         this.pcoNumber = pcoNumber;
     }
 
-    @Basic
-    @Column(name = "supplier_id")
-    public Integer getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Integer supplierId) {
-        this.supplierId = supplierId;
-    }
 
     @Basic
     @Column(name = "order_time")
@@ -93,15 +89,6 @@ public class Purchaseorder {
         this.operator = operator;
     }
 
-    @Basic
-    @Column(name = "aud_id")
-    public Integer getAudId() {
-        return audId;
-    }
-
-    public void setAudId(Integer audId) {
-        this.audId = audId;
-    }
 
     @Basic
     @Column(name = "deal")
@@ -113,29 +100,9 @@ public class Purchaseorder {
         this.deal = deal;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Purchaseorder that = (Purchaseorder) o;
-        return pcoId == that.pcoId &&
-                Objects.equals(pcoNumber, that.pcoNumber) &&
-                Objects.equals(supplierId, that.supplierId) &&
-                Objects.equals(orderTime, that.orderTime) &&
-                Objects.equals(buyer, that.buyer) &&
-                Objects.equals(pcoAddress, that.pcoAddress) &&
-                Objects.equals(operator, that.operator) &&
-                Objects.equals(audId, that.audId) &&
-                Objects.equals(deal, that.deal);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pcoId, pcoNumber, supplierId, orderTime, buyer, pcoAddress, operator, audId, deal);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "supplier_id")
+    @JoinColumn(name="supplier_id",referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }
@@ -145,7 +112,7 @@ public class Purchaseorder {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "aud_id")
+    @JoinColumn(name="aud_id",referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

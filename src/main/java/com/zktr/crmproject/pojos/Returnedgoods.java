@@ -1,26 +1,31 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Returnedgoods {
     private int regId;
-    private Integer ordId;
-    private Integer uId;
     private Timestamp regDate;
     private BigDecimal refundableMoney;
     private BigDecimal retiredMoney;
     private String regState;
     private Integer regDelState;
+    @JsonIgnoreProperties("returnedgoods")
     private List<Instock> instock;
+    @JsonIgnoreProperties("returnedgoods")
     private Orders orders;
+    @JsonIgnoreProperties("returnedgoods")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("returnedgoods")
     private Customer customer;
+    @JsonIgnoreProperties("returnedgoods")
     private User user;
+    @JsonIgnoreProperties("returnedgoods")
     private List<Returnedgoodsdetial> returnedgoodsdetial;
 
     @Id
@@ -33,25 +38,6 @@ public class Returnedgoods {
         this.regId = regId;
     }
 
-    @Basic
-    @Column(name = "ord_id")
-    public Integer getOrdId() {
-        return ordId;
-    }
-
-    public void setOrdId(Integer ordId) {
-        this.ordId = ordId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "reg_date")
@@ -103,25 +89,6 @@ public class Returnedgoods {
         this.regDelState = regDelState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Returnedgoods that = (Returnedgoods) o;
-        return regId == that.regId &&
-                Objects.equals(ordId, that.ordId) &&
-                Objects.equals(uId, that.uId) &&
-                Objects.equals(regDate, that.regDate) &&
-                Objects.equals(refundableMoney, that.refundableMoney) &&
-                Objects.equals(retiredMoney, that.retiredMoney) &&
-                Objects.equals(regState, that.regState) &&
-                Objects.equals(regDelState, that.regDelState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(regId, ordId, uId, regDate, refundableMoney, retiredMoney, regState, regDelState);
-    }
 
     @OneToMany(mappedBy = "returnedgoods")
     public List<Instock> getInstock() {
@@ -133,7 +100,7 @@ public class Returnedgoods {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -143,7 +110,7 @@ public class Returnedgoods {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -153,7 +120,7 @@ public class Returnedgoods {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -163,7 +130,7 @@ public class Returnedgoods {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

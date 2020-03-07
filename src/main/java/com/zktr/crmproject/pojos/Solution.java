@@ -1,20 +1,21 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Solution {
     private int solId;
     private String solTheme;
-    private Integer cusId;
-    private Integer soId;
     private Timestamp submissionTime;
     private String solContent;
     private String feedback;
     private String delStatus;
+    @JsonIgnoreProperties("solution")
     private Customer customer;
+    @JsonIgnoreProperties("solution")
     private Salesopport salesopport;
 
     @Id
@@ -35,26 +36,6 @@ public class Solution {
 
     public void setSolTheme(String solTheme) {
         this.solTheme = solTheme;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "so_id")
-    public Integer getSoId() {
-        return soId;
-    }
-
-    public void setSoId(Integer soId) {
-        this.soId = soId;
     }
 
     @Basic
@@ -97,28 +78,8 @@ public class Solution {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Solution solution = (Solution) o;
-        return solId == solution.solId &&
-                Objects.equals(solTheme, solution.solTheme) &&
-                Objects.equals(cusId, solution.cusId) &&
-                Objects.equals(soId, solution.soId) &&
-                Objects.equals(submissionTime, solution.submissionTime) &&
-                Objects.equals(solContent, solution.solContent) &&
-                Objects.equals(feedback, solution.feedback) &&
-                Objects.equals(delStatus, solution.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(solId, solTheme, cusId, soId, submissionTime, solContent, feedback, delStatus);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -128,7 +89,7 @@ public class Solution {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "so_id")
+    @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

@@ -1,26 +1,28 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Purchaseenter {
     private int peId;
     private String peNumber;
     private String supplierName;
-    private String piNumber;
     private Timestamp buyTime;
     private String buyer;
-    private Integer pcoId;
     private String operator;
     private Timestamp enterTime;
-    private Integer audId;
     private String remarks;
+    @JsonIgnoreProperties("purchaseenter")
     private Purchaseinvoice purchaseInvoice;
+    @JsonIgnoreProperties("purchaseenter")
     private Purchaseorder purchaseorder;
+    @JsonIgnoreProperties("purchaseenter")
     private Audit audit;
+    @JsonIgnoreProperties("purchaseenter")
     private List<Pedetail> pedetail;
 
     @Id
@@ -53,15 +55,6 @@ public class Purchaseenter {
         this.supplierName = supplierName;
     }
 
-    @Basic
-    @Column(name = "pi_number")
-    public String getPiNumber() {
-        return piNumber;
-    }
-
-    public void setPiNumber(String piNumber) {
-        this.piNumber = piNumber;
-    }
 
     @Basic
     @Column(name = "buy_time")
@@ -83,15 +76,6 @@ public class Purchaseenter {
         this.buyer = buyer;
     }
 
-    @Basic
-    @Column(name = "pco_id")
-    public Integer getPcoId() {
-        return pcoId;
-    }
-
-    public void setPcoId(Integer pcoId) {
-        this.pcoId = pcoId;
-    }
 
     @Basic
     @Column(name = "operator")
@@ -114,16 +98,6 @@ public class Purchaseenter {
     }
 
     @Basic
-    @Column(name = "aud_id")
-    public Integer getAudId() {
-        return audId;
-    }
-
-    public void setAudId(Integer audId) {
-        this.audId = audId;
-    }
-
-    @Basic
     @Column(name = "remarks")
     public String getRemarks() {
         return remarks;
@@ -133,31 +107,9 @@ public class Purchaseenter {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Purchaseenter that = (Purchaseenter) o;
-        return peId == that.peId &&
-                Objects.equals(peNumber, that.peNumber) &&
-                Objects.equals(supplierName, that.supplierName) &&
-                Objects.equals(piNumber, that.piNumber) &&
-                Objects.equals(buyTime, that.buyTime) &&
-                Objects.equals(buyer, that.buyer) &&
-                Objects.equals(pcoId, that.pcoId) &&
-                Objects.equals(operator, that.operator) &&
-                Objects.equals(enterTime, that.enterTime) &&
-                Objects.equals(audId, that.audId) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(peId, peNumber, supplierName, piNumber, buyTime, buyer, pcoId, operator, enterTime, audId, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pi_number")
+    @JoinColumn(name="pi_id",referencedColumnName = "pi_id")
     public Purchaseinvoice getPurchaseInvoice() {
         return purchaseInvoice;
     }
@@ -167,7 +119,7 @@ public class Purchaseenter {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pco_id")
+    @JoinColumn(name="pco_id",referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }
@@ -177,7 +129,7 @@ public class Purchaseenter {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "aud_id")
+    @JoinColumn(name="aud_id",referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

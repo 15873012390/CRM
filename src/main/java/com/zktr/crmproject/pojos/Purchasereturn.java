@@ -1,15 +1,15 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Purchasereturn {
     private int preturnId;
     private String preturnNumber;
-    private Integer supplierId;
     private Timestamp preturnTime;
     private String shipper;
     private String operator;
@@ -17,9 +17,13 @@ public class Purchasereturn {
     private String alterPerson;
     private Integer audId;
     private String remarks;
+    @JsonIgnoreProperties("purchasereturn")
     private Supplier supplier;
+    @JsonIgnoreProperties("purchasereturn")
     private List<Pcrdetail> pcrdetail;
+    @JsonIgnoreProperties("purchasereturn")
     private List<Paid> paid;
+    @JsonIgnoreProperties("purchasereturn")
     private List<Outstock> outstock;
 
     @Id
@@ -40,16 +44,6 @@ public class Purchasereturn {
 
     public void setPreturnNumber(String preturnNumber) {
         this.preturnNumber = preturnNumber;
-    }
-
-    @Basic
-    @Column(name = "supplier_id")
-    public Integer getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Integer supplierId) {
-        this.supplierId = supplierId;
     }
 
     @Basic
@@ -122,30 +116,8 @@ public class Purchasereturn {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Purchasereturn that = (Purchasereturn) o;
-        return preturnId == that.preturnId &&
-                Objects.equals(preturnNumber, that.preturnNumber) &&
-                Objects.equals(supplierId, that.supplierId) &&
-                Objects.equals(preturnTime, that.preturnTime) &&
-                Objects.equals(shipper, that.shipper) &&
-                Objects.equals(operator, that.operator) &&
-                Objects.equals(enterTime, that.enterTime) &&
-                Objects.equals(alterPerson, that.alterPerson) &&
-                Objects.equals(audId, that.audId) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(preturnId, preturnNumber, supplierId, preturnTime, shipper, operator, enterTime, alterPerson, audId, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "supplier_id")
+    @JoinColumn(name="supplier_id",referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }

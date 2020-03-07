@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -9,17 +11,18 @@ import java.util.Objects;
 public class Actionhistory {
     private int ahId;
     private String actDescribe;
-    private int cusId;
     private String conName;
     private String conPhone;
-    private Integer maiId;
-    private Integer uId;
     private String action;
     private Timestamp actDate;
     private Integer delStatus;
+    @JsonIgnoreProperties("actionhistory")
     private Customer customer;
+    @JsonIgnoreProperties("actionhistory")
     private Repair repair;
+    @JsonIgnoreProperties("actionhistory")
     private User user;
+    @JsonIgnoreProperties("actionhistory")
     private List<Actionhistorydetails> actionhistorydetails;
 
     @Id
@@ -42,15 +45,6 @@ public class Actionhistory {
         this.actDescribe = actDescribe;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public int getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(int cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "con_name")
@@ -72,25 +66,6 @@ public class Actionhistory {
         this.conPhone = conPhone;
     }
 
-    @Basic
-    @Column(name = "mai_id")
-    public Integer getMaiId() {
-        return maiId;
-    }
-
-    public void setMaiId(Integer maiId) {
-        this.maiId = maiId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "action")
@@ -128,12 +103,9 @@ public class Actionhistory {
         if (o == null || getClass() != o.getClass()) return false;
         Actionhistory that = (Actionhistory) o;
         return ahId == that.ahId &&
-                cusId == that.cusId &&
                 Objects.equals(actDescribe, that.actDescribe) &&
                 Objects.equals(conName, that.conName) &&
                 Objects.equals(conPhone, that.conPhone) &&
-                Objects.equals(maiId, that.maiId) &&
-                Objects.equals(uId, that.uId) &&
                 Objects.equals(action, that.action) &&
                 Objects.equals(actDate, that.actDate) &&
                 Objects.equals(delStatus, that.delStatus);
@@ -141,11 +113,11 @@ public class Actionhistory {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ahId, actDescribe, cusId, conName, conPhone, maiId, uId, action, actDate, delStatus);
+        return Objects.hash(ahId, actDescribe, conName, conPhone, action, actDate, delStatus);
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id", nullable = false)
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id", nullable = false)
     public Customer getCustomer() {
         return customer;
     }
@@ -155,7 +127,7 @@ public class Actionhistory {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "repair_id")
+    @JoinColumn(name="mai_id",referencedColumnName = "repair_id")
     public Repair getRepair() {
         return repair;
     }
@@ -165,7 +137,7 @@ public class Actionhistory {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

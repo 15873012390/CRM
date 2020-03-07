@@ -1,29 +1,31 @@
 package com.zktr.crmproject.pojos;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Customerservice {
     private int csId;
     private String title;
-    private Integer customer;
     private String serviceType;
     private String serviceWay;
     private Timestamp startTime;
-    private Timestamp spendTime;
+    private String spendTime;
     private String executor;
     private String status;
     private String serviceContent;
     private String customerFeedback;
     private String remarks;
+    @JsonIgnoreProperties("customerservices")
+    private Customer customer;
 
     @Id
     @Column(name = "cs_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCsId() {
         return csId;
     }
@@ -42,15 +44,6 @@ public class Customerservice {
         this.title = title;
     }
 
-    @Basic
-    @Column(name = "customer")
-    public Integer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Integer customer) {
-        this.customer = customer;
-    }
 
     @Basic
     @Column(name = "service_type")
@@ -84,11 +77,11 @@ public class Customerservice {
 
     @Basic
     @Column(name = "spend_time")
-    public Timestamp getSpendTime() {
+    public String getSpendTime() {
         return spendTime;
     }
 
-    public void setSpendTime(Timestamp spendTime) {
+    public void setSpendTime(String spendTime) {
         this.spendTime = spendTime;
     }
 
@@ -142,27 +135,33 @@ public class Customerservice {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customerservice that = (Customerservice) o;
-        return csId == that.csId &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(customer, that.customer) &&
-                Objects.equals(serviceType, that.serviceType) &&
-                Objects.equals(serviceWay, that.serviceWay) &&
-                Objects.equals(startTime, that.startTime) &&
-                Objects.equals(spendTime, that.spendTime) &&
-                Objects.equals(executor, that.executor) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(serviceContent, that.serviceContent) &&
-                Objects.equals(customerFeedback, that.customerFeedback) &&
-                Objects.equals(remarks, that.remarks);
+
+    @ManyToOne
+    @JoinColumn(name = "cus_id", referencedColumnName = "cus_id")
+    public Customer getCustomer() {
+        return customer;
     }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+
     @Override
-    public int hashCode() {
-        return Objects.hash(csId, title, customer, serviceType, serviceWay, startTime, spendTime, executor, status, serviceContent, customerFeedback, remarks);
+    public String toString() {
+        return "Customerservice{" +
+                "csId=" + csId +
+                ", title='" + title + '\'' +
+                ", serviceType='" + serviceType + '\'' +
+                ", serviceWay='" + serviceWay + '\'' +
+                ", startTime=" + startTime +
+                ", spendTime='" + spendTime + '\'' +
+                ", executor='" + executor + '\'' +
+                ", status='" + status + '\'' +
+                ", serviceContent='" + serviceContent + '\'' +
+                ", customerFeedback='" + customerFeedback + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", customer=" + customer +
+                '}';
     }
 }

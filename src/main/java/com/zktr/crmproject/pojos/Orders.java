@@ -1,18 +1,16 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Orders {
     private int ordId;
     private String ordNumber;
-    private Integer cusId;
-    private Integer uId;
-    private Integer quoId;
     private String ordTheme;
     private String ordClassify;
     private String ordPayment;
@@ -26,15 +24,25 @@ public class Orders {
     private String ordSendOutState;
     private String ordRemark;
     private Integer ordDelState;
+    @JsonIgnoreProperties("orders")
     private List<Outstock> outstock;
+    @JsonIgnoreProperties("orders")
     private Customer customer;
+    @JsonIgnoreProperties("orders")
     private User user;
+    @JsonIgnoreProperties("orders")
     private Quote quote;
+    @JsonIgnoreProperties("orders")
     private List<Orderdetail> orderdetail;
+    @JsonIgnoreProperties("orders")
     private List<Sendout> sendout;
+    @JsonIgnoreProperties("orders")
     private List<Returnedgoods> returnedgoods;
+    @JsonIgnoreProperties("orders")
     private List<Returnedmoney> returnedmoney;
+    @JsonIgnoreProperties("orders")
     private List<Returnedmoneyplan> returnedmoneyplan;
+    @JsonIgnoreProperties("orders")
     private List<Invoice> invoice;
 
     @Id
@@ -57,35 +65,6 @@ public class Orders {
         this.ordNumber = ordNumber;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
-
-    @Basic
-    @Column(name = "quo_id")
-    public Integer getQuoId() {
-        return quoId;
-    }
-
-    public void setQuoId(Integer quoId) {
-        this.quoId = quoId;
-    }
 
     @Basic
     @Column(name = "ord_theme")
@@ -217,35 +196,6 @@ public class Orders {
         this.ordDelState = ordDelState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Orders orders = (Orders) o;
-        return ordId == orders.ordId &&
-                Objects.equals(ordNumber, orders.ordNumber) &&
-                Objects.equals(cusId, orders.cusId) &&
-                Objects.equals(uId, orders.uId) &&
-                Objects.equals(quoId, orders.quoId) &&
-                Objects.equals(ordTheme, orders.ordTheme) &&
-                Objects.equals(ordClassify, orders.ordClassify) &&
-                Objects.equals(ordPayment, orders.ordPayment) &&
-                Objects.equals(ordTotalAmount, orders.ordTotalAmount) &&
-                Objects.equals(ordSendOutMoney, orders.ordSendOutMoney) &&
-                Objects.equals(ordMargin, orders.ordMargin) &&
-                Objects.equals(ordTime, orders.ordTime) &&
-                Objects.equals(ordExecutingState, orders.ordExecutingState) &&
-                Objects.equals(ordPurchaseWay, orders.ordPurchaseWay) &&
-                Objects.equals(ordHabit, orders.ordHabit) &&
-                Objects.equals(ordSendOutState, orders.ordSendOutState) &&
-                Objects.equals(ordRemark, orders.ordRemark) &&
-                Objects.equals(ordDelState, orders.ordDelState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ordId, ordNumber, cusId, uId, quoId, ordTheme, ordClassify, ordPayment, ordTotalAmount, ordSendOutMoney, ordMargin, ordTime, ordExecutingState, ordPurchaseWay, ordHabit, ordSendOutState, ordRemark, ordDelState);
-    }
 
     @OneToMany(mappedBy = "orders")
     public List<Outstock> getOutstock() {
@@ -257,7 +207,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -267,7 +217,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -277,7 +227,7 @@ public class Orders {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "quo_id")
+    @JoinColumn(name="quo_id",referencedColumnName = "quo_id")
     public Quote getQuote() {
         return quote;
     }

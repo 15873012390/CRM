@@ -1,17 +1,19 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Stock {
-    private int stockId;
-    private Integer proId;
-    private Integer warehouseId;
+    private Integer stockId;
     private Integer stockQuantity;
+    @JsonIgnoreProperties("stock")
     private Product product;
+    @JsonIgnoreProperties("stock")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("stock")
     private List<Alarmdetail> alarmdetail;
     @Id
     @Basic
@@ -24,25 +26,6 @@ public class Stock {
         this.stockId = stockId;
     }
 
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
-
-    @Basic
-    @Column(name = "warehouse_id")
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
 
     @Basic
     @Column(name = "stock_quantity")
@@ -54,24 +37,9 @@ public class Stock {
         this.stockQuantity = stockQuantity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Stock stock = (Stock) o;
-        return Objects.equals(stockId, stock.stockId) &&
-                Objects.equals(proId, stock.proId) &&
-                Objects.equals(warehouseId, stock.warehouseId) &&
-                Objects.equals(stockQuantity, stock.stockQuantity);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(stockId, proId, warehouseId, stockQuantity);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -81,7 +49,7 @@ public class Stock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }

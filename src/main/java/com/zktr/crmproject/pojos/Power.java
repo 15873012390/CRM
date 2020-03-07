@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +11,7 @@ public class Power {
     private int powerId;
     private String powerName;
     private String powerMessage;
+    @JsonIgnoreProperties("power")
     private List<Position> position;
 
     @Id

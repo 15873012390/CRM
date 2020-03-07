@@ -1,9 +1,10 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Purchaseinvoice {
@@ -13,14 +14,15 @@ public class Purchaseinvoice {
     private String billType;
     private Integer money;
     private Timestamp ticketDate;
-    private Integer pcoId;
     private String passPerson;
     private String period;
     private Integer cusId;
     private Integer toPay;
     private Integer createPayPlan;
     private String remarks;
+    @JsonIgnoreProperties("purchaseinvoice")
     private List<Purchaseenter> purchaseenter;
+    @JsonIgnoreProperties("purchaseinvoice")
     private Purchaseorder purchaseorder;
 
     @Id
@@ -84,16 +86,6 @@ public class Purchaseinvoice {
     }
 
     @Basic
-    @Column(name = "pco_id")
-    public Integer getPcoId() {
-        return pcoId;
-    }
-
-    public void setPcoId(Integer pcoId) {
-        this.pcoId = pcoId;
-    }
-
-    @Basic
     @Column(name = "pass_person")
     public String getPassPerson() {
         return passPerson;
@@ -153,30 +145,6 @@ public class Purchaseinvoice {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Purchaseinvoice that = (Purchaseinvoice) o;
-        return piId == that.piId &&
-                Objects.equals(piNumber, that.piNumber) &&
-                Objects.equals(abstrat, that.abstrat) &&
-                Objects.equals(billType, that.billType) &&
-                Objects.equals(money, that.money) &&
-                Objects.equals(ticketDate, that.ticketDate) &&
-                Objects.equals(pcoId, that.pcoId) &&
-                Objects.equals(passPerson, that.passPerson) &&
-                Objects.equals(period, that.period) &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(toPay, that.toPay) &&
-                Objects.equals(createPayPlan, that.createPayPlan) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(piId, piNumber, abstrat, billType, money, ticketDate, pcoId, passPerson, period, cusId, toPay, createPayPlan, remarks);
-    }
 
     @OneToMany(mappedBy = "purchaseInvoice")
     public List<Purchaseenter> getPurchaseenter() {
@@ -188,7 +156,7 @@ public class Purchaseinvoice {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pco_id")
+    @JoinColumn(name="pco_id",referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }

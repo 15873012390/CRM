@@ -1,14 +1,15 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Evectiondetails {
     private int edId;
-    private int eveId;
-    private Integer cusId;
+    @JsonIgnoreProperties("eventiondetails")
     private Evection evection;
+    @JsonIgnoreProperties("eventiondetails")
     private Customer customer;
 
     @Id
@@ -21,43 +22,8 @@ public class Evectiondetails {
         this.edId = edId;
     }
 
-    @Basic
-    @Column(name = "eve_id")
-    public int getEveId() {
-        return eveId;
-    }
-
-    public void setEveId(int eveId) {
-        this.eveId = eveId;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Evectiondetails that = (Evectiondetails) o;
-        return edId == that.edId &&
-                eveId == that.eveId &&
-                Objects.equals(cusId, that.cusId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(edId, eveId, cusId);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "eve_id", nullable = false)
+    @JoinColumn(name="eve_id",referencedColumnName = "eve_id", nullable = false)
     public Evection getEvection() {
         return evection;
     }
@@ -67,7 +33,7 @@ public class Evectiondetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

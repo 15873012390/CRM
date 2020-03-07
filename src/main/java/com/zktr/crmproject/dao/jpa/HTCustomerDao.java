@@ -1,0 +1,8 @@
+package com.zktr.crmproject.dao.jpa;
+
+import com.zktr.crmproject.pojos.Customer;
+import org.springframework.data.repository.CrudRepository;
+
+public interface HTCustomerDao extends CrudRepository<Customer,Integer> {
+
+}

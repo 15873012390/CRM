@@ -1,20 +1,21 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Sendoutdetial {
     private int sodId;
-    private Integer senId;
-    private Integer proId;
     private Integer sodNumber;
     private Timestamp sodDate;
     private BigDecimal sodMoney;
     private String sodRemark;
+    @JsonIgnoreProperties("sendoutdetial")
     private Sendout sendout;
+    @JsonIgnoreProperties("sendoutdetial")
     private Product product;
 
     @Id
@@ -27,25 +28,6 @@ public class Sendoutdetial {
         this.sodId = sodId;
     }
 
-    @Basic
-    @Column(name = "sen_id")
-    public Integer getSenId() {
-        return senId;
-    }
-
-    public void setSenId(Integer senId) {
-        this.senId = senId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
 
     @Basic
     @Column(name = "sod_number")
@@ -87,27 +69,8 @@ public class Sendoutdetial {
         this.sodRemark = sodRemark;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sendoutdetial that = (Sendoutdetial) o;
-        return sodId == that.sodId &&
-                Objects.equals(senId, that.senId) &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(sodNumber, that.sodNumber) &&
-                Objects.equals(sodDate, that.sodDate) &&
-                Objects.equals(sodMoney, that.sodMoney) &&
-                Objects.equals(sodRemark, that.sodRemark);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sodId, senId, proId, sodNumber, sodDate, sodMoney, sodRemark);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "sen_id")
+    @JoinColumn(name="sen_id",referencedColumnName = "sen_id")
     public Sendout getSendout() {
         return sendout;
     }
@@ -117,7 +80,7 @@ public class Sendoutdetial {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

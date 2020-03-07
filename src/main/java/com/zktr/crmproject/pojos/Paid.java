@@ -1,8 +1,9 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Paid {
@@ -13,12 +14,12 @@ public class Paid {
     private String foreignRemarks;
     private String paymentType;
     private Integer collectTickets;
-    private Integer cusId;
-    private Integer returnGoods;
     private String passPerson;
     private String classify;
     private String remarks;
+    @JsonIgnoreProperties("paid")
     private Customer customer;
+    @JsonIgnoreProperties("paid")
     private Purchasereturn purchasereturn;
     @Id
     @Basic
@@ -92,26 +93,6 @@ public class Paid {
     }
 
     @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "return_goods")
-    public Integer getReturnGoods() {
-        return returnGoods;
-    }
-
-    public void setReturnGoods(Integer returnGoods) {
-        this.returnGoods = returnGoods;
-    }
-
-    @Basic
     @Column(name = "pass_person")
     public String getPassPerson() {
         return passPerson;
@@ -141,32 +122,8 @@ public class Paid {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Paid paid = (Paid) o;
-        return Objects.equals(paidId, paid.paidId) &&
-                Objects.equals(period, paid.period) &&
-                Objects.equals(payTime, paid.payTime) &&
-                Objects.equals(payMoney, paid.payMoney) &&
-                Objects.equals(foreignRemarks, paid.foreignRemarks) &&
-                Objects.equals(paymentType, paid.paymentType) &&
-                Objects.equals(collectTickets, paid.collectTickets) &&
-                Objects.equals(cusId, paid.cusId) &&
-                Objects.equals(returnGoods, paid.returnGoods) &&
-                Objects.equals(passPerson, paid.passPerson) &&
-                Objects.equals(classify, paid.classify) &&
-                Objects.equals(remarks, paid.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(paidId, period, payTime, payMoney, foreignRemarks, paymentType, collectTickets, cusId, returnGoods, passPerson, classify, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -176,7 +133,7 @@ public class Paid {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "preturn_id")
+    @JoinColumn(name="preturn_id",referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }

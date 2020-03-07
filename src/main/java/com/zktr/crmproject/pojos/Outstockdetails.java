@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Outstockdetails {
     private int osdId;
-    private Integer proId;
     private Integer osdNumber;
     private String status;
-    private Integer outId;
     private String remarks;
+    @JsonIgnoreProperties("outstockdetail")
     private Product product;
+    @JsonIgnoreProperties("outstockdetail")
     private Outstock outstock;
 
     @Id
@@ -22,16 +23,6 @@ public class Outstockdetails {
 
     public void setOsdId(int osdId) {
         this.osdId = osdId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
     }
 
     @Basic
@@ -54,15 +45,6 @@ public class Outstockdetails {
         this.status = status;
     }
 
-    @Basic
-    @Column(name = "out_id")
-    public Integer getOutId() {
-        return outId;
-    }
-
-    public void setOutId(Integer outId) {
-        this.outId = outId;
-    }
 
     @Basic
     @Column(name = "remarks")
@@ -74,26 +56,8 @@ public class Outstockdetails {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Outstockdetails that = (Outstockdetails) o;
-        return osdId == that.osdId &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(osdNumber, that.osdNumber) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(outId, that.outId) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(osdId, proId, osdNumber, status, outId, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -103,7 +67,7 @@ public class Outstockdetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "out_id")
+    @JoinColumn(name="out_id",referencedColumnName = "out_id")
     public Outstock getOutstock() {
         return outstock;
     }

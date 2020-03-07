@@ -1,15 +1,15 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Customer {
     private int cusId;
     private String cusName;
-    private Integer uId;
     private String cusLevel;
     private String cusAddr;
     private String cusTel;
@@ -31,29 +31,52 @@ public class Customer {
     private List<Paid> paid;
     private List<Outstock> outstock;
     private List<Repair> repair;
+    @JsonIgnoreProperties("customer")
     private List<Customercare> customercare;
     private User user;
     private List<Customertransfer> customertransfer;
+    @JsonIgnoreProperties("customer")
     private List<Customerupdatelog> customerupdatelog;
+    @JsonIgnoreProperties("customer")
     private List<Contacts> contacts;
+    @JsonIgnoreProperties("customer")
     private List<Customerchurnwarning> customerchurnwarning;
+    @JsonIgnoreProperties("customer")
     private List<Salesopport> salesopport;
+    @JsonIgnoreProperties("customer")
     private List<Clientdemand> clientdemand;
+    @JsonIgnoreProperties("customer")
     private List<Solution> solution;
+    @JsonIgnoreProperties("customer")
     private List<Competitor> competitor;
+    @JsonIgnoreProperties("customer")
     private List<Backlogtask> backlogtask;
+    @JsonIgnoreProperties("customer")
     private List<Actionhistory> actionhistory;
+    @JsonIgnoreProperties("customer")
     private List<Evectiondetails> evectiondetails;
+    @JsonIgnoreProperties("customer")
     private List<Quote> quote;
+    @JsonIgnoreProperties("customer")
     private List<Orders> orders;
+    @JsonIgnoreProperties("customer")
     private List<Orderdetail> orderdetail;
+    @JsonIgnoreProperties("customer")
     private List<Contract> contract;
+    @JsonIgnoreProperties("customer")
     private List<Sendout> sendout;
+    @JsonIgnoreProperties("customer")
     private List<Address> address;
+    @JsonIgnoreProperties("customer")
     private List<Returnedgoods> returnedgoods;
+    @JsonIgnoreProperties("customer")
     private List<Returnedmoney> returnedmoney;
+    @JsonIgnoreProperties("customer")
     private List<Returnedmoneyplan> returnedmoneyplan;
+    @JsonIgnoreProperties("customer")
     private List<Invoice> invoice;
+    @JsonIgnoreProperties("customer")
+    private List<Customerservice> customerservices;
 
     @Id
     @Column(name = "cus_id")
@@ -75,15 +98,6 @@ public class Customer {
         this.cusName = cusName;
     }
 
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "cus_level")
@@ -255,37 +269,6 @@ public class Customer {
         this.cusRemarks = cusRemarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return cusId == customer.cusId &&
-                Objects.equals(cusName, customer.cusName) &&
-                Objects.equals(uId, customer.uId) &&
-                Objects.equals(cusLevel, customer.cusLevel) &&
-                Objects.equals(cusAddr, customer.cusAddr) &&
-                Objects.equals(cusTel, customer.cusTel) &&
-                Objects.equals(cusSource, customer.cusSource) &&
-                Objects.equals(cusCreationTime, customer.cusCreationTime) &&
-                Objects.equals(cusUpdateTime, customer.cusUpdateTime) &&
-                Objects.equals(cusCredit, customer.cusCredit) &&
-                Objects.equals(cusZip, customer.cusZip) &&
-                Objects.equals(cusFax, customer.cusFax) &&
-                Objects.equals(cusLifeCycle, customer.cusLifeCycle) &&
-                Objects.equals(cusCountry, customer.cusCountry) &&
-                Objects.equals(cusProvince, customer.cusProvince) &&
-                Objects.equals(cusCity, customer.cusCity) &&
-                Objects.equals(cusDistrict, customer.cusDistrict) &&
-                Objects.equals(cusState, customer.cusState) &&
-                Objects.equals(cusGrading, customer.cusGrading) &&
-                Objects.equals(cusRemarks, customer.cusRemarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cusId, cusName, uId, cusLevel, cusAddr, cusTel, cusSource, cusCreationTime, cusUpdateTime, cusCredit, cusZip, cusFax, cusLifeCycle, cusCountry, cusProvince, cusCity, cusDistrict, cusState, cusGrading, cusRemarks);
-    }
 
     @OneToMany(mappedBy = "customer")
     public List<Duepay> getDuepay() {
@@ -333,7 +316,7 @@ public class Customer {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -529,5 +512,14 @@ public class Customer {
 
     public void setInvoice(List<Invoice> invoice) {
         this.invoice = invoice;
+    }
+
+    @OneToMany(mappedBy = "customer")
+    public List<Customerservice> getCustomerservices() {
+        return customerservices;
+    }
+
+    public void setCustomerservices(List<Customerservice> customerservices) {
+        this.customerservices = customerservices;
     }
 }

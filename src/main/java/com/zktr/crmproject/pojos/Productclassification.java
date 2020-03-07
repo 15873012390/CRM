@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -11,7 +13,9 @@ public class Productclassification {
     private String claName;
     private Integer claIdId;
     private String claState;
+    @JsonIgnoreProperties("productclassification")
     private Timestamp claDatetime;
+    @JsonIgnoreProperties("productclassification")
     private List<Product> product;
 
     @Id

@@ -1,13 +1,10 @@
 package com.zktr.crmproject.pojos;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Quotedetails {
     private int qdId;
-    private Integer proId;
-    private int quoId;
     private String specification;
     private String unit;
     private Integer quantity;
@@ -26,26 +23,6 @@ public class Quotedetails {
 
     public void setQdId(int qdId) {
         this.qdId = qdId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
-
-    @Basic
-    @Column(name = "quo_id")
-    public int getQuoId() {
-        return quoId;
-    }
-
-    public void setQuoId(int quoId) {
-        this.quoId = quoId;
     }
 
     @Basic
@@ -118,30 +95,8 @@ public class Quotedetails {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Quotedetails that = (Quotedetails) o;
-        return qdId == that.qdId &&
-                quoId == that.quoId &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(specification, that.specification) &&
-                Objects.equals(unit, that.unit) &&
-                Objects.equals(quantity, that.quantity) &&
-                Objects.equals(unitPrice, that.unitPrice) &&
-                Objects.equals(discount, that.discount) &&
-                Objects.equals(money, that.money) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qdId, proId, quoId, specification, unit, quantity, unitPrice, discount, money, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -151,7 +106,7 @@ public class Quotedetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "quo_id", nullable = false)
+    @JoinColumn(name="quo_id",referencedColumnName = "quo_id", nullable = false)
     public Quote getQuote() {
         return quote;
     }

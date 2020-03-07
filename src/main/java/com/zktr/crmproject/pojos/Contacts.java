@@ -1,13 +1,13 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Contacts {
     private int conId;
-    private Integer cusId;
     private String conName;
     private String conTel;
     private String conMobile;
@@ -15,6 +15,7 @@ public class Contacts {
     private String conSex;
     private String conPosition;
     private String conRemarks;
+    @JsonIgnoreProperties("contacts")
     private Customer customer;
 
     @Id
@@ -25,16 +26,6 @@ public class Contacts {
 
     public void setConId(int conId) {
         this.conId = conId;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
     }
 
     @Basic
@@ -107,29 +98,9 @@ public class Contacts {
         this.conRemarks = conRemarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Contacts contacts = (Contacts) o;
-        return conId == contacts.conId &&
-                Objects.equals(cusId, contacts.cusId) &&
-                Objects.equals(conName, contacts.conName) &&
-                Objects.equals(conTel, contacts.conTel) &&
-                Objects.equals(conMobile, contacts.conMobile) &&
-                Objects.equals(conTime, contacts.conTime) &&
-                Objects.equals(conSex, contacts.conSex) &&
-                Objects.equals(conPosition, contacts.conPosition) &&
-                Objects.equals(conRemarks, contacts.conRemarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(conId, cusId, conName, conTel, conMobile, conTime, conSex, conPosition, conRemarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

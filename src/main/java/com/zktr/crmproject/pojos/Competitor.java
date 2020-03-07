@@ -1,14 +1,13 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Competitor {
     private int comId;
     private String comName;
-    private Integer cusId;
-    private Integer soId;
     private Integer price;
     private Integer comCapacity;
     private Integer winOut;
@@ -18,7 +17,9 @@ public class Competitor {
     private String copingStrategy;
     private String note;
     private Integer delStatus;
+    @JsonIgnoreProperties("competitor")
     private Customer customer;
+    @JsonIgnoreProperties("competitor")
     private Salesopport salesopport;
 
     @Id
@@ -39,26 +40,6 @@ public class Competitor {
 
     public void setComName(String comName) {
         this.comName = comName;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "so_id")
-    public Integer getSoId() {
-        return soId;
-    }
-
-    public void setSoId(Integer soId) {
-        this.soId = soId;
     }
 
     @Basic
@@ -151,33 +132,9 @@ public class Competitor {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Competitor that = (Competitor) o;
-        return comId == that.comId &&
-                Objects.equals(comName, that.comName) &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(soId, that.soId) &&
-                Objects.equals(price, that.price) &&
-                Objects.equals(comCapacity, that.comCapacity) &&
-                Objects.equals(winOut, that.winOut) &&
-                Objects.equals(comScheme, that.comScheme) &&
-                Objects.equals(advantage, that.advantage) &&
-                Objects.equals(disadvantaged, that.disadvantaged) &&
-                Objects.equals(copingStrategy, that.copingStrategy) &&
-                Objects.equals(note, that.note) &&
-                Objects.equals(delStatus, that.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(comId, comName, cusId, soId, price, comCapacity, winOut, comScheme, advantage, disadvantaged, copingStrategy, note, delStatus);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -187,7 +144,7 @@ public class Competitor {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "so_id")
+    @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

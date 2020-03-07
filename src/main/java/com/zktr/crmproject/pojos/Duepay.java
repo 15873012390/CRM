@@ -1,8 +1,10 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Duepay {
@@ -14,12 +16,12 @@ public class Duepay {
     private String charity;
     private String status;
     private Integer buyORreturn;
-    private Integer cusId;
     private String remarks;
+    @JsonIgnoreProperties("duepay")
     private Customer customer;
 
     @Id
-    @Column(name = "duePay_id")
+    @Column(name = "duepay_id")
     public int getDuePayId() {
         return duePayId;
     }
@@ -99,16 +101,6 @@ public class Duepay {
     }
 
     @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
     @Column(name = "remarks")
     public String getRemarks() {
         return remarks;
@@ -118,30 +110,9 @@ public class Duepay {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Duepay duepay = (Duepay) o;
-        return duePayId == duepay.duePayId &&
-                Objects.equals(planpayTime, duepay.planpayTime) &&
-                Objects.equals(period, duepay.period) &&
-                Objects.equals(money, duepay.money) &&
-                Objects.equals(dueMoney, duepay.dueMoney) &&
-                Objects.equals(charity, duepay.charity) &&
-                Objects.equals(status, duepay.status) &&
-                Objects.equals(buyORreturn, duepay.buyORreturn) &&
-                Objects.equals(cusId, duepay.cusId) &&
-                Objects.equals(remarks, duepay.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(duePayId, planpayTime, period, money, dueMoney, charity, status, buyORreturn, cusId, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

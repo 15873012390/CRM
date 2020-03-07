@@ -1,16 +1,17 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Plandetail {
     private int planDetailId;
-    private Integer purId;
-    private Integer proId;
     private Integer quantity;
     private String remarks;
+    @JsonIgnoreProperties("plandetail")
     private Purchaseplan purchaseplan;
+    @JsonIgnoreProperties("plandetail")
     private Product product;
 
     @Id
@@ -21,26 +22,6 @@ public class Plandetail {
 
     public void setPlanDetailId(int planDetailId) {
         this.planDetailId = planDetailId;
-    }
-
-    @Basic
-    @Column(name = "pur_id")
-    public Integer getPurId() {
-        return purId;
-    }
-
-    public void setPurId(Integer purId) {
-        this.purId = purId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
     }
 
     @Basic
@@ -63,25 +44,8 @@ public class Plandetail {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Plandetail that = (Plandetail) o;
-        return planDetailId == that.planDetailId &&
-                Objects.equals(purId, that.purId) &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(quantity, that.quantity) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(planDetailId, purId, proId, quantity, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pur_id")
+    @JoinColumn(name="pur_id",referencedColumnName = "pur_id")
     public Purchaseplan getPurchaseplan() {
         return purchaseplan;
     }
@@ -91,7 +55,7 @@ public class Plandetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

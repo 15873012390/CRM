@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +12,7 @@ public class Fitcustom {
     private String customizeName;
     private Integer contentId;
     private Integer contentStatus;
+    @JsonIgnoreProperties("fitcustom")
     private List<Fitdetail> fitdetail;
 
     @Id

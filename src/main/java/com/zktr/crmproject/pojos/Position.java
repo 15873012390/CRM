@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +11,9 @@ public class Position {
     private int postId;
     private String postName;
     private Integer postLv;
+    @JsonIgnoreProperties("position")
     private List<Power> power;
+    @JsonIgnoreProperties("position")
     private List<User> user;
 
     @Id
@@ -58,7 +62,7 @@ public class Position {
     }
 
     @ManyToMany
-    @JoinTable(catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "power_id", referencedColumnName = "power_id"))
+    @JoinTable(name="position_power",joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "power_id", referencedColumnName = "power_id"))
     public List<Power> getPower() {
         return power;
     }
@@ -68,7 +72,7 @@ public class Position {
     }
 
     @ManyToMany
-    @JoinTable(catalog = "", schema = "crm", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "u_id", referencedColumnName = "u_id"))
+    @JoinTable(name = "user_position", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"), inverseJoinColumns = @JoinColumn(name = "u_id", referencedColumnName = "u_id"))
     public List<User> getUser() {
         return user;
     }

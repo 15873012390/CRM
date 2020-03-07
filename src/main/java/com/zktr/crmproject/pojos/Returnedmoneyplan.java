@@ -1,24 +1,25 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Returnedmoneyplan {
     private int rmpId;
-    private Integer cusId;
-    private Integer ordId;
-    private Integer uId;
     private BigDecimal rmpMoney;
     private String rmpRmp;
     private String rmpBilling;
     private Integer rmpIssue;
     private Timestamp rmpDate;
     private String rmpRemark;
+    @JsonIgnoreProperties("returnedmoneyplan")
     private Customer customer;
+    @JsonIgnoreProperties("returnedmoneyplan")
     private Orders orders;
+    @JsonIgnoreProperties("returnedmoneyplan")
     private User user;
 
     @Id
@@ -31,35 +32,6 @@ public class Returnedmoneyplan {
         this.rmpId = rmpId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "ord_id")
-    public Integer getOrdId() {
-        return ordId;
-    }
-
-    public void setOrdId(Integer ordId) {
-        this.ordId = ordId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "rmp_money")
@@ -121,30 +93,8 @@ public class Returnedmoneyplan {
         this.rmpRemark = rmpRemark;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Returnedmoneyplan that = (Returnedmoneyplan) o;
-        return rmpId == that.rmpId &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(ordId, that.ordId) &&
-                Objects.equals(uId, that.uId) &&
-                Objects.equals(rmpMoney, that.rmpMoney) &&
-                Objects.equals(rmpRmp, that.rmpRmp) &&
-                Objects.equals(rmpBilling, that.rmpBilling) &&
-                Objects.equals(rmpIssue, that.rmpIssue) &&
-                Objects.equals(rmpDate, that.rmpDate) &&
-                Objects.equals(rmpRemark, that.rmpRemark);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(rmpId, cusId, ordId, uId, rmpMoney, rmpRmp, rmpBilling, rmpIssue, rmpDate, rmpRemark);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -154,7 +104,7 @@ public class Returnedmoneyplan {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ord_id")
+    @JoinColumn(name="ord_id",referencedColumnName = "ord_id")
     public Orders getOrders() {
         return orders;
     }
@@ -164,7 +114,7 @@ public class Returnedmoneyplan {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }

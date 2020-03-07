@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -11,11 +13,17 @@ public class Warehouse {
     private String stockType;
     private Integer stockValue;
     private String remarks;
+    @JsonIgnoreProperties("warehouse")
     private List<Purchaseplan> purchaseplan;
+    @JsonIgnoreProperties("warehouse")
     private List<Outstock> outstock;
+    @JsonIgnoreProperties("warehouse")
     private List<Stock> stock;
+    @JsonIgnoreProperties("warehouse")
     private List<Instock> instock;
+    @JsonIgnoreProperties("warehouse")
     private List<Returnedgoods> returnedgoods;
+    @JsonIgnoreProperties("warehouse")
     private List<Product> product;
 
     @Id

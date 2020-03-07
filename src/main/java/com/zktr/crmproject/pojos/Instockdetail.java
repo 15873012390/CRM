@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Instockdetail {
     private int insdId;
-    private Integer proId;
     private Integer insdQuantity;
     private String status;
-    private Integer insId;
     private String remarks;
+    @JsonIgnoreProperties("instockdetail")
     private Product product;
+    @JsonIgnoreProperties("instockdetail")
     private Instock instock;
 
     @Id
@@ -24,15 +25,6 @@ public class Instockdetail {
         this.insdId = insdId;
     }
 
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
 
     @Basic
     @Column(name = "insd_quantity")
@@ -54,15 +46,6 @@ public class Instockdetail {
         this.status = status;
     }
 
-    @Basic
-    @Column(name = "ins_id")
-    public Integer getInsId() {
-        return insId;
-    }
-
-    public void setInsId(Integer insId) {
-        this.insId = insId;
-    }
 
     @Basic
     @Column(name = "remarks")
@@ -74,26 +57,8 @@ public class Instockdetail {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Instockdetail that = (Instockdetail) o;
-        return insdId == that.insdId &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(insdQuantity, that.insdQuantity) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(insId, that.insId) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(insdId, proId, insdQuantity, status, insId, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }
@@ -103,7 +68,7 @@ public class Instockdetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "ins_id")
+    @JoinColumn(name="ins_id",referencedColumnName = "ins_id")
     public Instock getInstock() {
         return instock;
     }

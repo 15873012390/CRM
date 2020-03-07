@@ -1,42 +1,53 @@
 package com.zktr.crmproject.pojos;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Salesopport {
     private int soId;
     private String soTheme;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp updateDate;
     private Integer status;
     private String conName;
     private String conPhone;
-    private Integer cusId;
-    private Integer uId;
     private String architecture;
     private String cusSource;
     private String priority;
     private String stage;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp disTime;
     private String provider;
     private String cusDemand;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp signingTime;
     private String possibility;
     private Integer amount;
     private String starTarget;
     private Integer delStatus;
+    @JsonIgnoreProperties("salesopport")
     private Customer customer;
+    @JsonIgnoreProperties("salesopport")
     private User user;
+    @JsonIgnoreProperties("salesopport")
     private List<Stagelog> stagelog;
+    @JsonIgnoreProperties("salesopport")
     private List<Clientdemand> clientdemand;
+    @JsonIgnoreProperties("salesopport")
     private List<Solution> solution;
+    @JsonIgnoreProperties("salesopport")
     private List<Competitor> competitor;
+    @JsonIgnoreProperties("salesopport")
     private List<Quote> quote;
     @Id
     @Basic
     @Column(name = "so_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getSoId() {
         return soId;
     }
@@ -93,26 +104,6 @@ public class Salesopport {
 
     public void setConPhone(String conPhone) {
         this.conPhone = conPhone;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
     }
 
     @Basic
@@ -235,40 +226,9 @@ public class Salesopport {
         this.delStatus = delStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Salesopport that = (Salesopport) o;
-        return Objects.equals(soId, that.soId) &&
-                Objects.equals(soTheme, that.soTheme) &&
-                Objects.equals(updateDate, that.updateDate) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(conName, that.conName) &&
-                Objects.equals(conPhone, that.conPhone) &&
-                Objects.equals(cusId, that.cusId) &&
-                Objects.equals(uId, that.uId) &&
-                Objects.equals(architecture, that.architecture) &&
-                Objects.equals(cusSource, that.cusSource) &&
-                Objects.equals(priority, that.priority) &&
-                Objects.equals(stage, that.stage) &&
-                Objects.equals(disTime, that.disTime) &&
-                Objects.equals(provider, that.provider) &&
-                Objects.equals(cusDemand, that.cusDemand) &&
-                Objects.equals(signingTime, that.signingTime) &&
-                Objects.equals(possibility, that.possibility) &&
-                Objects.equals(amount, that.amount) &&
-                Objects.equals(starTarget, that.starTarget) &&
-                Objects.equals(delStatus, that.delStatus);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(soId, soTheme, updateDate, status, conName, conPhone, cusId, uId, architecture, cusSource, priority, stage, disTime, provider, cusDemand, signingTime, possibility, amount, starTarget, delStatus);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -278,7 +238,7 @@ public class Salesopport {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -331,4 +291,8 @@ public class Salesopport {
     public void setQuote(List<Quote> quote) {
         this.quote = quote;
     }
+
+    public Salesopport() {
+    }
+    
 }

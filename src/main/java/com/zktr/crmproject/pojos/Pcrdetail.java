@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Pcrdetail {
     private int pcrdId;
-    private Integer preturnId;
-    private Integer proId;
     private Integer quantity;
     private Integer uintPrice;
     private String remarks;
+    @JsonIgnoreProperties("pcrdetail")
     private Purchasereturn purchasereturn;
+    @JsonIgnoreProperties("pcrdetail")
     private Product product;
 
     @Id
@@ -24,25 +25,7 @@ public class Pcrdetail {
         this.pcrdId = pcrdId;
     }
 
-    @Basic
-    @Column(name = "preturn_id")
-    public Integer getPreturnId() {
-        return preturnId;
-    }
 
-    public void setPreturnId(Integer preturnId) {
-        this.preturnId = preturnId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
 
     @Basic
     @Column(name = "quantity")
@@ -74,26 +57,8 @@ public class Pcrdetail {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pcrdetail pcrdetail = (Pcrdetail) o;
-        return pcrdId == pcrdetail.pcrdId &&
-                Objects.equals(preturnId, pcrdetail.preturnId) &&
-                Objects.equals(proId, pcrdetail.proId) &&
-                Objects.equals(quantity, pcrdetail.quantity) &&
-                Objects.equals(uintPrice, pcrdetail.uintPrice) &&
-                Objects.equals(remarks, pcrdetail.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pcrdId, preturnId, proId, quantity, uintPrice, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "preturn_id")
+    @JoinColumn(name="preturn_id",referencedColumnName = "preturn_id")
     public Purchasereturn getPurchasereturn() {
         return purchasereturn;
     }
@@ -103,7 +68,7 @@ public class Pcrdetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

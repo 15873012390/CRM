@@ -1,28 +1,30 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Instock {
     private int insId;
     private String title;
-    private Integer warehouseId;
     private Timestamp fillTime;
     private String status;
     private String filler;
     private Integer keeper;
     private Timestamp executionTime;
-    private Integer peId;
-    private Integer arId;
-    private Integer supplierId;
     private String remarks;
+    @JsonIgnoreProperties("instock")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("instock")
     private Purchaseorder purchaseorder;
+    @JsonIgnoreProperties("instock")
     private Returnedgoods returnedgoods;
+    @JsonIgnoreProperties("instock")
     private Supplier supplier;
+    @JsonIgnoreProperties("instock")
     private List<Instockdetail> instockdetail;
     @Id
     @Basic
@@ -45,15 +47,6 @@ public class Instock {
         this.title = title;
     }
 
-    @Basic
-    @Column(name = "warehouse_id")
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
 
     @Basic
     @Column(name = "fill_time")
@@ -106,36 +99,6 @@ public class Instock {
     }
 
     @Basic
-    @Column(name = "pe_id")
-    public Integer getPeId() {
-        return peId;
-    }
-
-    public void setPeId(Integer peId) {
-        this.peId = peId;
-    }
-
-    @Basic
-    @Column(name = "ar_id")
-    public Integer getArId() {
-        return arId;
-    }
-
-    public void setArId(Integer arId) {
-        this.arId = arId;
-    }
-
-    @Basic
-    @Column(name = "supplier_id")
-    public Integer getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Integer supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    @Basic
     @Column(name = "remarks")
     public String getRemarks() {
         return remarks;
@@ -145,32 +108,9 @@ public class Instock {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Instock instock = (Instock) o;
-        return Objects.equals(insId, instock.insId) &&
-                Objects.equals(title, instock.title) &&
-                Objects.equals(warehouseId, instock.warehouseId) &&
-                Objects.equals(fillTime, instock.fillTime) &&
-                Objects.equals(status, instock.status) &&
-                Objects.equals(filler, instock.filler) &&
-                Objects.equals(keeper, instock.keeper) &&
-                Objects.equals(executionTime, instock.executionTime) &&
-                Objects.equals(peId, instock.peId) &&
-                Objects.equals(arId, instock.arId) &&
-                Objects.equals(supplierId, instock.supplierId) &&
-                Objects.equals(remarks, instock.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(insId, title, warehouseId, fillTime, status, filler, keeper, executionTime, peId, arId, supplierId, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -180,7 +120,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pco_id")
+    @JoinColumn(name="pco_id",referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }
@@ -190,7 +130,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "reg_id")
+    @JoinColumn(name="reg_id",referencedColumnName = "reg_id")
     public Returnedgoods getReturnedgoods() {
         return returnedgoods;
     }
@@ -200,7 +140,7 @@ public class Instock {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "supplier_id")
+    @JoinColumn(name="supplier_id",referencedColumnName = "supplier_id")
     public Supplier getSupplier() {
         return supplier;
     }

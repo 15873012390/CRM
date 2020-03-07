@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Backlogtaskdetails {
     private int btdId;
-    private int bltId;
-    private int uId;
     private Timestamp finishTime;
     private int status;
+    @JsonIgnoreProperties("backlogtaskdetails")
     private Backlogtask backlogtask;
+    @JsonIgnoreProperties("backlogtaskdetails")
     private User user;
 
     @Id
@@ -24,25 +25,6 @@ public class Backlogtaskdetails {
         this.btdId = btdId;
     }
 
-    @Basic
-    @Column(name = "blt_id")
-    public int getBltId() {
-        return bltId;
-    }
-
-    public void setBltId(int bltId) {
-        this.bltId = bltId;
-    }
-
-    @Basic
-    @Column(name = "u_id")
-    public int getuId() {
-        return uId;
-    }
-
-    public void setuId(int uId) {
-        this.uId = uId;
-    }
 
     @Basic
     @Column(name = "finish_time")
@@ -64,25 +46,8 @@ public class Backlogtaskdetails {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Backlogtaskdetails that = (Backlogtaskdetails) o;
-        return btdId == that.btdId &&
-                bltId == that.bltId &&
-                uId == that.uId &&
-                status == that.status &&
-                Objects.equals(finishTime, that.finishTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(btdId, bltId, uId, finishTime, status);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "blt_id", nullable = false)
+    @JoinColumn(name="blt_id",referencedColumnName = "blt_id", nullable = false)
     public Backlogtask getBacklogtask() {
         return backlogtask;
     }
@@ -92,7 +57,7 @@ public class Backlogtaskdetails {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id", nullable = false)
+    @JoinColumn(name="u_id",referencedColumnName = "u_id", nullable = false)
     public User getUser() {
         return user;
     }

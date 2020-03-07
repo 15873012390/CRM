@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +12,9 @@ public class Cost {
     private int totaMoney;
     private int cosType;
     private int delStatus;
+    @JsonIgnoreProperties("cost")
     private List<Evection> evection;
+    @JsonIgnoreProperties("cost")
     private List<Costdetails> costdetails;
 
     @Id

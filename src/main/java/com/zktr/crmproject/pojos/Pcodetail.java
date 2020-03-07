@@ -1,17 +1,18 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Pcodetail {
     private int pcodId;
-    private Integer pcoId;
-    private Integer proId;
     private Integer quantity;
     private Integer uintPrice;
     private String remarks;
+    @JsonIgnoreProperties("pcodetail")
     private Purchaseorder purchaseorder;
+    @JsonIgnoreProperties("pcodetail")
     private Product product;
 
     @Id
@@ -24,25 +25,6 @@ public class Pcodetail {
         this.pcodId = pcodId;
     }
 
-    @Basic
-    @Column(name = "pco_id")
-    public Integer getPcoId() {
-        return pcoId;
-    }
-
-    public void setPcoId(Integer pcoId) {
-        this.pcoId = pcoId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
 
     @Basic
     @Column(name = "quantity")
@@ -74,26 +56,8 @@ public class Pcodetail {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pcodetail pcodetail = (Pcodetail) o;
-        return pcodId == pcodetail.pcodId &&
-                Objects.equals(pcoId, pcodetail.pcoId) &&
-                Objects.equals(proId, pcodetail.proId) &&
-                Objects.equals(quantity, pcodetail.quantity) &&
-                Objects.equals(uintPrice, pcodetail.uintPrice) &&
-                Objects.equals(remarks, pcodetail.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pcodId, pcoId, proId, quantity, uintPrice, remarks);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pco_id")
+    @JoinColumn(name = "pco_id", referencedColumnName = "pco_id")
     public Purchaseorder getPurchaseorder() {
         return purchaseorder;
     }
@@ -103,7 +67,7 @@ public class Pcodetail {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

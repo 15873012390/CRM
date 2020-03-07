@@ -1,15 +1,14 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 public class Contract {
     private int ctrId;
-    private Integer uId;
-    private Integer cusId;
     private String conClassify;
     private String conPayment;
     private BigDecimal conSendOutMoney;
@@ -18,7 +17,9 @@ public class Contract {
     private Timestamp conSigningDate;
     private String conMoneyWay;
     private Integer conDelState;
+    @JsonIgnoreProperties("contract")
     private User user;
+    @JsonIgnoreProperties("contract")
     private Customer customer;
 
     @Id
@@ -31,25 +32,6 @@ public class Contract {
         this.ctrId = ctrId;
     }
 
-    @Basic
-    @Column(name = "u_id")
-    public Integer getuId() {
-        return uId;
-    }
-
-    public void setuId(Integer uId) {
-        this.uId = uId;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "con_classify")
@@ -131,31 +113,9 @@ public class Contract {
         this.conDelState = conDelState;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Contract contract = (Contract) o;
-        return ctrId == contract.ctrId &&
-                Objects.equals(uId, contract.uId) &&
-                Objects.equals(cusId, contract.cusId) &&
-                Objects.equals(conClassify, contract.conClassify) &&
-                Objects.equals(conPayment, contract.conPayment) &&
-                Objects.equals(conSendOutMoney, contract.conSendOutMoney) &&
-                Objects.equals(conStartTime, contract.conStartTime) &&
-                Objects.equals(conEndTime, contract.conEndTime) &&
-                Objects.equals(conSigningDate, contract.conSigningDate) &&
-                Objects.equals(conMoneyWay, contract.conMoneyWay) &&
-                Objects.equals(conDelState, contract.conDelState);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ctrId, uId, cusId, conClassify, conPayment, conSendOutMoney, conStartTime, conEndTime, conSigningDate, conMoneyWay, conDelState);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "u_id")
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
         return user;
     }
@@ -165,7 +125,7 @@ public class Contract {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }

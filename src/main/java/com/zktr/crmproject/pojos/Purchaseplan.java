@@ -1,27 +1,29 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Purchaseplan {
     private int purId;
     private String purNumber;
     private String purTitle;
-    private Integer deptId;
-    private Integer warehouseId;
     private Timestamp planTime;
     private String planner;
     private String handler;
     private Timestamp inTime;
-    private Integer audId;
     private Integer deal;
     private String remarks;
+    @JsonIgnoreProperties("purchaseplan")
     private Department department;
+    @JsonIgnoreProperties("purchaseplan")
     private Warehouse warehouse;
+    @JsonIgnoreProperties("purchaseplan")
     private Audit audit;
+    @JsonIgnoreProperties("purchaseplan")
     private List<Plandetail> plandetail;
 
     @Id
@@ -54,25 +56,6 @@ public class Purchaseplan {
         this.purTitle = purTitle;
     }
 
-    @Basic
-    @Column(name = "dept_id")
-    public Integer getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(Integer deptId) {
-        this.deptId = deptId;
-    }
-
-    @Basic
-    @Column(name = "warehouse_id")
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
 
     @Basic
     @Column(name = "plan_time")
@@ -115,16 +98,6 @@ public class Purchaseplan {
     }
 
     @Basic
-    @Column(name = "aud_id")
-    public Integer getAudId() {
-        return audId;
-    }
-
-    public void setAudId(Integer audId) {
-        this.audId = audId;
-    }
-
-    @Basic
     @Column(name = "deal")
     public Integer getDeal() {
         return deal;
@@ -144,32 +117,9 @@ public class Purchaseplan {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Purchaseplan that = (Purchaseplan) o;
-        return purId == that.purId &&
-                Objects.equals(purNumber, that.purNumber) &&
-                Objects.equals(purTitle, that.purTitle) &&
-                Objects.equals(deptId, that.deptId) &&
-                Objects.equals(warehouseId, that.warehouseId) &&
-                Objects.equals(planTime, that.planTime) &&
-                Objects.equals(planner, that.planner) &&
-                Objects.equals(handler, that.handler) &&
-                Objects.equals(inTime, that.inTime) &&
-                Objects.equals(audId, that.audId) &&
-                Objects.equals(deal, that.deal) &&
-                Objects.equals(remarks, that.remarks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(purId, purNumber, purTitle, deptId, warehouseId, planTime, planner, handler, inTime, audId, deal, remarks);
-    }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "d_id")
+    @JoinColumn(name="d_id",referencedColumnName = "d_id")
     public Department getDepartment() {
         return department;
     }
@@ -179,7 +129,7 @@ public class Purchaseplan {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "warehouse_id")
+    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -189,7 +139,7 @@ public class Purchaseplan {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "aud_id")
+    @JoinColumn(name="aud_id",referencedColumnName = "aud_id")
     public Audit getAudit() {
         return audit;
     }

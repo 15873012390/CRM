@@ -1,16 +1,17 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Productspecification {
     private int speId;
-    private Integer proId;
     private String proName;
     private String speSpecification;
     private String speUnit;
     private Integer speUnitConversion;
+    @JsonIgnoreProperties("productspecification")
     private Product product;
 
     @Id
@@ -21,16 +22,6 @@ public class Productspecification {
 
     public void setSpeId(int speId) {
         this.speId = speId;
-    }
-
-    @Basic
-    @Column(name = "pro_id")
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
     }
 
     @Basic
@@ -73,26 +64,8 @@ public class Productspecification {
         this.speUnitConversion = speUnitConversion;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Productspecification that = (Productspecification) o;
-        return speId == that.speId &&
-                Objects.equals(proId, that.proId) &&
-                Objects.equals(proName, that.proName) &&
-                Objects.equals(speSpecification, that.speSpecification) &&
-                Objects.equals(speUnit, that.speUnit) &&
-                Objects.equals(speUnitConversion, that.speUnitConversion);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(speId, proId, proName, speSpecification, speUnit, speUnitConversion);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "pro_id")
+    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
     public Product getProduct() {
         return product;
     }

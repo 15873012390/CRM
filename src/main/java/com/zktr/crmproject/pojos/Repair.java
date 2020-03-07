@@ -1,21 +1,23 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Repair {
     private int repairId;
     private String title;
-    private Integer cusId;
     private String accepter;
     private Timestamp receiptDate;
     private String classify;
-    private Integer apdId;
+    @JsonIgnoreProperties("repair")
     private Customer customer;
+    @JsonIgnoreProperties("repair")
     private Fitdetail fitdetail;
+    @JsonIgnoreProperties("repair")
     private List<Actionhistory> actionhistory;
     @Id
     @Basic
@@ -36,16 +38,6 @@ public class Repair {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
     }
 
     @Basic
@@ -78,37 +70,8 @@ public class Repair {
         this.classify = classify;
     }
 
-    @Basic
-    @Column(name = "apd_id")
-    public Integer getApdId() {
-        return apdId;
-    }
-
-    public void setApdId(Integer apdId) {
-        this.apdId = apdId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Repair repair = (Repair) o;
-        return Objects.equals(repairId, repair.repairId) &&
-                Objects.equals(title, repair.title) &&
-                Objects.equals(cusId, repair.cusId) &&
-                Objects.equals(accepter, repair.accepter) &&
-                Objects.equals(receiptDate, repair.receiptDate) &&
-                Objects.equals(classify, repair.classify) &&
-                Objects.equals(apdId, repair.apdId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(repairId, title, cusId, accepter, receiptDate, classify, apdId);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cus_id")
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
     public Customer getCustomer() {
         return customer;
     }
@@ -118,7 +81,7 @@ public class Repair {
     }
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "fd_id")
+    @JoinColumn(name="fd_id",referencedColumnName = "fd_id")
     public Fitdetail getFitdetail() {
         return fitdetail;
     }

@@ -1,21 +1,23 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Costdetails {
     private int cdId;
-    private int cosId;
     private int unitPrice;
     private int cdType;
     private String cdUse;
     private Timestamp cdTime;
     private int cdAudit;
     private int reimburse;
+    @JsonIgnoreProperties("costdetails")
     private Cost cost;
+    @JsonIgnoreProperties("costdetails")
     private List<Costaudit> costaudit;
 
     @Id
@@ -26,16 +28,6 @@ public class Costdetails {
 
     public void setCdId(int cdId) {
         this.cdId = cdId;
-    }
-
-    @Basic
-    @Column(name = "cos_id")
-    public int getCosId() {
-        return cosId;
-    }
-
-    public void setCosId(int cosId) {
-        this.cosId = cosId;
     }
 
     @Basic
@@ -98,28 +90,8 @@ public class Costdetails {
         this.reimburse = reimburse;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Costdetails that = (Costdetails) o;
-        return cdId == that.cdId &&
-                cosId == that.cosId &&
-                unitPrice == that.unitPrice &&
-                cdType == that.cdType &&
-                cdAudit == that.cdAudit &&
-                reimburse == that.reimburse &&
-                Objects.equals(cdUse, that.cdUse) &&
-                Objects.equals(cdTime, that.cdTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cdId, cosId, unitPrice, cdType, cdUse, cdTime, cdAudit, reimburse);
-    }
-
     @ManyToOne
-    @JoinColumn(referencedColumnName = "cos_id", nullable = false)
+    @JoinColumn(name="cos_id",referencedColumnName = "cos_id", nullable = false)
     public Cost getCost() {
         return cost;
     }
