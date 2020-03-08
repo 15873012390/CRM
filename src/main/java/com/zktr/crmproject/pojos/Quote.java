@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -13,30 +14,29 @@ public class Quote {
     private Integer toOrder;
     private String quoPhone;
     private Timestamp quoDate;
-    private Integer totalMoney;
-    private Integer grossProfit;
+    private BigDecimal totalMoney;
+    private BigDecimal grossProfit;
     private String instructions;
     private String remarks;
     private Integer approver;
     private Integer auditStatus;
     private Integer delStatus;
-    @JsonIgnoreProperties("quote")
     private Salesopport salesopport;
-    @JsonIgnoreProperties("quote")
     private Customer customer;
-    @JsonIgnoreProperties("quote")
     private User user;
-    @JsonIgnoreProperties("quote")
     private Audit audit;
-    @JsonIgnoreProperties("quote")
     private List<Quotedetails> quotedetails;
-    @JsonIgnoreProperties("quote")
     private List<Orders> orders;
+    private List<Contract> Contract;
 
     @Id
     @Column(name = "quo_id")
     public int getQuoId() {
         return quoId;
+    }
+
+    public void setQuoId(Integer quoId) {
+        this.quoId = quoId;
     }
 
     public void setQuoId(int quoId) {
@@ -85,21 +85,21 @@ public class Quote {
 
     @Basic
     @Column(name = "total_money")
-    public Integer getTotalMoney() {
+    public BigDecimal getTotalMoney() {
         return totalMoney;
     }
 
-    public void setTotalMoney(Integer totalMoney) {
+    public void setTotalMoney(BigDecimal totalMoney) {
         this.totalMoney = totalMoney;
     }
 
     @Basic
     @Column(name = "gross_profit")
-    public Integer getGrossProfit() {
+    public BigDecimal getGrossProfit() {
         return grossProfit;
     }
 
-    public void setGrossProfit(Integer grossProfit) {
+    public void setGrossProfit(BigDecimal grossProfit) {
         this.grossProfit = grossProfit;
     }
 
@@ -209,5 +209,15 @@ public class Quote {
 
     public void setOrders(List<Orders> orders) {
         this.orders = orders;
+    }
+
+
+    @OneToMany(mappedBy = "quote")
+    public List<Contract> getContract() {
+        return Contract;
+    }
+
+    public void setContract(List<Contract> contract) {
+        Contract = contract;
     }
 }

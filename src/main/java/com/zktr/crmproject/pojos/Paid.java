@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -10,7 +11,7 @@ public class Paid {
     private int paidId;
     private String period;
     private Timestamp payTime;
-    private Integer payMoney;
+    private BigDecimal payMoney;
     private String foreignRemarks;
     private String paymentType;
     private Integer collectTickets;
@@ -54,11 +55,11 @@ public class Paid {
 
     @Basic
     @Column(name = "pay_money")
-    public Integer getPayMoney() {
+    public BigDecimal getPayMoney() {
         return payMoney;
     }
 
-    public void setPayMoney(Integer payMoney) {
+    public void setPayMoney(BigDecimal payMoney) {
         this.payMoney = payMoney;
     }
 

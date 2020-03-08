@@ -15,7 +15,7 @@ public interface HTICustomerServiceDao {
 
     public Customerservice queryById(Integer csId);
 
-    public List<Customerservice> queryByCsTitle(String csTitle);
+    public List<Customerservice> queryLikeCustomerService(String value,String input,String select);
 
     public List<CustomerServiceAdvancedSearch> queryConditionByPage(CustomerServiceAdvancedSearch csa);
 }

@@ -3,13 +3,14 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
 public class Costdetails {
     private int cdId;
-    private int unitPrice;
+    private BigDecimal unitPrice;
     private int cdType;
     private String cdUse;
     private Timestamp cdTime;
@@ -32,11 +33,11 @@ public class Costdetails {
 
     @Basic
     @Column(name = "unit_price")
-    public int getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(int unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 

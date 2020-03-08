@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Salesopport {
     @JSONField(format = "yyyy-MM-dd")
     private Timestamp signingTime;
     private String possibility;
-    private Integer amount;
+    private BigDecimal amount;
     private String starTarget;
     private Integer delStatus;
     @JsonIgnoreProperties("salesopport")
@@ -198,11 +199,11 @@ public class Salesopport {
 
     @Basic
     @Column(name = "amount")
-    public Integer getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -11,7 +12,7 @@ public class Duepay {
     private int duePayId;
     private Timestamp planpayTime;
     private String period;
-    private Integer money;
+    private BigDecimal money;
     private String dueMoney;
     private String charity;
     private String status;
@@ -52,11 +53,11 @@ public class Duepay {
 
     @Basic
     @Column(name = "money")
-    public Integer getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(Integer money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 

@@ -9,13 +9,15 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
     private String title;
     private String serviceType;
     private String serviceWay;
-    private Timestamp startTime;
+    private Timestamp startTime[];
     private Timestamp endTime;
     private String spendTime;
     private String executor;
     private String status;
     private Integer cusId;
     private Integer cusName;
+    private Timestamp s1;
+    private Timestamp s2;
 
     public int getCsId() {
         return csId;
@@ -49,11 +51,11 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
         this.serviceWay = serviceWay;
     }
 
-    public Timestamp getStartTime() {
+    public Timestamp[] getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Timestamp[] startTime) {
         this.startTime = startTime;
     }
 
@@ -104,6 +106,22 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
 
     public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
+    }
+
+    public Timestamp getS1() {
+        return s1;
+    }
+
+    public void setS1(Timestamp s1) {
+        this.s1 = s1;
+    }
+
+    public Timestamp getS2() {
+        return s2;
+    }
+
+    public void setS2(Timestamp s2) {
+        this.s2 = s2;
     }
 
     @Override

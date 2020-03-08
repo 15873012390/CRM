@@ -21,7 +21,6 @@ com\zktr\crmproject\pojos\Outstockdetails.class
 com\zktr\crmproject\pojos\Department.class
 com\zktr\crmproject\pojos\Pcodetail.class
 com\zktr\crmproject\ServletInitializer.class
-com\zktr\crmproject\controller\JrcSalesOpportController.class
 com\zktr\crmproject\pojos\Warehouse.class
 com\zktr\crmproject\pojos\Backlogtask.class
 com\zktr\crmproject\pojos\Purchaseinvoice.class
@@ -69,7 +68,6 @@ com\zktr\crmproject\pojos\Costauditdetails.class
 com\zktr\crmproject\pojos\Quote.class
 com\zktr\crmproject\pojos\Cumplaint.class
 com\zktr\crmproject\pojos\Log.class
-com\zktr\crmproject\service\JrcSalesopportService.class
 com\zktr\crmproject\dao\jpa\JrcSalesOpportJDao.class
 com\zktr\crmproject\pojos\Actionhistory.class
 com\zktr\crmproject\pojos\Competitor.class

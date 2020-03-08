@@ -1,6 +1,7 @@
 package com.zktr.crmproject.pojos;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class Quotedetails {
@@ -8,9 +9,9 @@ public class Quotedetails {
     private String specification;
     private String unit;
     private Integer quantity;
-    private Integer unitPrice;
-    private Integer discount;
-    private Integer money;
+    private BigDecimal unitPrice;
+    private BigDecimal discount;
+    private BigDecimal money;
     private String remarks;
     private Product product;
     private Quote quote;
@@ -57,31 +58,31 @@ public class Quotedetails {
 
     @Basic
     @Column(name = "unit_price")
-    public Integer getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Integer unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
     @Basic
     @Column(name = "discount")
-    public Integer getDiscount() {
+    public BigDecimal getDiscount() {
         return discount;
     }
 
-    public void setDiscount(Integer discount) {
+    public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
 
     @Basic
     @Column(name = "money")
-    public Integer getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(Integer money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 

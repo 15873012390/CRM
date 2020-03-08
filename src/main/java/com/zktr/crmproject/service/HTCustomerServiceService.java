@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,14 +77,29 @@ public class HTCustomerServiceService {
     }
 
     /**
+     * 分页显示客户服务页面
+     * @param curpage
+     * @param pagesize
+     * @return
+     */
+    public Pager<Customerservice> queryLikeCustomerService(String value,String input,String select,Integer curpage,Integer pagesize){
+        PageHelper.startPage(curpage,pagesize);
+        List<Customerservice> clist = iCustomerServiceDao.queryLikeCustomerService(value,"%"+input.trim()+"%",select);
+        PageInfo<Customerservice> pager = new PageInfo<>(clist);
+        return new Pager<Customerservice>(pager.getTotal(),pager.getList());
+    }
+
+    /**
      * 高级动态条件查询
      * @param curpage
      * @param pagesize
      * @return
      */
     public Pager<CustomerServiceAdvancedSearch> queryConditionByPage(Integer curpage, Integer pagesize,CustomerServiceAdvancedSearch csa){
-
         PageHelper.startPage(curpage,pagesize);
+        csa.setS1(csa.getStartTime()[0]);
+        csa.setS2(csa.getStartTime()[1]);
+        csa.getStartTime();
         List<CustomerServiceAdvancedSearch> list = iCustomerServiceDao.queryConditionByPage(csa);
         PageInfo<CustomerServiceAdvancedSearch> pager = new PageInfo<>(list);
         return new Pager<CustomerServiceAdvancedSearch>(pager.getTotal(),pager.getList());
@@ -125,6 +141,18 @@ public class HTCustomerServiceService {
      */
     public Customerservice queryByCsId(Integer csId){
         return iCustomerServiceDao.queryById(csId);
+    }
+
+
+    /**
+     * 批量删除客户服务
+     * @param ids
+     */
+    public void deleteCustomerServices(Integer[] ids){
+        for(Integer id:ids){
+            customerServiceDao.deleteById(id);
+        }
+
     }
 
 

@@ -76,7 +76,6 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\PageBeen.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarm.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Backlogtask.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Returnedgoodsdetial.java
-E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\service\JrcSalesopportService.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Duepay.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Productspecification.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Logdetail.java
@@ -98,6 +97,5 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Orders.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\UserMessage.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTContactsDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarmdetail.java
-E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\JrcSalesOpportController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customercare.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\JrcSalesOpportMDao.java

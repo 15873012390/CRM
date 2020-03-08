@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ public class Warehouse {
     private int warehouseId;
     private String warehouseName;
     private String stockType;
-    private Integer stockValue;
+    private BigDecimal stockValue;
     private String remarks;
     @JsonIgnoreProperties("warehouse")
     private List<Purchaseplan> purchaseplan;
@@ -23,8 +24,7 @@ public class Warehouse {
     private List<Instock> instock;
     @JsonIgnoreProperties("warehouse")
     private List<Returnedgoods> returnedgoods;
-    @JsonIgnoreProperties("warehouse")
-    private List<Product> product;
+
 
     @Id
     @Column(name = "warehouse_id")
@@ -58,11 +58,11 @@ public class Warehouse {
 
     @Basic
     @Column(name = "stock_value")
-    public Integer getStockValue() {
+    public BigDecimal getStockValue() {
         return stockValue;
     }
 
-    public void setStockValue(Integer stockValue) {
+    public void setStockValue(BigDecimal stockValue) {
         this.stockValue = stockValue;
     }
 
@@ -138,12 +138,4 @@ public class Warehouse {
         this.returnedgoods = returnedgoods;
     }
 
-    @OneToMany(mappedBy = "warehouse")
-    public List<Product> getProduct() {
-        return product;
-    }
-
-    public void setProduct(List<Product> product) {
-        this.product = product;
-    }
 }

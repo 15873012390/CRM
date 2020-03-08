@@ -35,8 +35,6 @@ public class Product {
     @JsonIgnoreProperties("product")
     private List<Outstockdetails> outstockdetail;
     @JsonIgnoreProperties("product")
-    private List<Stock> stock;
-    @JsonIgnoreProperties("product")
     private List<Instockdetail> instockdetail;
     @JsonIgnoreProperties("product")
     private List<Alarmdetail> alarmdetail;
@@ -53,7 +51,7 @@ public class Product {
     @JsonIgnoreProperties("product")
     private Productclassification productclassification;
     @JsonIgnoreProperties("product")
-    private Warehouse warehouse;
+    private Stock stocks;
     @JsonIgnoreProperties("product")
     private List<Productspecification> productspecification;
 
@@ -254,15 +252,6 @@ public class Product {
     }
 
     @OneToMany(mappedBy = "product")
-    public List<Stock> getStock() {
-        return stock;
-    }
-
-    public void setStock(List<Stock> stock) {
-        this.stock = stock;
-    }
-
-    @OneToMany(mappedBy = "product")
     public List<Instockdetail> getInstockdetail() {
         return instockdetail;
     }
@@ -336,14 +325,17 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
-    public Warehouse getWarehouse() {
-        return warehouse;
+    @JoinColumn(name="stock_id",referencedColumnName = "stock_id")
+    public Stock getStocks() {
+        return stocks;
     }
 
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
+    public void setStocks(Stock stocks) {
+        this.stocks = stocks;
     }
+
+
+
 
     @OneToMany(mappedBy = "product")
     public List<Productspecification> getProductspecification() {

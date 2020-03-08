@@ -17,10 +17,11 @@ public class Contract {
     private Timestamp conSigningDate;
     private String conMoneyWay;
     private Integer conDelState;
-    @JsonIgnoreProperties("contract")
+    private String conTheme;
     private User user;
-    @JsonIgnoreProperties("contract")
     private Customer customer;
+
+    private Quote quote;
 
     @Id
     @Column(name = "ctr_id")
@@ -28,10 +29,13 @@ public class Contract {
         return ctrId;
     }
 
-    public void setCtrId(int ctrId) {
+    public void setCtrId(Integer ctrId) {
         this.ctrId = ctrId;
     }
 
+    public void setCtrId(int ctrId) {
+        this.ctrId = ctrId;
+    }
 
     @Basic
     @Column(name = "con_classify")
@@ -113,7 +117,6 @@ public class Contract {
         this.conDelState = conDelState;
     }
 
-
     @ManyToOne
     @JoinColumn(name="u_id",referencedColumnName = "u_id")
     public User getUser() {
@@ -132,5 +135,26 @@ public class Contract {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+
+    @Basic
+    @Column(name = "con_theme")
+    public String getConTheme() {
+        return conTheme;
+    }
+
+    public void setConTheme(String conTheme) {
+        this.conTheme = conTheme;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "quo_id", referencedColumnName = "quo_id")
+    public Quote getQuote() {
+        return quote;
+    }
+
+    public void setQuote(Quote quote) {
+        this.quote = quote;
     }
 }

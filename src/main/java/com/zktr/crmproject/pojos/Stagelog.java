@@ -11,8 +11,7 @@ public class Stagelog {
     private String slNote;
     private Timestamp recordTime;
     private String stageName;
-    @JsonIgnoreProperties("stagelog")
-    private User user;
+    private String userName;
     @JsonIgnoreProperties("stagelog")
     private Salesopport salesopport;
 
@@ -57,17 +56,17 @@ public class Stagelog {
         this.stageName = stageName;
     }
 
-    @ManyToOne
-    @JoinColumn(name="u_id",referencedColumnName = "u_id")
-    public User getUser() {
-        return user;
+    @Basic
+    @Column(name = "user_name")
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserName(String uName) {
+        this.userName = userName;
     }
 
-    @ManyToOne(cascade = {CascadeType.MERGE})//Cascade设置级联
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
@@ -80,15 +79,4 @@ public class Stagelog {
     public Stagelog() {
     }
 
-    @Override
-    public String toString() {
-        return "Stagelog{" +
-                "slId=" + slId +
-                ", slNote='" + slNote + '\'' +
-                ", recordTime=" + recordTime +
-                ", stageName='" + stageName + '\'' +
-                ", user=" + user +
-                ", salesopport=" + salesopport +
-                '}';
-    }
 }

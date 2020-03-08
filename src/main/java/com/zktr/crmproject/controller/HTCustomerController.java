@@ -37,8 +37,13 @@ public class HTCustomerController {
     @ResponseBody
     @PostMapping("/queryConditionByPage")
     public Pager<CustomerServiceAdvancedSearch> queryConditionByPage(@RequestBody CustomerServiceAdvancedSearch customerServiceAdvancedSearch){
-        System.out.println("11111111111111111111111"+customerServiceAdvancedSearch);
         return customerServiceService.queryConditionByPage(customerServiceAdvancedSearch.getCurPage(),customerServiceAdvancedSearch.getPageSize(),customerServiceAdvancedSearch);
+    }
+
+    @ResponseBody
+    @GetMapping("/queryLikeCustomerService")
+    public Pager<Customerservice> queryLikeCustomerService(Integer curpage,Integer pagesize,String value,String input,String select){
+        return customerServiceService.queryLikeCustomerService(value,input,select,curpage,pagesize);
     }
 
     @ResponseBody
@@ -79,6 +84,11 @@ public class HTCustomerController {
         return customerServiceService.queryByCsId(csId);
     }
 
-
+    @ResponseBody
+    @PostMapping("/deleteCustomerServices")
+    public Result deleteCustomerServices(@RequestBody  Integer[] ids){
+        customerServiceService.deleteCustomerServices(ids);
+        return Result.SUCCESS;
+    }
 
 }

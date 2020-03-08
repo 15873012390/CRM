@@ -10,7 +10,7 @@ public class Stock {
     private Integer stockId;
     private Integer stockQuantity;
     @JsonIgnoreProperties("stock")
-    private Product product;
+    private List<Product> product;
     @JsonIgnoreProperties("stock")
     private Warehouse warehouse;
     @JsonIgnoreProperties("stock")
@@ -37,14 +37,12 @@ public class Stock {
         this.stockQuantity = stockQuantity;
     }
 
-
-    @ManyToOne
-    @JoinColumn(name = "pro_id", referencedColumnName = "pro_id")
-    public Product getProduct() {
+    @OneToMany(mappedBy = "stocks")
+    public List<Product> getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(List<Product> product) {
         this.product = product;
     }
 

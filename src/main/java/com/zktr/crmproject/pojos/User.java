@@ -25,8 +25,6 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Salesopport> salesopport;
     @JsonIgnoreProperties("user")
-    private List<Stagelog> stagelog;
-    @JsonIgnoreProperties("user")
     private List<Backlogtask> backlogtask;
     @JsonIgnoreProperties("user")
     private List<Backlogtaskdetails> backlogtaskdetails;
@@ -179,15 +177,6 @@ public class User {
 
     public void setSalesopport(List<Salesopport> salesopport) {
         this.salesopport = salesopport;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public List<Stagelog> getStagelog() {
-        return stagelog;
-    }
-
-    public void setStagelog(List<Stagelog> stagelog) {
-        this.stagelog = stagelog;
     }
 
     @OneToMany(mappedBy = "user")

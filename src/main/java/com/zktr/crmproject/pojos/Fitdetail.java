@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,11 +15,11 @@ public class Fitdetail {
     private String customizeName;
     private String fcdArrayValue;
     private String fdProgress;
-    private Integer price;
-    private Integer alreadyFee;
+    private BigDecimal price;
+    private BigDecimal alreadyFee;
     private String status;
     private Timestamp deliverTime;
-    private Integer grossProfit;
+    private BigDecimal grossProfit;
     private String remarks;
     @JsonIgnoreProperties("fitdetail")
     private List<Repair> repair;
@@ -93,21 +94,21 @@ public class Fitdetail {
 
     @Basic
     @Column(name = "price")
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
     @Basic
     @Column(name = "already_fee")
-    public Integer getAlreadyFee() {
+    public BigDecimal getAlreadyFee() {
         return alreadyFee;
     }
 
-    public void setAlreadyFee(Integer alreadyFee) {
+    public void setAlreadyFee(BigDecimal alreadyFee) {
         this.alreadyFee = alreadyFee;
     }
 
@@ -133,11 +134,11 @@ public class Fitdetail {
 
     @Basic
     @Column(name = "gross_profit")
-    public Integer getGrossProfit() {
+    public BigDecimal getGrossProfit() {
         return grossProfit;
     }
 
-    public void setGrossProfit(Integer grossProfit) {
+    public void setGrossProfit(BigDecimal grossProfit) {
         this.grossProfit = grossProfit;
     }
 

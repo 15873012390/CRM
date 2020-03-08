@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Evection {
     private String field;
     private String vehicle;
     private Integer approver;
-    private Integer borrowMoney;
+    private BigDecimal borrowMoney;
     private Integer status;
     private Integer auditStatus;
     private String remarks;
@@ -128,11 +129,11 @@ public class Evection {
 
     @Basic
     @Column(name = "borrow_money")
-    public Integer getBorrowMoney() {
+    public BigDecimal getBorrowMoney() {
         return borrowMoney;
     }
 
-    public void setBorrowMoney(Integer borrowMoney) {
+    public void setBorrowMoney(BigDecimal borrowMoney) {
         this.borrowMoney = borrowMoney;
     }
 

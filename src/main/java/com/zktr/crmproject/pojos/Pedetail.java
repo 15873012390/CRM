@@ -3,12 +3,13 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class Pedetail {
     private int peDetailId;
     private Integer quantity;
-    private Integer uintPrice;
+    private BigDecimal uintPrice;
     private String remarks;
     @JsonIgnoreProperties("pedetail")
     private Purchaseenter purchaseenter;
@@ -37,11 +38,11 @@ public class Pedetail {
 
     @Basic
     @Column(name = "uint_price")
-    public Integer getUintPrice() {
+    public BigDecimal getUintPrice() {
         return uintPrice;
     }
 
-    public void setUintPrice(Integer uintPrice) {
+    public void setUintPrice(BigDecimal uintPrice) {
         this.uintPrice = uintPrice;
     }
 
