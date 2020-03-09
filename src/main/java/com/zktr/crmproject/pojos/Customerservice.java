@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ public class Customerservice {
     private String title;
     private String serviceType;
     private String serviceWay;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp startTime;
     private String spendTime;
     private String executor;

@@ -24,7 +24,6 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Stock.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Actionhistorydetails.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\User.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Returnedmoney.java
-E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTCustomerController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Pcodetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customerchurnwarning.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Warehouse.java
@@ -45,6 +44,7 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\DepartmentU
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Orderdetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customer.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Evectionsummarize.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\service\HTCustomerCareService.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\CustomerServiceAdvancedSearch.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTUserDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\utils\CustomCORSConfiguration.java
@@ -72,6 +72,7 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Purchaseent
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTICustomerDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Quotedetails.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\service\HTCustomerServiceService.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTIContactsDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\PageBeen.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarm.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Backlogtask.java
@@ -83,6 +84,7 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Product.jav
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTCustomerServiceDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Pedetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Fitcustom.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTICustomerCareDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Cumplaint.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Returnedgoods.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Competitor.java
@@ -92,10 +94,13 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Auditdetail
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Purchaseinvoice.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Fitcustomdetails.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Paid.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTCustomerCareDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Sendoutdetial.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Orders.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\UserMessage.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTCustomerServiceController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTContactsDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarmdetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customercare.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTCustomerCareController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\JrcSalesOpportMDao.java

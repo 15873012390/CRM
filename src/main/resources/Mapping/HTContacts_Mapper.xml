@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIContactsDao">
+
+    <resultMap id="contactsMap" type="com.zktr.crmproject.pojos.Contacts">
+        <id column="con_id" property="conId"></id>
+        <result column="con_name" property="conName"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+    </resultMap>
+
+   <select id="queryNameByCusId" resultMap="contactsMap">
+       select con_name from contacts where cus_id = #{cusId}
+   </select>
+</mapper>

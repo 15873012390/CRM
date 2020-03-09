@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 public class Customercare {
     private int ccId;
     private String contacts;
+    private String title;
     private Timestamp ccDate;
     private String executor;
     private String type;
@@ -20,6 +21,7 @@ public class Customercare {
 
     @Id
     @Column(name = "cc_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCcId() {
         return ccId;
     }
@@ -98,6 +100,15 @@ public class Customercare {
         this.remarks = remarks;
     }
 
+    @Basic
+    @Column(name = "title")
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @ManyToOne
     @JoinColumn(name="cus_id",referencedColumnName = "cus_id")

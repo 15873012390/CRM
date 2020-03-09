@@ -2,22 +2,25 @@ package com.zktr.crmproject.vo;
 
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class CustomerServiceAdvancedSearch  extends  PageBeen{
     private int csId;
     private String title;
     private String serviceType;
     private String serviceWay;
-    private Timestamp startTime[];
-    private Timestamp endTime;
+    private Date startTime[];
     private String spendTime;
     private String executor;
     private String status;
     private Integer cusId;
     private Integer cusName;
-    private Timestamp s1;
-    private Timestamp s2;
+    private Date s1;
+    private Date s2;
 
     public int getCsId() {
         return csId;
@@ -51,11 +54,11 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
         this.serviceWay = serviceWay;
     }
 
-    public Timestamp[] getStartTime() {
+    public Date[] getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp[] startTime) {
+    public void setStartTime(Date[] startTime) {
         this.startTime = startTime;
     }
 
@@ -100,27 +103,19 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
         this.cusName = cusName;
     }
 
-    public Timestamp getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
-    }
-
-    public Timestamp getS1() {
+    public Date getS1() {
         return s1;
     }
 
-    public void setS1(Timestamp s1) {
+    public void setS1(Date s1) {
         this.s1 = s1;
     }
 
-    public Timestamp getS2() {
+    public Date getS2() {
         return s2;
     }
 
-    public void setS2(Timestamp s2) {
+    public void setS2(Date s2) {
         this.s2 = s2;
     }
 
@@ -132,7 +127,6 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
                 ", serviceType='" + serviceType + '\'' +
                 ", serviceWay='" + serviceWay + '\'' +
                 ", startTime=" + startTime +
-                ", endTime=" + endTime +
                 ", spendTime='" + spendTime + '\'' +
                 ", executor='" + executor + '\'' +
                 ", status='" + status + '\'' +

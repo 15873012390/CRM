@@ -6,6 +6,7 @@ import com.zktr.crmproject.dao.jpa.HTContactsDao;
 import com.zktr.crmproject.dao.jpa.HTCustomerDao;
 import com.zktr.crmproject.dao.jpa.HTCustomerServiceDao;
 import com.zktr.crmproject.dao.jpa.HTUserDao;
+import com.zktr.crmproject.dao.mybatis.HTIContactsDao;
 import com.zktr.crmproject.dao.mybatis.HTICustomerDao;
 import com.zktr.crmproject.dao.mybatis.HTICustomerServiceDao;
 import com.zktr.crmproject.dao.mybatis.HTIUserDao;
@@ -38,6 +39,8 @@ public class HTCustomerServiceService {
     private HTICustomerDao iCustomerDao;
     @Autowired
     private HTIUserDao iUserDao;
+    @Autowired
+    private HTIContactsDao iContactsDao;
 
     /**
      * 查询所有的客户服务
@@ -97,9 +100,10 @@ public class HTCustomerServiceService {
      */
     public Pager<CustomerServiceAdvancedSearch> queryConditionByPage(Integer curpage, Integer pagesize,CustomerServiceAdvancedSearch csa){
         PageHelper.startPage(curpage,pagesize);
-        csa.setS1(csa.getStartTime()[0]);
-        csa.setS2(csa.getStartTime()[1]);
-        csa.getStartTime();
+        if(csa.getStartTime()!=null&&csa.getStartTime().length>1){
+            csa.setS1(csa.getStartTime()[0]);
+            csa.setS2(csa.getStartTime()[1]);
+        }
         List<CustomerServiceAdvancedSearch> list = iCustomerServiceDao.queryConditionByPage(csa);
         PageInfo<CustomerServiceAdvancedSearch> pager = new PageInfo<>(list);
         return new Pager<CustomerServiceAdvancedSearch>(pager.getTotal(),pager.getList());
@@ -122,7 +126,7 @@ public class HTCustomerServiceService {
      * @return
      */
     public List<Contacts> queryContactsByCusId(Integer cusId){
-       return contactsDao.findAllByCustomerCusId(cusId);
+       return iContactsDao.queryNameByCusId(cusId);
     }
 
     /**
