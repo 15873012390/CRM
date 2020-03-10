@@ -44,12 +44,6 @@ public class Customer {
     @JsonIgnoreProperties("customer")
     private List<Salesopport> salesopport;
     @JsonIgnoreProperties("customer")
-    private List<Clientdemand> clientdemand;
-    @JsonIgnoreProperties("customer")
-    private List<Solution> solution;
-    @JsonIgnoreProperties("customer")
-    private List<Competitor> competitor;
-    @JsonIgnoreProperties("customer")
     private List<Backlogtask> backlogtask;
     @JsonIgnoreProperties("customer")
     private List<Actionhistory> actionhistory;
@@ -368,33 +362,6 @@ public class Customer {
 
     public void setSalesopport(List<Salesopport> salesopport) {
         this.salesopport = salesopport;
-    }
-
-    @OneToMany(mappedBy = "customer")
-    public List<Clientdemand> getClientdemand() {
-        return clientdemand;
-    }
-
-    public void setClientdemand(List<Clientdemand> clientdemand) {
-        this.clientdemand = clientdemand;
-    }
-
-    @OneToMany(mappedBy = "customer")
-    public List<Solution> getSolution() {
-        return solution;
-    }
-
-    public void setSolution(List<Solution> solution) {
-        this.solution = solution;
-    }
-
-    @OneToMany(mappedBy = "customer")
-    public List<Competitor> getCompetitor() {
-        return competitor;
-    }
-
-    public void setCompetitor(List<Competitor> competitor) {
-        this.competitor = competitor;
     }
 
     @OneToMany(mappedBy = "customer")

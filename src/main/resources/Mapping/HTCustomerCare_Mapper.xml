@@ -46,6 +46,26 @@
                 and customer.cus_id = #{cusId}
             </if>
         </where>
+        order by customercare.cc_id desc
+    </select>
+
+    <select id="queryLikeCustomerCare" resultMap="customerCareMap">
+        select * from customercare,customer where customercare.cus_id = customer.cus_id
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='分类一' || value=='分类二' || value=='分类三'">
+                    and customercare.type=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='关怀主题'">
+                and customercare.title like #{input}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by customercare.cc_id desc
     </select>
 
 

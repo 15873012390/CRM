@@ -27,6 +27,7 @@ com\zktr\crmproject\vo\CustomerServiceAdvancedSearch.class
 com\zktr\crmproject\pojos\Cumplaint.class
 com\zktr\crmproject\dao\jpa\JrcSalesOpportJDao.class
 com\zktr\crmproject\pojos\Evectionlog.class
+com\zktr\crmproject\vo\CustomerCareAdvancedSearch.class
 com\zktr\crmproject\dao\mybatis\JrcCustomerMDao.class
 com\zktr\crmproject\utils\CorsFilter.class
 com\zktr\crmproject\utils\CustomCORSConfiguration.class

@@ -13,9 +13,6 @@ public class Clientdemand {
     private Timestamp recordTime;
     private Integer importance;
     private String cdContent;
-    private Integer delStatus;
-    @JsonIgnoreProperties("clientdemand")
-    private Customer customer;
     @JsonIgnoreProperties("clientdemand")
     private Salesopport salesopport;
 
@@ -78,27 +75,6 @@ public class Clientdemand {
 
     public void setCdContent(String cdContent) {
         this.cdContent = cdContent;
-    }
-
-    @Basic
-    @Column(name = "del_status")
-    public Integer getDelStatus() {
-        return delStatus;
-    }
-
-    public void setDelStatus(Integer delStatus) {
-        this.delStatus = delStatus;
-    }
-
-
-    @ManyToOne
-    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     @ManyToOne

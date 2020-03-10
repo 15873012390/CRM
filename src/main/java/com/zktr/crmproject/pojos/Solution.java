@@ -12,10 +12,6 @@ public class Solution {
     private Timestamp submissionTime;
     private String solContent;
     private String feedback;
-    private String delStatus;
-    @JsonIgnoreProperties("solution")
-    private Customer customer;
-    @JsonIgnoreProperties("solution")
     private Salesopport salesopport;
 
     @Id
@@ -66,26 +62,6 @@ public class Solution {
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
-    }
-
-    @Basic
-    @Column(name = "del_status")
-    public String getDelStatus() {
-        return delStatus;
-    }
-
-    public void setDelStatus(String delStatus) {
-        this.delStatus = delStatus;
-    }
-
-    @ManyToOne
-    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     @ManyToOne

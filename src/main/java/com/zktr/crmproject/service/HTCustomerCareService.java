@@ -8,6 +8,8 @@ import com.zktr.crmproject.dao.mybatis.HTICustomerCareDao;
 import com.zktr.crmproject.dao.mybatis.HTIUserDao;
 import com.zktr.crmproject.pojos.Contacts;
 import com.zktr.crmproject.pojos.Customercare;
+import com.zktr.crmproject.pojos.Customerservice;
+import com.zktr.crmproject.vo.CustomerCareAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,35 @@ public class HTCustomerCareService {
         PageHelper.startPage(curpage,pagesize);
         List<Customercare> list = icustomerCareDao.queryAllByPage();
         PageInfo<Customercare> pager = new PageInfo<>(list);
+        return new Pager<Customercare>(pager.getTotal(),pager.getList());
+    }
+
+    /**
+     * 分页高级查询
+     * @param ccs
+     * @return
+     */
+    public Pager<CustomerCareAdvancedSearch> queryCustomercareByAdvancedSearch(CustomerCareAdvancedSearch ccs){
+        PageHelper.startPage(ccs.getCurPage(),ccs.getPageSize());
+        if(ccs.getCcDate()!=null && ccs.getCcDate().length>1){
+            ccs.setS1(ccs.getCcDate()[0]);
+            ccs.setS2(ccs.getCcDate()[1]);
+        }
+        List<CustomerCareAdvancedSearch> list = icustomerCareDao.queryConditionByPage(ccs);
+        PageInfo<CustomerCareAdvancedSearch> pager = new PageInfo<>(list);
+        return new Pager<CustomerCareAdvancedSearch>(pager.getTotal(),pager.getList());
+    }
+
+    /**
+     * 分页显示客户服务页面
+     * @param curpage
+     * @param pagesize
+     * @return
+     */
+    public Pager<Customercare> queryLikeCustomerCare(String value, String input, String select, Integer curpage, Integer pagesize){
+        PageHelper.startPage(curpage,pagesize);
+        List<Customercare> clist = icustomerCareDao.queryLikeCustomerCare(value,"%"+input.trim()+"%",select);
+        PageInfo<Customercare> pager = new PageInfo<>(clist);
         return new Pager<Customercare>(pager.getTotal(),pager.getList());
     }
 
@@ -83,6 +114,8 @@ public class HTCustomerCareService {
     public Customercare queryCustomerCareByCcId(Integer ccId){
         return icustomerCareDao.queryById(ccId);
     }
+
+
 
 
 

@@ -1,7 +1,9 @@
 package com.zktr.crmproject.controller;
 
 import com.zktr.crmproject.pojos.Customercare;
+import com.zktr.crmproject.pojos.Customerservice;
 import com.zktr.crmproject.service.HTCustomerCareService;
+import com.zktr.crmproject.vo.CustomerCareAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +42,18 @@ public class HTCustomerCareController {
     public Customercare queryCustomerCareByCcId(Integer ccId){
         return customerCareService.queryCustomerCareByCcId(ccId);
     }
+
+    @PostMapping("/queryCustomercareByAdvancedSearch")
+    public Pager<CustomerCareAdvancedSearch> queryCustomercareByAdvancedSearch(@RequestBody CustomerCareAdvancedSearch cca){
+        return customerCareService.queryCustomercareByAdvancedSearch(cca);
+    }
+
+    @GetMapping("/queryLikeCustomerCare")
+    public Pager<Customercare> queryLikeCustomerCare(Integer curpage, Integer pagesize, String value, String input, String select){
+        System.out.println(value+input+select);
+        return customerCareService.queryLikeCustomerCare(value,input,select,curpage,pagesize);
+    }
+
+
 
 }

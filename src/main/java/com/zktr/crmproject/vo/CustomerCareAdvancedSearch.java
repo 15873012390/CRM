@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class CustomerCareAdvancedSearch {
     private int ccId;
     private String title;
-    private Timestamp ccDate;
+    private Timestamp ccDate[];
     private String executor;
     private String type;
     private Integer cusId;
@@ -31,11 +31,11 @@ public class CustomerCareAdvancedSearch {
         this.title = title;
     }
 
-    public Timestamp getCcDate() {
+    public Timestamp[] getCcDate() {
         return ccDate;
     }
 
-    public void setCcDate(Timestamp ccDate) {
+    public void setCcDate(Timestamp[] ccDate) {
         this.ccDate = ccDate;
     }
 
@@ -87,8 +87,16 @@ public class CustomerCareAdvancedSearch {
         this.s2 = s2;
     }
 
+    public Integer getCurPage() {
+        return curPage;
+    }
+
     public void setCurPage(Integer curPage) {
         this.curPage = curPage;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
     }
 
     public void setPageSize(Integer pageSize) {

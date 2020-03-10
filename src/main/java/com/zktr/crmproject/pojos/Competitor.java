@@ -17,9 +17,6 @@ public class Competitor {
     private String disadvantaged;
     private String copingStrategy;
     private String note;
-    private Integer delStatus;
-    @JsonIgnoreProperties("competitor")
-    private Customer customer;
     @JsonIgnoreProperties("competitor")
     private Salesopport salesopport;
 
@@ -121,27 +118,6 @@ public class Competitor {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    @Basic
-    @Column(name = "del_status")
-    public Integer getDelStatus() {
-        return delStatus;
-    }
-
-    public void setDelStatus(Integer delStatus) {
-        this.delStatus = delStatus;
-    }
-
-
-    @ManyToOne
-    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     @ManyToOne
