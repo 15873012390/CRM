@@ -23,10 +23,6 @@ public class HTCustomerCareService {
     @Autowired
     private HTICustomerCareDao icustomerCareDao;
     @Autowired
-    private HTIContactsDao icontactsDao;
-    @Autowired
-    private HTIUserDao iUserDao;
-    @Autowired
     private HTCustomerCareDao customerCareDao;
 
     /**
@@ -69,15 +65,6 @@ public class HTCustomerCareService {
         List<Customercare> clist = icustomerCareDao.queryLikeCustomerCare(value,"%"+input.trim()+"%",select);
         PageInfo<Customercare> pager = new PageInfo<>(clist);
         return new Pager<Customercare>(pager.getTotal(),pager.getList());
-    }
-
-    /**
-     * 通过客户ID查询所有的联系人
-     * @param cusId
-     * @return
-     */
-    public List<Contacts> queryAllContactsByCusId(Integer cusId){
-        return icontactsDao.queryNameByCusId(cusId);
     }
 
     /**

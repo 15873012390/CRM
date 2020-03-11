@@ -71,6 +71,7 @@ public class Customer {
     private List<Invoice> invoice;
     @JsonIgnoreProperties("customer")
     private List<Customerservice> customerservices;
+    private List<Complaint> complaint;
 
     @Id
     @Column(name = "cus_id")
@@ -470,6 +471,15 @@ public class Customer {
 
     public void setReturnedmoneyplan(List<Returnedmoneyplan> returnedmoneyplan) {
         this.returnedmoneyplan = returnedmoneyplan;
+    }
+
+    @OneToMany(mappedBy = "customer")
+    public List<Complaint> getComplaint() {
+        return complaint;
+    }
+
+    public void setComplaint(List<Complaint> complaint) {
+        this.complaint = complaint;
     }
 
     @OneToMany(mappedBy = "customer")

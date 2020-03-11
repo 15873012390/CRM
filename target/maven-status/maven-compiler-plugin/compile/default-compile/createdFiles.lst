@@ -3,10 +3,12 @@ com\zktr\crmproject\pojos\Stagelog.class
 com\zktr\crmproject\dao\mybatis\HTICustomerServiceDao.class
 com\zktr\crmproject\vo\Pager.class
 com\zktr\crmproject\dao\jpa\HTUserDao.class
+com\zktr\crmproject\dao\mybatis\HTIComplaintDao.class
 com\zktr\crmproject\dao\mybatis\JrcSalesOpportMDao.class
 com\zktr\crmproject\pojos\Customerservice.class
 com\zktr\crmproject\dao\mybatis\HTIContactsDao.class
 com\zktr\crmproject\controller\HTCustomerServiceController.class
+com\zktr\crmproject\pojos\Complaint.class
 com\zktr\crmproject\CrmprojectApplication.class
 com\zktr\crmproject\pojos\Fitcustomdetails.class
 com\zktr\crmproject\ServletInitializer.class
@@ -14,6 +16,8 @@ com\zktr\crmproject\dao\mybatis\JrcStagelogMDao.class
 com\zktr\crmproject\dao\jpa\HTCustomerCareDao.class
 com\zktr\crmproject\dao\mybatis\HTIUserDao.class
 com\zktr\crmproject\controller\HTCustomerCareController.class
+com\zktr\crmproject\dao\jpa\HTComplaintDao.class
+com\zktr\crmproject\controller\HTComplaintController.class
 com\zktr\crmproject\pojos\Cost.class
 com\zktr\crmproject\pojos\Power.class
 com\zktr\crmproject\pojos\Costdetails.class
@@ -24,10 +28,10 @@ com\zktr\crmproject\dao\mybatis\JrcUserMDao.class
 com\zktr\crmproject\dao\mybatis\HTICustomerDao.class
 com\zktr\crmproject\pojos\DepartmentUser.class
 com\zktr\crmproject\vo\CustomerServiceAdvancedSearch.class
-com\zktr\crmproject\pojos\Cumplaint.class
 com\zktr\crmproject\dao\jpa\JrcSalesOpportJDao.class
 com\zktr\crmproject\pojos\Evectionlog.class
 com\zktr\crmproject\vo\CustomerCareAdvancedSearch.class
+com\zktr\crmproject\service\HTComplaintService.class
 com\zktr\crmproject\dao\mybatis\JrcCustomerMDao.class
 com\zktr\crmproject\utils\CorsFilter.class
 com\zktr\crmproject\utils\CustomCORSConfiguration.class

@@ -1,20 +1,16 @@
 package com.zktr.crmproject.pojos;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
+
 
 @Entity
-public class Cumplaint {
+public class Complaint {
     private int comId;
-    private Integer cusId;
     private String title;
     private String receptionPerson;
     private String classify;
-    private String describe;
+    private String describes;
     private Timestamp comDate;
     private String complainant;
     private String emergencyLevel;
@@ -24,9 +20,11 @@ public class Cumplaint {
     private String cusFeedback;
     private String returnConfirmation;
     private String remarks;
+    private Customer customer;
 
     @Id
     @Column(name = "com_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getComId() {
         return comId;
     }
@@ -35,15 +33,6 @@ public class Cumplaint {
         this.comId = comId;
     }
 
-    @Basic
-    @Column(name = "cus_id")
-    public Integer getCusId() {
-        return cusId;
-    }
-
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
-    }
 
     @Basic
     @Column(name = "title")
@@ -76,13 +65,13 @@ public class Cumplaint {
     }
 
     @Basic
-    @Column(name = "describe")
+    @Column(name = "describes")
     public String getDescribe() {
-        return describe;
+        return describes;
     }
 
     public void setDescribe(String describe) {
-        this.describe = describe;
+        this.describes = describe;
     }
 
     @Basic
@@ -175,30 +164,13 @@ public class Cumplaint {
         this.remarks = remarks;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cumplaint cumplaint = (Cumplaint) o;
-        return comId == cumplaint.comId &&
-                Objects.equals(cusId, cumplaint.cusId) &&
-                Objects.equals(title, cumplaint.title) &&
-                Objects.equals(receptionPerson, cumplaint.receptionPerson) &&
-                Objects.equals(classify, cumplaint.classify) &&
-                Objects.equals(describe, cumplaint.describe) &&
-                Objects.equals(comDate, cumplaint.comDate) &&
-                Objects.equals(complainant, cumplaint.complainant) &&
-                Objects.equals(emergencyLevel, cumplaint.emergencyLevel) &&
-                Objects.equals(treatmentProcess, cumplaint.treatmentProcess) &&
-                Objects.equals(dealResult, cumplaint.dealResult) &&
-                Objects.equals(spentTime, cumplaint.spentTime) &&
-                Objects.equals(cusFeedback, cumplaint.cusFeedback) &&
-                Objects.equals(returnConfirmation, cumplaint.returnConfirmation) &&
-                Objects.equals(remarks, cumplaint.remarks);
+    @ManyToOne
+    @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
+    public Customer getCustomer() {
+        return customer;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(comId, cusId, title, receptionPerson, classify, describe, comDate, complainant, emergencyLevel, treatmentProcess, dealResult, spentTime, cusFeedback, returnConfirmation, remarks);
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

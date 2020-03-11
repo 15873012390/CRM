@@ -82,15 +82,18 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Duepay.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Productspecification.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Logdetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Product.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Complaint.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTCustomerServiceDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Pedetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Fitcustom.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTICustomerCareDao.java
-E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Cumplaint.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Returnedgoods.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Competitor.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\Pager.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTComplaintDao.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\service\HTComplaintService.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\JrcCustomerMDao.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTIComplaintDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Auditdetails.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Purchaseinvoice.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Fitcustomdetails.java
@@ -99,6 +102,7 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTCustome
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Sendoutdetial.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Orders.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\UserMessage.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTComplaintController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTCustomerServiceController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTContactsDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarmdetail.java
