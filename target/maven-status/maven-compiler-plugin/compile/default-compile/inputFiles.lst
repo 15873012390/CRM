@@ -1,6 +1,8 @@
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Contract.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Instock.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Leaved.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTQaController.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\HTIQaDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Instockdetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\utils\CorsFilter.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Costauditdetails.java
@@ -30,11 +32,14 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customerchu
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Warehouse.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\CrmprojectApplication.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Supplier.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\service\HTQaService.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Position.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Sendout.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Quote.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\ComplaintAdvancedSearch.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\JrcStagelogJDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customertransfer.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\jpa\HTQaDao.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customerupdatelog.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Plandetail.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Purchaseorder.java
@@ -109,3 +114,4 @@ E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Alarmdetail
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\pojos\Customercare.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\controller\HTCustomerCareController.java
 E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\dao\mybatis\JrcSalesOpportMDao.java
+E:\crm\crm_management_system\src\main\java\com\zktr\crmproject\vo\QaAdvancedSearch.java

@@ -32,6 +32,75 @@
     select * from complaint left join customer on complaint.cus_id = customer.cus_id where com_id = #{comId} order by complaint.com_id desc
     </select>
 
+    <select id="queryComplaintByPage" resultMap="complaintMap" parameterType="com.zktr.crmproject.vo.ComplaintAdvancedSearch">
+        select * from complaint cp,customer ct where cp.cus_id = ct.cus_id
+        <if test="title!=null and title.length!=0">
+            cp.title = #{title}
+        </if>
+        <if test="cusId!=null and cusId!=''">
+            and ct.cus_id = #{cusId}
+        </if>
+        <if test="comDate!=null and comDate.length!=0">
+            and cp.com_date between #{s1} and #{s2}
+        </if>
+        <if test="emergencyLevel!=null and emergencyLevel.length!=0">
+           and cp.emergency_level in
+            <foreach collection="emergencyLevel" index="index" item="el"
+                     open="(" separator="," close=")">
+               #{el}
+            </foreach>
+        </if>
+        <if test="receptionPerson!=null and receptionPerson!=''">
+            and cp.reception_person = #{receptionPerson}
+        </if>
+        <if test="spentTime!=null and spentTime.length!=0">
+            and cp.spent_time in
+            <foreach collection="spentTime" index="index" item="st"
+                     open="(" separator="," close=")">
+                #{st}
+            </foreach>
+        </if>
+        <if test="classify!=null and classify.length!=0">
+            and cp.classify in
+            <foreach collection="classify" index="index" item="c"
+                     open="(" separator="," close=")">
+                #{c}
+            </foreach>
+        </if>
+        <if test="dealResult!=null and dealResult.length!=0">
+            and cp.dealResult in
+            <foreach collection="dealResult" index="index" item="dr"
+                     open="(" separator="," close=")">
+                #{dr}
+            </foreach>
+        </if>
+        order by cp.com_id desc
+    </select>
+
+    <select id="queryLikeComplaint" resultMap="complaintMap">
+        select * from complaint cp,customer ct where cp.cus_id = ct.cus_id
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='未处理' || value=='处理中' || value=='处理完成'">
+                    and cp.deal_result=#{value}
+                </when>
+                 <when test="value=='非常紧急' || value=='急' || value=='普通'">
+                and cp.emergency_level=#{value}
+                </when>
+                <when test="value=='产品投诉' || value=='服务投诉' || value=='客户意见' || value=='其他'">
+                    and cp.classify=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='投诉主题'">
+                and cp.title like #{input}
+            </when>
+        </choose>
+        order by cp.com_id desc
+    </select>
+
+
 
 
 

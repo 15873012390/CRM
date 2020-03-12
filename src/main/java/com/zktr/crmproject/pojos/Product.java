@@ -51,8 +51,6 @@ public class Product {
     @JsonIgnoreProperties("product")
     private Productclassification productclassification;
     @JsonIgnoreProperties("product")
-    private Stock stocks;
-    @JsonIgnoreProperties("product")
     private List<Productspecification> productspecification;
 
     @Id
@@ -323,17 +321,6 @@ public class Product {
     public void setProductclassification(Productclassification productclassification) {
         this.productclassification = productclassification;
     }
-
-    @ManyToOne
-    @JoinColumn(name="stock_id",referencedColumnName = "stock_id")
-    public Stock getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(Stock stocks) {
-        this.stocks = stocks;
-    }
-
 
 
 

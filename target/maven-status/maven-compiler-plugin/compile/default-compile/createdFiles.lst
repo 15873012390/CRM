@@ -23,6 +23,9 @@ com\zktr\crmproject\pojos\Power.class
 com\zktr\crmproject\pojos\Costdetails.class
 com\zktr\crmproject\service\HTCustomerCareService.class
 com\zktr\crmproject\pojos\Qa.class
+com\zktr\crmproject\service\HTQaService.class
+com\zktr\crmproject\vo\ComplaintAdvancedSearch.class
+com\zktr\crmproject\dao\mybatis\HTIQaDao.class
 com\zktr\crmproject\vo\SalesOpportAdvancedSearch.class
 com\zktr\crmproject\dao\mybatis\JrcUserMDao.class
 com\zktr\crmproject\dao\mybatis\HTICustomerDao.class
@@ -32,10 +35,13 @@ com\zktr\crmproject\dao\jpa\JrcSalesOpportJDao.class
 com\zktr\crmproject\pojos\Evectionlog.class
 com\zktr\crmproject\vo\CustomerCareAdvancedSearch.class
 com\zktr\crmproject\service\HTComplaintService.class
+com\zktr\crmproject\controller\HTQaController.class
 com\zktr\crmproject\dao\mybatis\JrcCustomerMDao.class
 com\zktr\crmproject\utils\CorsFilter.class
 com\zktr\crmproject\utils\CustomCORSConfiguration.class
+com\zktr\crmproject\dao\jpa\HTQaDao.class
 com\zktr\crmproject\vo\PageBeen.class
 com\zktr\crmproject\pojos\Logdetail.class
 com\zktr\crmproject\dao\jpa\JrcStagelogJDao.class
+com\zktr\crmproject\vo\QaAdvancedSearch.class
 com\zktr\crmproject\vo\Result.class

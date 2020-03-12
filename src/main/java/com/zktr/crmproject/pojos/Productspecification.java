@@ -13,6 +13,7 @@ public class Productspecification {
     private Integer speUnitConversion;
     @JsonIgnoreProperties("productspecification")
     private Product product;
+    private Stock stocks;
 
     @Id
     @Column(name = "spe_id")
@@ -72,5 +73,15 @@ public class Productspecification {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="stock_id",referencedColumnName = "stock_id")
+    public Stock getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(Stock stocks) {
+        this.stocks = stocks;
     }
 }

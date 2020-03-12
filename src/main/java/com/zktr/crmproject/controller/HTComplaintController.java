@@ -3,6 +3,7 @@ package com.zktr.crmproject.controller;
 import com.zktr.crmproject.pojos.Complaint;
 import com.zktr.crmproject.pojos.Customercare;
 import com.zktr.crmproject.service.HTComplaintService;
+import com.zktr.crmproject.vo.ComplaintAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,16 @@ public class HTComplaintController {
     @GetMapping("/queryComplaintByPage")
     public Pager<Complaint> queryComplaintByPage(Integer curpage,Integer pagesize){
         return complaintService.queryAllComplaintByPage(curpage,pagesize);
+    }
+
+    @PostMapping("/queryComplaintByAdvancedSearch")
+    public Pager<Complaint> queryComplaintByAdvancedSearch(@RequestBody ComplaintAdvancedSearch cas){
+        return complaintService.queryComplaintByAdvancedSearch(cas);
+    }
+
+    @GetMapping("/queryLikeComplaint")
+    public Pager<Complaint> queryLikeComplaint(Integer curpage, Integer pagesize, String value, String input, String select){
+        return complaintService.queryLikeComplaint(value,input,select,curpage,pagesize);
     }
 
     @PostMapping("/addOrEditComplaint")

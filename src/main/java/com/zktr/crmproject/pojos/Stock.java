@@ -9,8 +9,7 @@ import java.util.List;
 public class Stock {
     private Integer stockId;
     private Integer stockQuantity;
-    @JsonIgnoreProperties("stock")
-    private List<Product> product;
+    private List<Productspecification> ProductSpecification;
     @JsonIgnoreProperties("stock")
     private Warehouse warehouse;
     @JsonIgnoreProperties("stock")
@@ -38,12 +37,12 @@ public class Stock {
     }
 
     @OneToMany(mappedBy = "stocks")
-    public List<Product> getProduct() {
-        return product;
+    public List<Productspecification> getProductSpecification() {
+        return ProductSpecification;
     }
 
-    public void setProduct(List<Product> product) {
-        this.product = product;
+    public void setProductSpecification(List<Productspecification> productSpecification) {
+        ProductSpecification = productSpecification;
     }
 
     @ManyToOne
