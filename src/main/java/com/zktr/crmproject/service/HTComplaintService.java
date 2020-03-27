@@ -24,7 +24,7 @@ public class HTComplaintService {
     @Autowired
     private HTComplaintDao complaintDao;
     @Autowired
-    private HTIComplaintDao iComplaintDao;
+    private HTIComplaintDao icomplaintDao;
 
     /**
      * 分页查询所有的客户关怀
@@ -34,7 +34,7 @@ public class HTComplaintService {
      */
     public Pager<Complaint> queryAllComplaintByPage(Integer curpage, Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
-        List<Complaint> list = iComplaintDao.queryAllByPage();
+        List<Complaint> list = icomplaintDao.queryAllByPage();
         PageInfo<Complaint> pager = new PageInfo<>(list);
         return new Pager<Complaint>(pager.getTotal(),pager.getList());
     }
@@ -50,7 +50,7 @@ public class HTComplaintService {
             cas.setS1(cas.getComDate()[0]);
             cas.setS2(cas.getComDate()[1]);
         }
-        List<Complaint> list = iComplaintDao.queryComplaintByPage(cas);
+        List<Complaint> list = icomplaintDao.queryComplaintByPage(cas);
         PageInfo<Complaint> pager = new PageInfo<>(list);
         return new Pager<Complaint>(pager.getTotal(),pager.getList());
     }
@@ -63,7 +63,7 @@ public class HTComplaintService {
      */
     public Pager<Complaint> queryLikeComplaint(String value, String input, String select, Integer curpage, Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
-        List<Complaint> clist = iComplaintDao.queryLikeComplaint(value,"%"+input.trim()+"%",select);
+        List<Complaint> clist = icomplaintDao.queryLikeComplaint(value,"%"+input.trim()+"%",select);
         PageInfo<Complaint> pager = new PageInfo<>(clist);
         return new Pager<Complaint>(pager.getTotal(),pager.getList());
     }
@@ -72,8 +72,9 @@ public class HTComplaintService {
      * 增加/编辑所有投诉
      * @param complaint
      */
-    public void addAndEditComplaint(Complaint complaint){
-        complaintDao.save(complaint);
+    public Integer addAndEditComplaint(Complaint complaint){
+        Complaint save = complaintDao.save(complaint);
+        return save.getComId();
     }
 
     /**
@@ -100,7 +101,7 @@ public class HTComplaintService {
      * @return
      */
     public Complaint queryComplaintByComId(Integer comId){
-        return iComplaintDao.queryById(comId);
+        return icomplaintDao.queryById(comId);
     }
 
 

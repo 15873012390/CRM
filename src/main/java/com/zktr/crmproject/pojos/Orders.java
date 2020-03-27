@@ -22,6 +22,7 @@ public class Orders {
     private String ordPurchaseWay;
     private String ordHabit;
     private String ordSendOutState;
+    private String outStatus;
     private String ordRemark;
     private Integer ordDelState;
     @JsonIgnoreProperties("orders")
@@ -44,6 +45,18 @@ public class Orders {
     private List<Returnedmoneyplan> returnedmoneyplan;
     @JsonIgnoreProperties("orders")
     private List<Invoice> invoice;
+    @JsonIgnoreProperties("orders")
+    private Address address;
+
+    @ManyToOne
+    @JoinColumn(name="add_id",referencedColumnName = "add_id")
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     @Id
     @Column(name = "ord_id")
@@ -177,6 +190,16 @@ public class Orders {
     }
 
     @Basic
+    @Column(name = "out_status")
+    public String getOutStatus() {
+        return outStatus;
+    }
+
+    public void setOutStatus(String outStatus) {
+        this.outStatus = outStatus;
+    }
+
+    @Basic
     @Column(name = "ord_remark")
     public String getOrdRemark() {
         return ordRemark;
@@ -288,5 +311,38 @@ public class Orders {
 
     public void setInvoice(List<Invoice> invoice) {
         this.invoice = invoice;
+    }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "ordId=" + ordId +
+                ", ordNumber='" + ordNumber + '\'' +
+                ", ordTheme='" + ordTheme + '\'' +
+                ", ordClassify='" + ordClassify + '\'' +
+                ", ordPayment='" + ordPayment + '\'' +
+                ", ordTotalAmount=" + ordTotalAmount +
+                ", ordSendOutMoney=" + ordSendOutMoney +
+                ", ordMargin=" + ordMargin +
+                ", ordTime=" + ordTime +
+                ", ordExecutingState='" + ordExecutingState + '\'' +
+                ", ordPurchaseWay='" + ordPurchaseWay + '\'' +
+                ", ordHabit='" + ordHabit + '\'' +
+                ", ordSendOutState='" + ordSendOutState + '\'' +
+                ", outStatus='" + outStatus + '\'' +
+                ", ordRemark='" + ordRemark + '\'' +
+                ", ordDelState=" + ordDelState +
+                ", outstock=" + outstock +
+                ", customer=" + customer +
+                ", user=" + user +
+                ", quote=" + quote +
+                ", orderdetail=" + orderdetail +
+                ", sendout=" + sendout +
+                ", returnedgoods=" + returnedgoods +
+                ", returnedmoney=" + returnedmoney +
+                ", returnedmoneyplan=" + returnedmoneyplan +
+                ", invoice=" + invoice +
+                ", address=" + address +
+                '}';
     }
 }

@@ -23,6 +23,7 @@ public class Costdetails {
 
     @Id
     @Column(name = "cd_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCdId() {
         return cdId;
     }

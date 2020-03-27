@@ -1,8 +1,10 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,14 +12,18 @@ import java.util.Objects;
 public class Position {
     private int postId;
     private String postName;
-    private Integer postLv;
+    private String postMes;
+    private String creater;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp createTime;
     @JsonIgnoreProperties("position")
     private List<Power> power;
     @JsonIgnoreProperties("position")
     private List<User> user;
 
     @Id
-    @Column(name = "post_id")
+    @Column(name = "post_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getPostId() {
         return postId;
     }
@@ -37,15 +43,35 @@ public class Position {
     }
 
     @Basic
-    @Column(name = "post_lv")
-    public Integer getPostLv() {
-        return postLv;
+    @Column(name = "post_mes")
+    public String getPostMes() {
+        return postMes;
     }
 
-    public void setPostLv(Integer postLv) {
-        this.postLv = postLv;
+    public void setPostMes(String postMes) {
+        this.postMes = postMes;
     }
 
+    @Basic
+    @Column(name = "creater")
+    public String getCreater() {
+        return creater;
+    }
+
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
+
+    @Basic
+    @Column(name = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,12 +79,14 @@ public class Position {
         Position position = (Position) o;
         return postId == position.postId &&
                 Objects.equals(postName, position.postName) &&
-                Objects.equals(postLv, position.postLv);
+                Objects.equals(postMes, position.postMes) &&
+                Objects.equals(creater, position.creater) &&
+                Objects.equals(createTime, position.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postId, postName, postLv);
+        return Objects.hash(postId, postName, postMes);
     }
 
     @ManyToMany
@@ -79,5 +107,16 @@ public class Position {
 
     public void setUser(List<User> user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "postId=" + postId +
+                ", postName='" + postName + '\'' +
+                ", postMes='" + postMes + '\'' +
+                ", creater=" + creater +
+                ", createTime=" + createTime +
+                '}';
     }
 }

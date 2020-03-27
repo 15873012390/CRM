@@ -18,6 +18,7 @@ public class Auditdetails {
 
     @Id
     @Column(name = "ad_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAdId() {
         return adId;
     }

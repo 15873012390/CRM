@@ -9,4 +9,6 @@ import java.util.List;
 public interface HTICustomerDao {
 
     public List<Customer> queryAllCustomer();
+
+    public List<Customer> queryByLike(String value);
 }

@@ -1,14 +1,8 @@
 package com.zktr.crmproject.vo;
 
-
-
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.Timestamp;
 import java.util.Date;
 
-public class CustomerServiceAdvancedSearch  extends  PageBeen{
+public class CustomerServiceAdvancedSearch{
     private int csId;
     private String title;
     private String serviceType;
@@ -19,6 +13,8 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
     private String status;
     private Integer cusId;
     private Integer cusName;
+    private Integer curPage;
+    private Integer pageSize;
     private Date s1;
     private Date s2;
 
@@ -117,6 +113,22 @@ public class CustomerServiceAdvancedSearch  extends  PageBeen{
 
     public void setS2(Date s2) {
         this.s2 = s2;
+    }
+
+    public Integer getCurPage() {
+        return curPage;
+    }
+
+    public void setCurPage(Integer curPage) {
+        this.curPage = curPage;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 
     @Override

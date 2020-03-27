@@ -17,6 +17,7 @@ public class Costauditdetails {
 
     @Id
     @Column(name = "cad_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCadId() {
         return cadId;
     }

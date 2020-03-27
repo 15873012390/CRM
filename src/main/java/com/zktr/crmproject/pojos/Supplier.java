@@ -135,7 +135,7 @@ public class Supplier {
         return Objects.hash(supplierId, supplierName, sex, phone, job, email, qq, weixin, useStatus);
     }
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplier",cascade = CascadeType.ALL)
     public List<Purchaseorder> getPurchaseorder() {
         return purchaseorder;
     }
@@ -153,7 +153,7 @@ public class Supplier {
         this.purchasereturn = purchasereturn;
     }
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplier",cascade = CascadeType.ALL)
     public List<Instock> getInstock() {
         return instock;
     }

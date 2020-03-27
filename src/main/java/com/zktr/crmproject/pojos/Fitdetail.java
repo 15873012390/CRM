@@ -21,13 +21,9 @@ public class Fitdetail {
     private Timestamp deliverTime;
     private BigDecimal grossProfit;
     private String remarks;
-    @JsonIgnoreProperties("fitdetail")
     private List<Repair> repair;
-    @JsonIgnoreProperties("fitdetail")
-    private Product product;
-    @JsonIgnoreProperties("fitdetail")
+    private Productspecification productspecification;
     private Fitcustom fitcustom;
-    @JsonIgnoreProperties("fitdetail")
     private Department department;
 
     @Id
@@ -163,13 +159,13 @@ public class Fitdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 
     @ManyToOne

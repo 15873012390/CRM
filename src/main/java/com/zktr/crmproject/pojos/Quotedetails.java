@@ -13,7 +13,7 @@ public class Quotedetails {
     private BigDecimal discount;
     private BigDecimal money;
     private String remarks;
-    private Product product;
+    private Productspecification productspecification;
     private Quote quote;
 
     @Id
@@ -97,13 +97,13 @@ public class Quotedetails {
     }
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 
     @ManyToOne

@@ -138,7 +138,7 @@ public class Purchaseenter {
         this.audit = audit;
     }
 
-    @OneToMany(mappedBy = "purchaseenter")
+    @OneToMany(mappedBy = "purchaseenter",cascade = CascadeType.ALL)
     public List<Pedetail> getPedetail() {
         return pedetail;
     }

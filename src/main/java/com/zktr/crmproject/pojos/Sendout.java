@@ -19,8 +19,6 @@ public class Sendout {
     @JsonIgnoreProperties("sendout")
     private Customer customer;
     @JsonIgnoreProperties("sendout")
-    private Address address;
-    @JsonIgnoreProperties("sendout")
     private Orders orders;
     @JsonIgnoreProperties("sendout")
     private List<Sendoutdetial> sendoutdetial;
@@ -113,16 +111,6 @@ public class Sendout {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-    }
-
-    @ManyToOne
-    @JoinColumn(name="add_id",referencedColumnName = "add_id")
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     @ManyToOne

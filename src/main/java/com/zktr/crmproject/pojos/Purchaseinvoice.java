@@ -147,7 +147,7 @@ public class Purchaseinvoice {
     }
 
 
-    @OneToMany(mappedBy = "purchaseInvoice")
+    @OneToMany(mappedBy = "purchaseInvoice",cascade = CascadeType.ALL)
     public List<Purchaseenter> getPurchaseenter() {
         return purchaseenter;
     }

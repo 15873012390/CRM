@@ -16,6 +16,8 @@ public interface JrcSalesOpportMDao {
                                                @Param("select") String select);
     public List<Salesopport> queryByAdvancedSearch(SalesOpportAdvancedSearch salesOpportAdvancedSearch);
 
-    public Salesopport queryBySoid(@Param("soid") int soid);
+    public Salesopport queryBySoid(@Param("soid") Integer soid);
+
+    public Salesopport deleteQueryById(@Param("soid") Integer soid);
 
 }

@@ -1,6 +1,7 @@
 package com.zktr.crmproject.pojos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,25 +10,26 @@ import java.util.Objects;
 
 @Entity
 public class Warehouse {
+    @Excel(name="仓库ID")
     private int warehouseId;
+    @Excel(name="仓库名称")
     private String warehouseName;
+    @Excel(name="仓库类型")
     private String stockType;
+    @Excel(name="仓库价值")
     private BigDecimal stockValue;
+    @Excel(name="备注")
     private String remarks;
-    @JsonIgnoreProperties("warehouse")
     private List<Purchaseplan> purchaseplan;
-    @JsonIgnoreProperties("warehouse")
     private List<Outstock> outstock;
-    @JsonIgnoreProperties("warehouse")
     private List<Stock> stock;
-    @JsonIgnoreProperties("warehouse")
     private List<Instock> instock;
-    @JsonIgnoreProperties("warehouse")
     private List<Returnedgoods> returnedgoods;
 
 
     @Id
     @Column(name = "warehouse_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getWarehouseId() {
         return warehouseId;
     }
@@ -93,7 +95,7 @@ public class Warehouse {
         return Objects.hash(warehouseId, warehouseName, stockType, stockValue, remarks);
     }
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse",cascade = CascadeType.ALL)
     public List<Purchaseplan> getPurchaseplan() {
         return purchaseplan;
     }
@@ -102,7 +104,7 @@ public class Warehouse {
         this.purchaseplan = purchaseplan;
     }
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse",cascade = CascadeType.ALL)
     public List<Outstock> getOutstock() {
         return outstock;
     }
@@ -111,7 +113,7 @@ public class Warehouse {
         this.outstock = outstock;
     }
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse",cascade = CascadeType.ALL)
     public List<Stock> getStock() {
         return stock;
     }
@@ -120,7 +122,7 @@ public class Warehouse {
         this.stock = stock;
     }
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse",cascade = CascadeType.ALL)
     public List<Instock> getInstock() {
         return instock;
     }
@@ -129,7 +131,7 @@ public class Warehouse {
         this.instock = instock;
     }
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse",cascade = CascadeType.ALL)
     public List<Returnedgoods> getReturnedgoods() {
         return returnedgoods;
     }
@@ -138,4 +140,20 @@ public class Warehouse {
         this.returnedgoods = returnedgoods;
     }
 
+
+    @Override
+    public String toString() {
+        return "Warehouse{" +
+                "warehouseId=" + warehouseId +
+                ", warehouseName='" + warehouseName + '\'' +
+                ", stockType='" + stockType + '\'' +
+                ", stockValue=" + stockValue +
+                ", remarks='" + remarks + '\'' +
+                ", purchaseplan=" + purchaseplan +
+                ", outstock=" + outstock +
+                ", stock=" + stock +
+                ", instock=" + instock +
+                ", returnedgoods=" + returnedgoods +
+                '}';
+    }
 }

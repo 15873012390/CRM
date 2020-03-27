@@ -3,6 +3,7 @@ package com.zktr.crmproject.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Productspecification {
@@ -11,9 +12,21 @@ public class Productspecification {
     private String speSpecification;
     private String speUnit;
     private Integer speUnitConversion;
-    @JsonIgnoreProperties("productspecification")
     private Product product;
-    private Stock stocks;
+    private List<Stock> stocks;
+    private List<Plandetail> plandetails;
+    private List<Pcodetail> pcodetails;
+    private List<Pcrdetail> pcrdetails;
+    private List<Pedetail> pedetails;
+    private List<Outstockdetails> outstockdetails;
+    private List<Instockdetail> instockdetails;
+    private List<Alarmdetail> alarmdetails;
+    private List<Fitdetail> fitdetails;
+    private List<Quotedetails> quotedetails;
+    private List<Orderdetail> orderdetails;
+    private List<Sendoutdetial> sendoutdetials;
+    private List<Returnedgoodsdetial> returnedgoodsdetials;
+    private List<Contract> contracts;
 
     @Id
     @Column(name = "spe_id")
@@ -75,13 +88,128 @@ public class Productspecification {
         this.product = product;
     }
 
-    @ManyToOne
-    @JoinColumn(name="stock_id",referencedColumnName = "stock_id")
-    public Stock getStocks() {
+   @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Stock> getStocks() {
         return stocks;
     }
 
-    public void setStocks(Stock stocks) {
+    public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Plandetail> getPlandetails() {
+        return plandetails;
+    }
+
+    public void setPlandetails(List<Plandetail> plandetails) {
+        this.plandetails = plandetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Pcodetail> getPcodetails() {
+        return pcodetails;
+    }
+
+    public void setPcodetails(List<Pcodetail> pcodetails) {
+        this.pcodetails = pcodetails;
+    }
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Pcrdetail> getPcrdetails() {
+        return pcrdetails;
+    }
+
+    public void setPcrdetails(List<Pcrdetail> pcrdetails) {
+        this.pcrdetails = pcrdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Pedetail> getPedetails() {
+        return pedetails;
+    }
+
+    public void setPedetails(List<Pedetail> pedetails) {
+        this.pedetails = pedetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Outstockdetails> getOutstockdetails() {
+        return outstockdetails;
+    }
+
+    public void setOutstockdetails(List<Outstockdetails> outstockdetails) {
+        this.outstockdetails = outstockdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Instockdetail> getInstockdetails() {
+        return instockdetails;
+    }
+
+    public void setInstockdetails(List<Instockdetail> instockdetails) {
+        this.instockdetails = instockdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Alarmdetail> getAlarmdetails() {
+        return alarmdetails;
+    }
+
+    public void setAlarmdetails(List<Alarmdetail> alarmdetails) {
+        this.alarmdetails = alarmdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Fitdetail> getFitdetails() {
+        return fitdetails;
+    }
+
+    public void setFitdetails(List<Fitdetail> fitdetails) {
+        this.fitdetails = fitdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Quotedetails> getQuotedetails() {
+        return quotedetails;
+    }
+
+    public void setQuotedetails(List<Quotedetails> quotedetails) {
+        this.quotedetails = quotedetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Orderdetail> getOrderdetails() {
+        return orderdetails;
+    }
+
+    public void setOrderdetails(List<Orderdetail> orderdetails) {
+        this.orderdetails = orderdetails;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Sendoutdetial> getSendoutdetials() {
+        return sendoutdetials;
+    }
+
+    public void setSendoutdetials(List<Sendoutdetial> sendoutdetials) {
+        this.sendoutdetials = sendoutdetials;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Returnedgoodsdetial> getReturnedgoodsdetials() {
+        return returnedgoodsdetials;
+    }
+
+    public void setReturnedgoodsdetials(List<Returnedgoodsdetial> returnedgoodsdetials) {
+        this.returnedgoodsdetials = returnedgoodsdetials;
+    }
+
+    @OneToMany(mappedBy = "productspecification",cascade = CascadeType.ALL)
+    public List<Contract> getContracts() {
+        return contracts;
+    }
+
+    public void setContracts(List<Contract> contracts) {
+        this.contracts = contracts;
     }
 }

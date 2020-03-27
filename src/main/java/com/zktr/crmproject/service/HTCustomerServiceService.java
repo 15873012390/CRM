@@ -54,8 +54,9 @@ public class HTCustomerServiceService {
      * 增加/编辑客户服务
      * @param cs
      */
-    public void addorEditCustomerService(Customerservice cs){
-        customerServiceDao.save(cs);
+    public Integer addorEditCustomerService(Customerservice cs){
+        Customerservice save = customerServiceDao.save(cs);
+        return save.getCsId();
     }
 
     /**
@@ -157,6 +158,15 @@ public class HTCustomerServiceService {
             customerServiceDao.deleteById(id);
         }
 
+    }
+
+    /**
+     * 根据客户ID，客户名称，客户电话号码查询
+     * @param value
+     * @return
+     */
+    public List<Customer> queryByLikeCustomer(String value){
+        return iCustomerDao.queryByLike(value);
     }
 
 

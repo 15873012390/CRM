@@ -14,8 +14,29 @@
     </resultMap>
     
     <select id="queryAll" resultMap="customerMap">
-        select cus.cus_id,cus.cus_name,con.con_id,con.con_name,con.con_mobile from customer cus
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile 
+        from customer cus
         left join contacts con on cus.cus_id = con.cus_id
     </select>
 
+    <select id="queryContactByCusid" resultMap="customerMap">
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile
+        from customer cus
+        left join contacts con on cus.cus_id = con.cus_id
+        where cus.cus_id=#{cusid}
+    </select>
+
+
+    <select id="queryByCusNameAndConName" resultMap="customerMap">
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile
+        from customer cus
+        left join contacts con on cus.cus_id = con.cus_id
+        where cus.cus_name=#{cusName}
+        <if test="conName!=null and conName.length!=0">
+            and con.con_name=#{conName}
+        </if>
+    </select>
 </mapper>

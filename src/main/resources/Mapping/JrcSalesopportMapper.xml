@@ -23,6 +23,7 @@
         <result property="cusDemand" column="cus_demand"/>
         <result property="signingTime" column="signing_time"/>
         <result property="possibility" column="possibility"/>
+        <result property="delStatus" column="del_status"/>
 
         <result property="amount" column="amount"/>
         <result property="starTarget" column="star_target"/>
@@ -36,13 +37,22 @@
             <id property="uId" column="u_id"/>
             <result property="uName" column="u_name"/>
         </association>
+
+        <collection property="stagelog" ofType="Stagelog">
+            <id property="slId" column="sl_id"/>
+            <result property="slNote" column="sl_note"/>
+            <result property="recordTime" column="record_time"/>
+            <result property="stageName" column="stage_name"/>
+            <result property="userName" column="user_name"/>
+        </collection>
+
     </resultMap>
     
     <select id="queryAll" resultMap="salesopportMap">
         select
-        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
-        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
-        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
         from salesopport s
         left join customer c on s.cus_id = c.cus_id
         left join user u on s.u_id = u.u_id
@@ -50,19 +60,33 @@
         order by s.so_id desc
     </select>
 
+    <select id="queryBySoid" resultMap="salesopportMap">
+        select
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        sl.sl_id, sl.sl_note, sl.record_time, sl.stage_name, sl.user_name,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
+        from salesopport s
+        left join stagelog sl on s.so_id = sl.so_id
+        left join user u on s.u_id = u.u_id
+        left join customer c on s.cus_id = c.cus_id
+        where s.del_status=1 and s.so_id=#{soid}
+        order by s.so_id desc 
+    </select>
+
     <select id="queryByLikeSearch" resultMap="salesopportMap">
         select
-        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
-        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
-        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
         from salesopport s
         left join customer c on s.cus_id = c.cus_id
         left join user u on s.u_id = u.u_id where 1=1
         and s.del_status=1
         <if test="value!=null and value.length!=0 and value!='全部数据'">
             <choose>
-                <when test="value=='初期沟通' || value=='需求分析' || value=='需求分析' || value=='方案制定'
-                or value=='投招标/竞争'  || value=='商务谈判' || value=='合同签约'">
+                <when test="value=='初期沟通' || value=='需求分析'|| value=='方案制定'
+                 || value=='投招标竞争'  || value=='商务谈判' || value=='合同签约'">
                     and s.stage =#{value}
                 </when>
                 <when test="value=='跟踪'|| value=='成功' || value=='失败'
@@ -95,43 +119,44 @@
                 </otherwise>
             </choose>
         </if>
-        <choose>
-            <when test="input!=null and select=='机会主题'">
-                and s.so_theme like #{input}
-            </when>
-            <when test="input!=null and select=='客户名称'">
-                and c.cus_name like #{input}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
+        <if test="input!=null and input.length!=0">
+            <choose>
+                <when test="select=='机会主题'">
+                    and s.so_theme like #{input}
+                </when>
+                <when test="select=='客户名称'">
+                    and c.cus_name like #{input}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </if>
         order by s.so_id desc
     </select>
 
 
     <select id="queryByAdvancedSearch"  resultMap="salesopportMap" parameterType="com.zktr.crmproject.vo.SalesOpportAdvancedSearch">
         select
-        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
-        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
-        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
         from salesopport s
         left join user u on s.u_id = u.u_id
         left join customer c on s.cus_id = c.cus_id
-        left join contacts c2 on c.cus_id = c2.cus_id
-        where s.del_status=1
         <trim prefix="where" prefixOverrides="and">
-            <if test="cusId!=0">
+            and s.del_status=1
+            <if test="cusId!=''">
                 and c.cus_id=#{cusId}
             </if>
-            <if test="conName!=null and conName!=''">
-                and c2.con_name=#{conName}
+            <if test="conName!=null and conName.length!=0">
+                and s.con_name=#{conName}
             </if>
-            <if test="opportunitiesThem!=null and opportunitiesThem!=''">
+            <if test="opportunitiesThem!=null and opportunitiesThem.length!=0">
                 <choose>
-                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect!='' and opportunitiesThemSelect=='包含'">
+                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect.length!=0 and opportunitiesThemSelect=='包含'">
                         and s.so_theme like #{opportunitiesThem}
                     </when>
-                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect!='' and opportunitiesThemSelect=='不包含'">
+                    <when test="opportunitiesThemSelect!=null and opportunitiesThemSelect.length!=0 and opportunitiesThemSelect=='不包含'">
                         and s.so_theme not like #{opportunitiesThem}
                     </when>
                     <otherwise></otherwise>
@@ -148,34 +173,18 @@
 
             <if test="amount!=null">
                 <choose>
-                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='大于'">
+                    <when test="amountSelect!=null and amountSelect.length!=0 and amountSelect=='大于'">
                         and s.amount &gt;#{amount}
                     </when>
-                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='小于'">
+                    <when test="amountSelect!=null and amountSelect.length!=0 and amountSelect=='小于'">
                         and s.amount &lt;#{amount}
                     </when>
-                    <when test="amountSelect!=null and amountSelect!='' and amountSelect=='不等于'">
+                    <when test="amountSelect!=null and amountSelect.length!=0 and amountSelect=='不等于'">
                         and s.amount &gt;#{amount} and s.amount &lt;#{amount}
                     </when>
                     <otherwise></otherwise>
                 </choose>
             </if>
-
-            <if test="possibility!=null and possibility!=''">
-                <choose>
-                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='大于'">
-                        and s.possibility &gt;#{possibility}
-                    </when>
-                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='小于'">
-                        and s.possibility &lt;#{possibility}
-                    </when>
-                    <when test="possibilitySelect!=null and possibilitySelect!='' and possibilitySelect=='不等于'">
-                        and s.possibility &gt;#{possibility} and s.possibility &lt;#{possibility}
-                    </when>
-                    <otherwise></otherwise>
-                </choose>
-            </if>
-
             <if test="updateTimeStart!=null">
                 and s.update_date &gt;= #{updateTimeStart}
             </if>
@@ -183,7 +192,7 @@
                 and s.update_date &lt;=#{updateTimeEnd}
             </if>
 
-            <if test="checkedCustomerSource!=null and checkedCustomerSource!=''">
+            <if test="checkedCustomerSource.size() > 0">
                 and s.cus_source in
                 <foreach collection="checkedCustomerSource" index="index" item="customerSource"
                          open="(" separator="," close=")">
@@ -191,7 +200,7 @@
                 </foreach>
             </if>
 
-            <if test="checkedStage!=null and checkedStage!=''">
+            <if test="checkedStage.size() > 0">
                 and s.stage in
                 <foreach collection="checkedStage" index="index" item="stage"
                          open="(" separator="," close=")">
@@ -199,7 +208,7 @@
                 </foreach>
             </if>
 
-            <if test="checkedUser!=null and checkedUser!=''">
+            <if test="checkedUser.size() > 0">
                 and u.u_id in
                 <foreach collection="checkedUser" index="index" item="user"
                          open="(" separator="," close=")">
@@ -207,7 +216,7 @@
                 </foreach>
             </if>
 
-            <if test="checkedStatus!=null and checkedStatus!=''">
+            <if test="checkedStatus.size() > 0">
                 and s.status in
                 <foreach collection="checkedStatus" index="index" item="status"
                          open="(" separator="," close=")">
@@ -215,14 +224,14 @@
                 </foreach>
             </if>
 
-            <if test="checkedPriority!=null and checkedPriority!=''">
+            <if test="checkedPriority.size() > 0">
                 and s.priority in
                 <foreach collection="checkedPriority" index="index" item="priority"
-                         open="(" separator=",i" close=")">
+                         open="(" separator="," close=")">
                     #{priority}
                 </foreach>
             </if>
-            <if test="checkedStarTarget!=null and checkedStarTarget!=''">
+            <if test="checkedStarTarget.size() > 0">
                 and s.star_target in
                 <foreach collection="checkedStarTarget" index="index" item="starTarget"
                          open="(" separator="," close=")">
@@ -230,7 +239,7 @@
                 </foreach>
             </if>
 
-            <if test="checkedType!=null and checkedType!=''">
+            <if test="checkedType.size() > 0">
                 and s.architecture in
                 <foreach collection="checkedType" index="index" item="type"
                          open="(" separator="," close=")">
@@ -246,23 +255,22 @@
             </if>
 
         </trim>
-        group by s.so_id
         order by s.so_id desc
     </select>
 
-    <select id="queryBySoid" resultMap="salesopportMap">
+
+    <select id="deleteQueryById" resultMap="salesopportMap">
         select
-        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,
-        s.cus_source,s.priority,s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,
-        s.possibility,s.amount,s.star_target,c.cus_id,c.cus_name,u.u_id,u.u_name
+        s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
         from salesopport s
         left join user u on s.u_id = u.u_id
         left join customer c on s.cus_id = c.cus_id
-        left join contacts c2 on c.cus_id = c2.cus_id
-        where s.del_status=1 and so_id=#{soid}
-        group by s.so_id
+        where s.del_status=1 and s.so_id=#{soid}
         order by s.so_id desc
     </select>
+
 
 
 </mapper>

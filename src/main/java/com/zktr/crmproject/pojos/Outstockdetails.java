@@ -10,9 +10,7 @@ public class Outstockdetails {
     private Integer osdNumber;
     private String status;
     private String remarks;
-    @JsonIgnoreProperties("outstockdetail")
-    private Product product;
-    @JsonIgnoreProperties("outstockdetail")
+    private Productspecification productspecification;
     private Outstock outstock;
 
     @Id
@@ -57,13 +55,13 @@ public class Outstockdetails {
     }
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 
     @ManyToOne
@@ -74,5 +72,18 @@ public class Outstockdetails {
 
     public void setOutstock(Outstock outstock) {
         this.outstock = outstock;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Outstockdetails{" +
+                "osdId=" + osdId +
+                ", osdNumber=" + osdNumber +
+                ", status='" + status + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", productspecification=" + productspecification +
+                ", outstock=" + outstock +
+                '}';
     }
 }

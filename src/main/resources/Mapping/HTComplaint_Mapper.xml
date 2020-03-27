@@ -35,7 +35,7 @@
     <select id="queryComplaintByPage" resultMap="complaintMap" parameterType="com.zktr.crmproject.vo.ComplaintAdvancedSearch">
         select * from complaint cp,customer ct where cp.cus_id = ct.cus_id
         <if test="title!=null and title.length!=0">
-            cp.title = #{title}
+            and cp.title = #{title}
         </if>
         <if test="cusId!=null and cusId!=''">
             and ct.cus_id = #{cusId}

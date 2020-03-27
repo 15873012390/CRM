@@ -13,7 +13,10 @@ public interface HTIQaDao {
 
     public Qa queryById(Integer csId);
 
+    public List<Qa> queryByLike(String value);
+
     public List<Qa> queryLikeQa(String value,String input,String select);
 
     public List<Qa> queryConditionByPage(QaAdvancedSearch qas);
+
 }

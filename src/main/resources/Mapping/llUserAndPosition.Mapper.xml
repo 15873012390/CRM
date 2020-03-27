@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.llUserAndPositionDao">
+    <resultMap id="lluserMap" type="com.zktr.crmproject.vo.UserAndPosition">
+        <id property="uId" column="u_id"></id>
+        <id property="postId" column="post_id"></id>
+        <association property="user" javaType="User">
+        <id property="uId" column="u_id"></id>
+        <result property="uName" column="u_name"></result>
+        <result property="uPass" column="u_pass"></result>
+        <result property="uSex" column="u_sex"></result>
+        <result property="uBirth" column="u_birth"></result>
+        <result property="uJoindate" column="u_joindate"></result>
+        <result property="uImg" column="u_img"></result>
+        <result property="uStatus" column="u_Status"></result>
+        </association>
+        <association property="department" javaType="com.zktr.crmproject.pojos.Department">
+            <id column="d_id" property="dId"/>
+            <result property="dName" column="d_name"></result>
+        </association>
+        <association property="position" javaType="com.zktr.crmproject.pojos.Position">
+            <id column="post_id" property="postId"/>
+            <result property="postName" column="post_name"></result>
+        </association>
+    </resultMap>
+
+    <select id="findAllUsers" resultMap="lluserMap">
+        SELECT u.u_id,u_name,u_sex,u_birth,u_joindate,u_img,d.d_id,d_name,post_name FROM user_position a
+        left join position b ON a.post_id = b.post_id
+        left join user u on a.u_id = u.u_id
+        left join department d on u.d_id = d.d_id
+        where u.u_status=1
+        order by u.u_id asc
+    </select>
+    <select id="queryLikeName" resultMap="lluserMap">
+        SELECT u.u_id,u_name,u_sex,u_birth,u_joindate,u_img,d.d_id,d.d_name,post_name FROM user_position a
+        left join position b ON a.post_id = b.post_id
+        left join user u on a.u_id = u.u_id
+        left join department d on u.d_id = d.d_id
+        where u.u_status=1 and u.u_name like CONCAT('%',#{uname},'%')
+        order by u.u_id asc
+    </select>
+</mapper>

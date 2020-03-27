@@ -119,7 +119,7 @@ public class Purchaseplan {
 
 
     @ManyToOne
-    @JoinColumn(name="d_id",referencedColumnName = "d_id")
+    @JoinColumn(name="dept_id",referencedColumnName = "d_id")
     public Department getDepartment() {
         return department;
     }
@@ -148,7 +148,7 @@ public class Purchaseplan {
         this.audit = audit;
     }
 
-    @OneToMany(mappedBy = "purchaseplan")
+    @OneToMany(mappedBy = "purchaseplan",cascade = CascadeType.ALL)
     public List<Plandetail> getPlandetail() {
         return plandetail;
     }

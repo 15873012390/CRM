@@ -126,7 +126,7 @@ public class Purchasereturn {
         this.supplier = supplier;
     }
 
-    @OneToMany(mappedBy = "purchasereturn")
+    @OneToMany(mappedBy = "purchasereturn",cascade = CascadeType.ALL)
     public List<Pcrdetail> getPcrdetail() {
         return pcrdetail;
     }
@@ -135,7 +135,7 @@ public class Purchasereturn {
         this.pcrdetail = pcrdetail;
     }
 
-    @OneToMany(mappedBy = "purchasereturn")
+    @OneToMany(mappedBy = "purchasereturn",cascade = CascadeType.ALL)
     public List<Paid> getPaid() {
         return paid;
     }
@@ -144,7 +144,7 @@ public class Purchasereturn {
         this.paid = paid;
     }
 
-    @OneToMany(mappedBy = "purchasereturn")
+    @OneToMany(mappedBy = "purchasereturn",cascade = CascadeType.ALL)
     public List<Outstock> getOutstock() {
         return outstock;
     }

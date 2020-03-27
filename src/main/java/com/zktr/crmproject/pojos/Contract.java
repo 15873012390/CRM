@@ -20,11 +20,12 @@ public class Contract {
     private String conTheme;
     private User user;
     private Customer customer;
-
     private Quote quote;
+    private Productspecification productspecification;
 
     @Id
     @Column(name = "ctr_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCtrId() {
         return ctrId;
     }
@@ -156,5 +157,15 @@ public class Contract {
 
     public void setQuote(Quote quote) {
         this.quote = quote;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
+    }
+
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 }

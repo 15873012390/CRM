@@ -22,6 +22,7 @@ public class Costaudit {
 
     @Id
     @Column(name = "ca_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCaId() {
         return caId;
     }

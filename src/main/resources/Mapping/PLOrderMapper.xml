@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLIOrdersDao">
+
+    <resultMap id="ordersMap" type="Orders">
+        <id column="ord_id" property="ordId"></id>
+        <result column="ord_number"  property="ordNumber"></result>
+        <result column="ord_theme" property="ordTheme"></result>
+        <result column="ord_classify" property="ordClassify" ></result>
+        <result column="ord_payment" property="ordPayment"></result>
+        <result column="ord_total_amount" property="ordTotalAmount"></result>
+        <result column="ord_send_out_money" property="ordSendOutMoney"></result>
+        <result column="ord_margin" property="ordMargin"></result>
+        <result column="ord_time" property="ordTime"></result>
+        <result column="ord_executing_state" property="ordExecutingState"></result>
+        <result column="ord_purchase_way" property="ordPurchaseWay"></result>
+        <result column="ord_habit" property="ordHabit"></result>
+        <result column="ord_send_out_state" property="ordSendOutState"></result>
+        <result column="out_status" property="outStatus"></result>
+        <result column="ord_remark" property="ordRemark"></result>
+        <result column="ord_del_state" property="ordDelState"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+        <collection property="orderdetail" ofType="Orderdetail">
+            <id column="det_id" property="detId"></id>
+            <result column="det_number"  property="detNumber"></result>
+            <result column="det_time" property="detTime"></result>
+            <result column="det_require" property="detRequire" ></result>
+            <result column="det_condition" property="detCondition"></result>
+            <result column="det_remark" property="detRemark"></result>
+            <collection property="productspecification" ofType="Productspecification">
+                <id property="speId" column="spe_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="speUnit" column="spe_unit" ></result>
+                <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllNoOutStock" resultMap="ordersMap">
+       SELECT * FROM orders WHERE out_status='未出库'
+    </select>
+
+    <select id="queryOrderdetailByOrdId" resultMap="ordersMap">
+        select * from  orders o
+        left join orderdetail ord  on o.ord_id = ord.ord_id
+        left join user u on o.u_id = u.u_id where ord.ord_id = #{orders.ordId}
+    </select>
+
+    <update id="updateOrdersOutStatus" parameterType="Orders">
+        update orders set out_status='已出库' where ord_id = #{ordId}
+    </update>
+
+    <insert id="insertOrderdetail" parameterType="Orderdetail">
+        insert into orderdetail values (#{detId},#{orders.ordId},#{productspecification.speId},#{user.uId},#{customer.cusId},#{detNumber},#{detTime},#{detRequire},#{detCondition},#{detRemark})
+    </insert>
+
+    <update id="updateOrderdetail" parameterType="Orderdetail">
+        update orderdetail set det_id=#{detId},ord_id=#{orders.ordId},spe_id=#{productspecification.speId},u_id=#{user.uId},cus_id=#{customer.cusId},det_number=#{detNumber},det_time=#{detTime},det_require=#{detRequire},
+        det_condition=#{detCondition},det_remark=#{detRemark} where det_id=#{detId}
+    </update>
+
+
+
+
+</mapper>

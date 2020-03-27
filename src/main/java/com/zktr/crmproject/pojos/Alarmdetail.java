@@ -8,8 +8,7 @@ import javax.persistence.*;
 public class Alarmdetail {
     private int adId;
     private Integer check;
-    @JsonIgnoreProperties("alarmdetail")
-    private Product product;
+    private Productspecification productspecification;
     @JsonIgnoreProperties("alarmdetail")
     private Stock stock;
     @JsonIgnoreProperties("alarmdetail")
@@ -17,6 +16,7 @@ public class Alarmdetail {
 
     @Id
     @Column(name = "ad_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAdId() {
         return adId;
     }
@@ -38,13 +38,13 @@ public class Alarmdetail {
 
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 
     @ManyToOne

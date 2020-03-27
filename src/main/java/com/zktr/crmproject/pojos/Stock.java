@@ -9,7 +9,7 @@ import java.util.List;
 public class Stock {
     private Integer stockId;
     private Integer stockQuantity;
-    private List<Productspecification> ProductSpecification;
+    private Productspecification productspecification;
     @JsonIgnoreProperties("stock")
     private Warehouse warehouse;
     @JsonIgnoreProperties("stock")
@@ -36,14 +36,6 @@ public class Stock {
         this.stockQuantity = stockQuantity;
     }
 
-    @OneToMany(mappedBy = "stocks")
-    public List<Productspecification> getProductSpecification() {
-        return ProductSpecification;
-    }
-
-    public void setProductSpecification(List<Productspecification> productSpecification) {
-        ProductSpecification = productSpecification;
-    }
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")
@@ -54,8 +46,17 @@ public class Stock {
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
+    @ManyToOne
+    @JoinColumn(name = "spe_id", referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
+    }
 
-    @OneToMany(mappedBy = "stock")
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
+    }
+
+    @OneToMany(mappedBy = "stock",cascade = CascadeType.ALL)
     public List<Alarmdetail> getAlarmdetail() {
         return alarmdetail;
     }

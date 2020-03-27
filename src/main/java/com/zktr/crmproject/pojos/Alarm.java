@@ -18,6 +18,7 @@ public class Alarm {
 
     @Id
     @Column(name = "alarm_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAlarmId() {
         return alarmId;
     }

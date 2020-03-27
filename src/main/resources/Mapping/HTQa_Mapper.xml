@@ -21,6 +21,10 @@
     <select id="queryById" resultMap="qaMap">
     select * from qa where qa_id=#{qaId} order by qa_id desc
     </select>
+
+    <select id="queryByLike" resultMap="qaMap">
+       select * from qa where question like #{value} or answer like #{value} order by qa_id desc
+    </select>
     
     <select id="queryConditionByPage" resultMap="qaMap" parameterType="com.zktr.crmproject.vo.QaAdvancedSearch">
         select * from qa

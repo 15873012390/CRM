@@ -99,4 +99,13 @@ public class HTQaService {
     public Qa queryQatByQaId(Integer qaId){
         return iQaDao.queryById(qaId);
     }
+
+    /**
+     * 通过问题和回答来查找所有的问题
+     * @param value
+     * @return
+     */
+    public List<Qa> queryByQusetionAndAnswer(String value){
+        return iQaDao.queryByLike("%"+value+"%");
+    }
 }

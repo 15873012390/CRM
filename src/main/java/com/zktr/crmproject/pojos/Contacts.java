@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -11,15 +12,18 @@ public class Contacts {
     private String conName;
     private String conTel;
     private String conMobile;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp conTime;
     private String conSex;
     private String conPosition;
     private String conRemarks;
+    private String conImg;
     @JsonIgnoreProperties("contacts")
     private Customer customer;
 
     @Id
     @Column(name = "con_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getConId() {
         return conId;
     }
@@ -92,6 +96,16 @@ public class Contacts {
     @Column(name = "con_remarks")
     public String getConRemarks() {
         return conRemarks;
+    }
+
+    @Basic
+    @Column(name = "con_img")
+    public String getConImg() {
+        return conImg;
+    }
+
+    public void setConImg(String conImg) {
+        this.conImg = conImg;
     }
 
     public void setConRemarks(String conRemarks) {

@@ -12,7 +12,7 @@ public class Department {
     private String dName;
     private String dFunction;
     private Integer dBoss;
-    private Integer lowerLevel;
+    private Integer parentId;
     @JsonIgnoreProperties("department")
     private List<Purchaseplan> purchaseplan;
     @JsonIgnoreProperties("department")
@@ -21,7 +21,8 @@ public class Department {
     private List<User> user;
 
     @Id
-    @Column(name = "d_id")
+    @Column(name = "d_id",nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getdId() {
         return dId;
     }
@@ -61,13 +62,13 @@ public class Department {
     }
 
     @Basic
-    @Column(name = "lower_level")
-    public Integer getLowerLevel() {
-        return lowerLevel;
+    @Column(name = "parent_id")
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setLowerLevel(Integer lowerLevel) {
-        this.lowerLevel = lowerLevel;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     @Override
@@ -79,12 +80,12 @@ public class Department {
                 Objects.equals(dName, that.dName) &&
                 Objects.equals(dFunction, that.dFunction) &&
                 Objects.equals(dBoss, that.dBoss) &&
-                Objects.equals(lowerLevel, that.lowerLevel);
+                Objects.equals(parentId, that.parentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dId, dName, dFunction, dBoss, lowerLevel);
+        return Objects.hash(dId, dName, dFunction, dBoss, parentId);
     }
 
     @OneToMany(mappedBy = "department")
@@ -112,5 +113,16 @@ public class Department {
 
     public void setUser(List<User> user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "dId=" + dId +
+                ", dName='" + dName + '\'' +
+                ", dFunction='" + dFunction + '\'' +
+                ", dBoss=" + dBoss +
+                ", parentId=" + parentId +
+                '}';
     }
 }

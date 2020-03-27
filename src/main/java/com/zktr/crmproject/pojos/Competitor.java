@@ -22,6 +22,7 @@ public class Competitor {
 
     @Id
     @Column(name = "com_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getComId() {
         return comId;
     }

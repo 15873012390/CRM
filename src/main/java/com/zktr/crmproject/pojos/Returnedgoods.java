@@ -90,7 +90,7 @@ public class Returnedgoods {
     }
 
 
-    @OneToMany(mappedBy = "returnedgoods")
+    @OneToMany(mappedBy = "returnedgoods",cascade = CascadeType.ALL)
     public List<Instock> getInstock() {
         return instock;
     }
@@ -139,7 +139,7 @@ public class Returnedgoods {
         this.user = user;
     }
 
-    @OneToMany(mappedBy = "returnedgoods")
+    @OneToMany(mappedBy = "returnedgoods",cascade = CascadeType.ALL)
     public List<Returnedgoodsdetial> getReturnedgoodsdetial() {
         return returnedgoodsdetial;
     }

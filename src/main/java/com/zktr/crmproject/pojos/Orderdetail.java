@@ -15,8 +15,7 @@ public class Orderdetail {
     private String detRemark;
     @JsonIgnoreProperties("orderdetail")
     private Orders orders;
-    @JsonIgnoreProperties("orderdetail")
-    private Product product;
+    private Productspecification productspecification;
     @JsonIgnoreProperties("orderdetail")
     private User user;
     @JsonIgnoreProperties("orderdetail")
@@ -95,13 +94,13 @@ public class Orderdetail {
     }
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 
     @ManyToOne
@@ -122,5 +121,21 @@ public class Orderdetail {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    @Override
+    public String toString() {
+        return "Orderdetail{" +
+                "detId=" + detId +
+                ", detNumber=" + detNumber +
+                ", detTime=" + detTime +
+                ", detRequire='" + detRequire + '\'' +
+                ", detCondition='" + detCondition + '\'' +
+                ", detRemark='" + detRemark + '\'' +
+                ", orders=" + orders +
+                ", productspecification=" + productspecification +
+                ", user=" + user +
+                ", customer=" + customer +
+                '}';
     }
 }

@@ -21,9 +21,8 @@ public class HTCustomerCareController {
     }
 
     @PostMapping("/addOrEditCustomerCare")
-    public Result addOrEditCustomerCare(@RequestBody Customercare customercare){
-        customerCareService.addAndEditCustomerCare(customercare);
-        return Result.SUCCESS;
+    public Integer addOrEditCustomerCare(@RequestBody Customercare customercare){
+        return customerCareService.addAndEditCustomerCare(customercare);
     }
 
     @DeleteMapping("/deleteByCcId")

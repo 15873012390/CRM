@@ -1,6 +1,8 @@
 package com.zktr.crmproject.pojos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,19 +18,19 @@ public class Instock {
     private Integer keeper;
     private Timestamp executionTime;
     private String remarks;
-    @JsonIgnoreProperties("instock")
     private Warehouse warehouse;
-    @JsonIgnoreProperties("instock")
+    @NotFound(action=NotFoundAction.IGNORE)
     private Purchaseorder purchaseorder;
-    @JsonIgnoreProperties("instock")
+    @NotFound(action=NotFoundAction.IGNORE)
     private Returnedgoods returnedgoods;
-    @JsonIgnoreProperties("instock")
+    @NotFound(action=NotFoundAction.IGNORE)
     private Supplier supplier;
-    @JsonIgnoreProperties("instock")
+    @NotFound(action=NotFoundAction.IGNORE)
     private List<Instockdetail> instockdetail;
     @Id
     @Basic
     @Column(name = "ins_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getInsId() {
         return insId;
     }
@@ -149,7 +151,7 @@ public class Instock {
         this.supplier = supplier;
     }
 
-    @OneToMany(mappedBy = "instock")
+    @OneToMany(mappedBy = "instock",cascade = CascadeType.ALL)
     public List<Instockdetail> getInstockdetail() {
         return instockdetail;
     }

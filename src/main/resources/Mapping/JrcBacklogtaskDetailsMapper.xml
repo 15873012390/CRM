@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcBackLogTaskDetailsMDao">
+
+    <resultMap id="backLogTaskDetailsMap" type="Backlogtaskdetails">
+        <id property="btdId" column="btd_id"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="status" column="status"/>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+        </association>
+    </resultMap>
+    
+    <select id="queryBackLogTaskUserBybltId" resultMap="backLogTaskDetailsMap">
+            select
+            bltd.btd_id, bltd.blt_id,bltd.finish_time, bltd.status,
+            u.u_id,u.u_name
+            from backlogtaskdetails bltd
+            left join backlogtask blt on blt.blt_id=bltd.blt_id
+            left join user u on u.u_id=bltd.u_id
+            where blt.blt_id=#{bltId}
+    </select>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -20,34 +21,13 @@ public class Product {
     private Integer proBarcode;
     private String proWeight;
     private String proGroup;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp proDate;
     private String durableYears;
     private String proRemark;
     private Integer proDelState;
-    @JsonIgnoreProperties("product")
-    private List<Plandetail> plandetail;
-    @JsonIgnoreProperties("product")
-    private List<Pcodetail> pcodetail;
-    @JsonIgnoreProperties("product")
-    private List<Pcrdetail> pcrdetail;
-    @JsonIgnoreProperties("product")
-    private List<Pedetail> pedetail;
-    @JsonIgnoreProperties("product")
-    private List<Outstockdetails> outstockdetail;
-    @JsonIgnoreProperties("product")
-    private List<Instockdetail> instockdetail;
-    @JsonIgnoreProperties("product")
-    private List<Alarmdetail> alarmdetail;
-    @JsonIgnoreProperties("product")
-    private List<Fitdetail> fitdetail;
-    @JsonIgnoreProperties("product")
-    private List<Quotedetails> quotedetails;
-    @JsonIgnoreProperties("product")
-    private List<Orderdetail> orderdetail;
-    @JsonIgnoreProperties("product")
-    private List<Sendoutdetial> sendoutdetial;
-    @JsonIgnoreProperties("product")
-    private List<Returnedgoodsdetial> returnedgoodsdetial;
+    private String proExplain;
+    private String proDetailedProfile;
     @JsonIgnoreProperties("product")
     private Productclassification productclassification;
     @JsonIgnoreProperties("product")
@@ -62,6 +42,26 @@ public class Product {
     public void setProId(int proId) {
         this.proId = proId;
     }
+
+    @Basic
+    @Column(name = "pro_explain")
+    public String getProExplain() {
+        return proExplain;
+    }
+
+    public void setProExplain(String proExplain) {
+        this.proExplain = proExplain;
+    }
+    @Basic
+    @Column(name = "pro_detailed_profile")
+    public String getProDetailedProfile() {
+        return proDetailedProfile;
+    }
+
+    public void setProDetailedProfile(String proDetailedProfile) {
+        this.proDetailedProfile = proDetailedProfile;
+    }
+
 
     @Basic
     @Column(name = "pro_name")
@@ -203,115 +203,6 @@ public class Product {
         this.proDelState = proDelState;
     }
 
-
-    @OneToMany(mappedBy = "product")
-    public List<Plandetail> getPlandetail() {
-        return plandetail;
-    }
-
-    public void setPlandetail(List<Plandetail> plandetail) {
-        this.plandetail = plandetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Pcodetail> getPcodetail() {
-        return pcodetail;
-    }
-
-    public void setPcodetail(List<Pcodetail> pcodetail) {
-        this.pcodetail = pcodetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Pcrdetail> getPcrdetail() {
-        return pcrdetail;
-    }
-
-    public void setPcrdetail(List<Pcrdetail> pcrdetail) {
-        this.pcrdetail = pcrdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Pedetail> getPedetail() {
-        return pedetail;
-    }
-
-    public void setPedetail(List<Pedetail> pedetail) {
-        this.pedetail = pedetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Outstockdetails> getOutstockdetail() {
-        return outstockdetail;
-    }
-
-    public void setOutstockdetail(List<Outstockdetails> outstockdetail) {
-        this.outstockdetail = outstockdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Instockdetail> getInstockdetail() {
-        return instockdetail;
-    }
-
-    public void setInstockdetail(List<Instockdetail> instockdetail) {
-        this.instockdetail = instockdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Alarmdetail> getAlarmdetail() {
-        return alarmdetail;
-    }
-
-    public void setAlarmdetail(List<Alarmdetail> alarmdetail) {
-        this.alarmdetail = alarmdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Fitdetail> getFitdetail() {
-        return fitdetail;
-    }
-
-    public void setFitdetail(List<Fitdetail> fitdetail) {
-        this.fitdetail = fitdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Quotedetails> getQuotedetails() {
-        return quotedetails;
-    }
-
-    public void setQuotedetails(List<Quotedetails> quotedetails) {
-        this.quotedetails = quotedetails;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Orderdetail> getOrderdetail() {
-        return orderdetail;
-    }
-
-    public void setOrderdetail(List<Orderdetail> orderdetail) {
-        this.orderdetail = orderdetail;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Sendoutdetial> getSendoutdetial() {
-        return sendoutdetial;
-    }
-
-    public void setSendoutdetial(List<Sendoutdetial> sendoutdetial) {
-        this.sendoutdetial = sendoutdetial;
-    }
-
-    @OneToMany(mappedBy = "product")
-    public List<Returnedgoodsdetial> getReturnedgoodsdetial() {
-        return returnedgoodsdetial;
-    }
-
-    public void setReturnedgoodsdetial(List<Returnedgoodsdetial> returnedgoodsdetial) {
-        this.returnedgoodsdetial = returnedgoodsdetial;
-    }
-
     @ManyToOne
     @JoinColumn(name="cla_id",referencedColumnName = "cla_id")
     public Productclassification getProductclassification() {
@@ -322,9 +213,7 @@ public class Product {
         this.productclassification = productclassification;
     }
 
-
-
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     public List<Productspecification> getProductspecification() {
         return productspecification;
     }

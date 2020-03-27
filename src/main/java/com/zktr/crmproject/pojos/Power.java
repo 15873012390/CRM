@@ -13,9 +13,12 @@ public class Power {
     private String powerMessage;
     @JsonIgnoreProperties("power")
     private List<Position> position;
+    @JsonIgnoreProperties("power")
+    private PowerFather powerfather;
 
     @Id
     @Column(name = "power_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getPowerId() {
         return powerId;
     }
@@ -66,5 +69,23 @@ public class Power {
 
     public void setPosition(List<Position> position) {
         this.position = position;
+    }
+    @ManyToOne
+    @JoinColumn(name = "power_fid", referencedColumnName = "power_fid")
+    public PowerFather getPowerfather() {
+        return powerfather;
+    }
+
+    public void setPowerfather(PowerFather powerfather) {
+        this.powerfather = powerfather;
+    }
+
+    @Override
+    public String toString() {
+        return "Power{" +
+                "powerId=" + powerId +
+                ", powerName='" + powerName + '\'' +
+                ", powerMessage='" + powerMessage + '\'' +
+                '}';
     }
 }

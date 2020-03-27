@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcSolutionMDao">
+    
+    <resultMap id="solutionMap" type="Solution">
+        <id property="solId" column="sol_id"/>
+        <result property="solTheme" column="sol_theme"/>
+        <result property="submissionTime" column="submission_time"/>
+        <result property="solContent" column="sol_content"/>
+        <result property="feedback" column="feedback"/>
+        <association property="salesopport" javaType="Salesopport">
+            <id property="soId" column="so_id"/>
+            <result property="soTheme" column="so_theme"/>
+        </association>
+    </resultMap>
+
+    <select id="querySolutionBySoid" resultMap="solutionMap">
+        select so.sol_id, so.sol_theme,so.submission_time,so.sol_content, so.feedback,
+        s.so_id,s.so_theme
+        from solution so left join salesopport s on so.so_id = s.so_id
+        where so.so_id=#{soId}
+        order by so.sol_id desc
+    </select>
+</mapper>

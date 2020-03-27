@@ -11,10 +11,8 @@ public class Pedetail {
     private Integer quantity;
     private BigDecimal uintPrice;
     private String remarks;
-    @JsonIgnoreProperties("pedetail")
     private Purchaseenter purchaseenter;
-    @JsonIgnoreProperties("pedetail")
-    private Product product;
+    private Productspecification productspecification;
 
     @Id
     @Column(name = "peDetail_id")
@@ -67,12 +65,12 @@ public class Pedetail {
     }
 
     @ManyToOne
-    @JoinColumn(name="pro_id",referencedColumnName = "pro_id")
-    public Product getProduct() {
-        return product;
+    @JoinColumn(name="spe_id",referencedColumnName = "spe_id")
+    public Productspecification getProductspecification() {
+        return productspecification;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductspecification(Productspecification productspecification) {
+        this.productspecification = productspecification;
     }
 }

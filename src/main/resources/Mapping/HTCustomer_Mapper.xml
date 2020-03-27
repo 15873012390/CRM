@@ -6,6 +6,7 @@
     <resultMap id="customerMap" type="com.zktr.crmproject.pojos.Customer">
         <id column="cus_id" property="cusId"></id>
         <result column="cus_name" property="cusName"></result>
+        <result column="cus_tel" property="cusTel"></result>
         <collection property="customerservices" ofType="com.zktr.crmproject.pojos.Customerservice">
             <id column="cs_id" property="csId"></id>
             <result column="title" property="title"></result>
@@ -38,5 +39,10 @@
 
     <select id="queryAllCustomer" resultMap="customerMap">
         select cus_id,cus_name from customer
+    </select>
+
+    <select id="queryByLike" resultMap="customerMap">
+        select cus_id,cus_name from customer
+        where cus_id = #{value} or cus_name like '%${value}%' or cus_tel= #{value}
     </select>
 </mapper>

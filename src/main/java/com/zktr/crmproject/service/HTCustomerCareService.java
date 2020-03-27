@@ -71,8 +71,9 @@ public class HTCustomerCareService {
      * 增加/编辑所有客户关怀
      * @param customercare
      */
-    public void addAndEditCustomerCare(Customercare customercare){
-      customerCareDao.save(customercare);
+    public Integer addAndEditCustomerCare(Customercare customercare){
+        Customercare save = customerCareDao.save(customercare);
+        return save.getCcId();
     }
 
     /**

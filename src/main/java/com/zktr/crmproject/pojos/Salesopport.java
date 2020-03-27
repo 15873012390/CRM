@@ -2,6 +2,8 @@ package com.zktr.crmproject.pojos;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -230,6 +232,7 @@ public class Salesopport {
 
     @ManyToOne
     @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     public Customer getCustomer() {
         return customer;
     }
@@ -240,6 +243,7 @@ public class Salesopport {
 
     @ManyToOne
     @JoinColumn(name="u_id",referencedColumnName = "u_id")
+    @NotFound(action= NotFoundAction.IGNORE)
     public User getUser() {
         return user;
     }

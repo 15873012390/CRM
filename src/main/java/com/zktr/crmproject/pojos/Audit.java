@@ -30,6 +30,7 @@ public class Audit {
 
     @Id
     @Column(name = "aud_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAudId() {
         return audId;
     }
@@ -115,7 +116,7 @@ public class Audit {
         this.purchaseplan = purchaseplan;
     }
 
-    @OneToMany(mappedBy = "audit")
+    @OneToMany(mappedBy = "audit",cascade = CascadeType.ALL )
     public List<Purchaseorder> getPurchaseorder() {
         return purchaseorder;
     }
@@ -124,7 +125,7 @@ public class Audit {
         this.purchaseorder = purchaseorder;
     }
 
-    @OneToMany(mappedBy = "audit")
+    @OneToMany(mappedBy = "audit",cascade = CascadeType.ALL)
     public List<Purchaseenter> getPurchaseenter() {
         return purchaseenter;
     }

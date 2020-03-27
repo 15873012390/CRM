@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLproductMDao">
+
+    <resultMap id="productMap" type="Product">
+        <id property="proId" column="pro_id"></id>
+        <result property="proName" column="pro_name"></result>
+        <result property="proImage" column="pro_image"></result>
+        <result property="proMode" column="pro_mode"></result>
+        <result property="proState" column="pro_state"></result>
+        <result property="proPrice" column="pro_price"></result>
+        <result property="proCostprice" column="pro_costprice"></result>
+        <result property="proUnit" column="pro_unit"></result>
+        <result property="proBarcode" column="pro_barcode"></result>
+        <result property="proWeight" column="pro_weight"></result>
+        <result property="proGroup" column="pro_group"></result>
+        <result property="proDate" column="pro_date"></result>
+        <result property="durableYears" column="durable_years"></result>
+        <result property="proRemark" column="pro_remark"></result>
+        <result property="proDelState" column="pro_del_state"></result>
+        <result property="proExplain" column="pro_explain"></result>
+        <result property="proDetailedProfile" column="pro_detailed_profile"></result>
+
+        <!--产品分类 property实体类属性名 javaType实体包名-->
+        <association property="productclassification" javaType="Productclassification">
+            <id property="claId" column="cla_id" ></id>
+            <result property="claName" column="cla_name"></result>
+            <result property="claIdId" column="cla_id_id"></result>
+            <result property="claState" column="cla_state"></result>
+        </association>
+
+        <!--规格集合-->
+        <collection property="productspecification" ofType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="proName" column="pro_name"></result>
+
+            <!-- 库存对象 -->
+            <collection property="stocks" ofType="Stock">
+                <id property="stockId" column="stock_id"></id>
+                <result property="stockQuantity" column="stock_quantity"></result>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+
+    <select id="queryAllProduct"  resultMap="productMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,st.stock_quantity,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+        WHERE p.pro_del_state=1
+        ORDER BY p.pro_id DESC
+    </select>
+
+    <select id="findByid" resultMap="productMap">
+         SELECT p.pro_barcode,p.durable_years,p.cla_id,p.pro_explain,p.pro_detailed_profile,p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,cla.cla_name,cla.cla_id_id
+        FROM product p
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        WHERE p.pro_del_state=1 AND p.pro_id=#{proid}
+    </select>
+
+    <select id="queryByselect" resultMap="productMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,s.spe_specification,st.stock_quantity,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+        WHERE p.pro_del_state=1  and 1=1
+
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='上架' || value=='下架' ">
+                    and p.pro_state=#{value}
+                </when>
+                <when test="value=='成品' || value=='半成品' || value='原料' ">
+                    and p.pro_group=#{value}
+                </when>
+                <when test="value=='基准产品' || value='标准产品' ">
+                    and s.spe_specification=#{value}
+                </when>
+                <otherwise>
+                    and cla.cla_name=#{value}
+                </otherwise>
+            </choose>
+        </if>
+            <choose>
+                <when test="input !=null and input!='' ">
+                    and p.pro_name like #{input}
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        ORDER BY p.pro_id DESC
+    </select>
+
+    <select id="ProductAdvancedSearch" resultMap="productMap" parameterType="com.zktr.crmproject.vo.ProductAdvancedSearch" >
+        SELECT p.pro_barcode,p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,s.spe_specification,st.stock_quantity,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+
+        <trim prefix="where" prefixOverrides="and">
+            <if test="advancedstatevalue!=null and advancedstatevalue.length!=0 and advancedstatevalue!='全部数据'">
+                and cla.cla_name=#{advancedstatevalue }
+            </if>
+            <if test="proBarcode!=null and proBarcode!='' ">
+               <choose>
+                   <when test="proBarcodeSelect !=null and proBarcodeSelect!='' and proBarcodeSelect=='大于' ">
+                       and p.pro_barcode &gt;#{proBarcode}
+                   </when>
+                   <when test="proBarcodeSelect !=null and proBarcodeSelect!='' and proBarcodeSelect=='小于' ">
+                       and p.pro_barcode &lt;#{proBarcode}
+                   </when>
+                   <when test="proBarcodeSelect !=null and proBarcodeSelect!='' and proBarcodeSelect=='不等于'">
+                       and p.pro_barcode &gt;#{proBarcode} and p.pro_barcode &lt;#{proBarcode}
+                   </when>
+                   <otherwise></otherwise>
+               </choose>
+            </if>
+            <if test="proName!=null and proName!='' ">
+                <choose>
+                    <when test="pronameSelect !=null and pronameSelect!='' and pronameSelect=='包含' ">
+                        and p.pro_name like #{proName}
+                    </when>
+                    <when test="pronameSelect !=null and pronameSelect!='' and pronameSelect=='不包含' ">
+                        and p.pro_name not like #{proName}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="proState!=null and proState!='' ">
+                <choose>
+                    <when test="proState=='上架'">
+                        and p.pro_state=#{proState}
+                    </when>
+                    <when test="proState=='下架'">
+                        and p.pro_state=#{proState}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+
+            </if>
+            <if test="proMode!=null and proMode!='' ">
+                <choose>
+                    <when test="proModeSelect!=null and proModeSelect!='' and proModeSelect=='包含' ">
+                        and p.pro_mode like #{proMode}
+                    </when>
+                    <when test="proModeSelect!=null and proModeSelect!='' and proModeSelect=='不包含' ">
+                        and p.pro_mode not like #{proMode}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="proPrice!=null">
+                <choose>
+                    <when test="proPriceSelect!=null and proPriceSelect!='' and proPriceSelect=='大于' ">
+                        and p.pro_price &gt;#{proPrice}
+                    </when>
+                    <when test="proPriceSelect!=null and proPriceSelect!='' and proPriceSelect='小于' ">
+                        and p.pro_price &lt;#{proPrice}
+                    </when>
+                    <when test="proPriceSelect!=null and proPriceSelect!='' and proPriceSelect='不等于'">
+                        and p.pro_price &gt;#{proPrice} and p.pro_price &lt;#{proPrice}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="proCostprice!=null">
+                <choose>
+                    <when test="proCostpriceSelect!=null and proCostpriceSelect!=null and proCostpriceSelect='大于' ">
+                        and p.pro_costprice &gt;#{proCostprice}
+                    </when>
+                    <when test="proCostpriceSelect!=null and proCostpriceSelect!=null and proCostpriceSelect='小于'">
+                        and p.pro_costprice &lt;#{proCostprice}
+                    </when>
+                    <when test="proCostpriceSelect!=null and proCostpriceSelect!=null and proCostpriceSelect='不等于'">
+                        and p.pro_costprice &gt;#{proCostprice} and &lt;#{proCostprice}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="signingTimeStart!=null">
+                and pro_date &gt;#{signingTimeStart}
+            </if>
+            <if test="signingTimeEnd!=null">
+                and pro_date &lt;#{signingTimeEnd}
+            </if>
+            <if test="proGroup!=null and proGroup.size>0 ">
+                and p.pro_group in
+                <foreach collection="proGroup" index="index" item="group"
+                         open="(" separator="," close=")">
+                    #{group}
+                </foreach>
+            </if>
+        </trim>
+        and p.pro_del_state=1
+        ORDER BY p.pro_id DESC
+    </select>
+    <!-- 表格价格统计 -->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(pro_price) as price,SUM(pro_costprice) as costprice FROM product WHERE pro_del_state=1
+    </select>
+
+    <select id="findAll" resultMap="productMap">
+       SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,s.spe_id,s.pro_name,st.stock_id,st.stock_quantity,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+        WHERE p.pro_del_state=1 AND st.stock_id!=0
+        ORDER BY p.pro_id DESC
+    </select>
+    <select id="findBySpeid" resultMap="productMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,s.spe_id,s.pro_name,st.stock_id,st.stock_quantity,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+        WHERE p.pro_del_state=1 AND st.stock_id!=0 and s.spe_id=#{speid} limit  1
+    </select>
+    <select id="likeByInput" resultMap="productMap">
+        select * from product where pro_del_state=1 and pro_name like #{input}
+    </select>
+
+    <select id="selectByValue" resultMap="productMap">
+        select * from product where pro_del_state=1 and pro_name=#{value}
+    </select>
+
+</mapper>

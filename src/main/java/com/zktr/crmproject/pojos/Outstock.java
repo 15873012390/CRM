@@ -10,31 +10,49 @@ import java.util.List;
 public class Outstock {
     private int outId;
     private String outNumber;
+    private String ordNumber;
+    private String title;
     private String status;
-    private String payWay;
-    private String deliveryAddress;
+    private Timestamp fillTime;
     private String passPerson;
     private Timestamp passTime;
     private String remarks;
-    @JsonIgnoreProperties("outstock")
     private Customer customer;
-    @JsonIgnoreProperties("outstock")
     private Purchasereturn purchasereturn;
-    @JsonIgnoreProperties("outstock")
     private Warehouse warehouse;
-    @JsonIgnoreProperties("outstock")
     private Orders orders;
-    @JsonIgnoreProperties("outstock")
     private List<Outstockdetails> outstockdetail;
 
     @Id
     @Column(name = "out_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getOutId() {
         return outId;
     }
 
     public void setOutId(int outId) {
         this.outId = outId;
+    }
+
+    @Basic
+    @Column(name = "ord_number")
+    public String getOrdNumber() {
+        return ordNumber;
+    }
+
+
+    public void setOrdNumber(String ordNumber) {
+        this.ordNumber = ordNumber;
+    }
+
+    @Basic
+    @Column(name = "title")
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Basic
@@ -58,24 +76,15 @@ public class Outstock {
     }
 
     @Basic
-    @Column(name = "pay_way")
-    public String getPayWay() {
-        return payWay;
+    @Column(name = "fill_time")
+    public Timestamp getFillTime() {
+        return fillTime;
     }
 
-    public void setPayWay(String payWay) {
-        this.payWay = payWay;
+    public void setFillTime(Timestamp fillTime) {
+        this.fillTime = fillTime;
     }
 
-    @Basic
-    @Column(name = "delivery_address")
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
 
     @Basic
     @Column(name = "pass_person")
@@ -148,7 +157,7 @@ public class Outstock {
         this.orders = orders;
     }
 
-    @OneToMany(mappedBy = "outstock")
+    @OneToMany(mappedBy = "outstock",cascade = CascadeType.ALL)
     public List<Outstockdetails> getOutstockdetail() {
         return outstockdetail;
     }

@@ -9,7 +9,6 @@ import com.zktr.crmproject.vo.CustomerServiceAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -46,9 +45,8 @@ public class HTCustomerServiceController {
 
 
     @PostMapping("/addorEdit_customerService")
-    public Result addorEdit_customerService(@RequestBody Customerservice customerservice){
-        customerServiceService.addorEditCustomerService(customerservice);
-        return Result.SUCCESS;
+    public int addorEdit_customerService(@RequestBody Customerservice customerservice){
+        return customerServiceService.addorEditCustomerService(customerservice);
     }
 
 
@@ -84,9 +82,14 @@ public class HTCustomerServiceController {
 
 
     @PostMapping("/deleteCustomerServices")
-    public Result deleteCustomerServices(@RequestBody  Integer[] ids){
+    public Result deleteCustomerServices(@RequestBody Integer[] ids){
         customerServiceService.deleteCustomerServices(ids);
         return Result.SUCCESS;
+    }
+
+    @GetMapping("/queryCustomerIDorNameorPhone")
+    public List<Customer> queryCustomerIDorNameorPhone(String value){
+        return customerServiceService.queryByLikeCustomer(value);
     }
 
 }

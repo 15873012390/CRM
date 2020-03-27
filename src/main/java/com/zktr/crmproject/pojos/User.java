@@ -1,17 +1,31 @@
 package com.zktr.crmproject.pojos;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class User {
+    @Excel(name="所有者id_syz",needMerge = true)
     private int uId;
     private String uName;
     private String uPass;
     private Integer uStatus;
+    private String uSex;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp uBirth;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp uJoindate;
+    private String uImg;
     @JsonIgnoreProperties("user")
     private List<Customer> customer;
     @JsonIgnoreProperties("user3")
@@ -45,8 +59,6 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Costauditdetails> coatauditdetails;
     @JsonIgnoreProperties("user")
-    private List<UserMessage> userMessage;
-    @JsonIgnoreProperties("user")
     private List<Position> position;
     @JsonIgnoreProperties("user")
     private Department department;
@@ -70,7 +82,8 @@ public class User {
     private List<Invoice> invoice;
 
     @Id
-    @Column(name = "u_id")
+    @Column(name = "u_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getuId() {
         return uId;
     }
@@ -97,6 +110,38 @@ public class User {
 
     public void setuPass(String uPass) {
         this.uPass = uPass;
+    }
+
+    public String getuSex() {
+        return uSex;
+    }
+
+    public void setuSex(String uSex) {
+        this.uSex = uSex;
+    }
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Timestamp getuBirth() {
+        return uBirth;
+    }
+
+    public void setuBirth(Timestamp uBirth) {
+        this.uBirth = uBirth;
+    }
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Timestamp getuJoindate() {
+        return uJoindate;
+    }
+
+    public void setuJoindate(Timestamp uJoindate) {
+        this.uJoindate = uJoindate;
+    }
+
+    public String getuImg() {
+        return uImg;
+    }
+
+    public void setuImg(String uImg) {
+        this.uImg = uImg;
     }
 
     @Basic
@@ -269,15 +314,6 @@ public class User {
         this.coatauditdetails = coatauditdetails;
     }
 
-    @OneToMany(mappedBy = "user")
-    public List<UserMessage> getUserMessage() {
-        return userMessage;
-    }
-
-    public void setUserMessage(List<UserMessage> userMessage) {
-        this.userMessage = userMessage;
-    }
-
     @ManyToMany(mappedBy = "user")
     public List<Position> getPosition() {
         return position;
@@ -376,5 +412,19 @@ public class User {
 
     public void setInvoice(List<Invoice> invoice) {
         this.invoice = invoice;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uId=" + uId +
+                ", uName='" + uName + '\'' +
+                ", uPass='" + uPass + '\'' +
+                ", uStatus=" + uStatus +
+                ", uSex='" + uSex + '\'' +
+                ", uBirth=" + uBirth +
+                ", uJoindate=" + uJoindate +
+                ", uImg='" + uImg + '\'' +
+                '}';
     }
 }

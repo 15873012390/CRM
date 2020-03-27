@@ -30,9 +30,8 @@ public class HTComplaintController {
     }
 
     @PostMapping("/addOrEditComplaint")
-    public Result addOrEditComplaint(@RequestBody Complaint complaint){
-        complaintService.addAndEditComplaint(complaint);
-        return Result.SUCCESS;
+    public Integer addOrEditComplaint(@RequestBody Complaint complaint){
+        return complaintService.addAndEditComplaint(complaint);
     }
 
     @DeleteMapping("/deleteByComId")

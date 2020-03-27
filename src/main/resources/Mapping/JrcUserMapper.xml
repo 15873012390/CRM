@@ -12,4 +12,11 @@
         select u_id,u_name from user
     </select>
 
+    <select id="queryByUid" resultMap="userMap">
+        select u_id,u_name from user where u_id=#{uid}
+    </select>
+
+    <select id="queryByUserName" resultMap="userMap">
+        select u_id,u_name from user where u_name=#{uName}
+    </select>
 </mapper>

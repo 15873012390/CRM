@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIInstockDao">
+
+    <resultMap id="instockMap" type="Instock">
+        <id column="ins_id" property="insId"></id>
+        <result column="title" property="title"></result>
+        <result column="fill_time" property="fillTime"></result>
+        <result column="status" property="status"></result>
+        <result column="filler" property="filler"></result>
+        <result column="keeper" property="keeper"></result>
+        <result column="execution_time" property="executionTime"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="warehouse" javaType="Warehouse">
+            <id column="warehouse_id" property="warehouseId"></id>
+            <result column="warehouse_name" property="warehouseName"></result>
+            <result column="stock_type" property="stockType"></result>
+        </association>
+        <association property="purchaseorder" javaType="Purchaseorder">
+            <id column="pco_id" property="pcoId"></id>
+            <result column="pco_number" property="pcoNumber"></result>
+            <result column="order_time" property="orderTime"></result>
+            <result column="buyer" property="buyer"></result>
+            <result column="pco_address" property="pcoAddress"></result>
+            <result column="operator" property="operator"></result>
+            <result column="deal" property="deal"></result>
+        </association>
+        <association property="returnedgoods" javaType="Returnedgoods">
+            <id column="reg_id" property="regId"></id>
+            <result column="reg_date" property="regDate"></result>
+            <result column="refundable_money" property="refundableMoney"></result>
+            <result column="retire_money" property="retiredMoney"></result>
+            <result column="reg_state" property="regState"></result>
+            <result column="reg_state" property="regState"></result>
+            <result column="reg_del_state" property="regDelState"></result>
+        </association>
+        <association property="supplier" javaType="Supplier">
+            <id column="supplier_id" property="supplierId"></id>
+            <result column="supplier_name" property="supplierName"></result>
+            <result column="sex" property="sex"></result>
+            <result column="phone" property="phone"></result>
+        </association>
+        <collection property="instockdetail" ofType="Instockdetail">
+            <id column="insd_id" property="insdId"></id>
+            <result column="insd_quantity" property="insdQuantity"></result>
+            <result column="status" property="status"></result>
+            <result column="remarks" property="remarks"></result>
+            <collection property="productspecification" ofType="Productspecification">
+                <id property="speId" column="spe_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="speUnit" column="spe_unit" ></result>
+                <result property="speUnitConversion" column="spe_unit_conversion"></result>
+                <association property="product" javaType="Product">
+                    <id property="proId" column="pro_id"></id>
+                    <result property="proName" column="pro_name"></result>
+                    <result property="proDate" column="pro_date"></result>
+                </association>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="queryByWhId" resultMap="instockMap">
+        select * from instock where warehouse_id = #{warehouse_id}
+    </select>
+
+    <select id="selectAllInstock" resultMap="instockMap">
+       select * from instock ins
+       LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
+       LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
+       LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
+	   LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+       LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id order by ins.ins_id desc
+    </select>
+
+    <select id="insertInstock" resultMap="instockMap" parameterType="Instock">
+        insert into instock values(#{insId},#{title},#{warehouse.warehouseId},#{fillTime},#{status},#{filler},#{keeper}
+        ,#{executionTime},#{purchaseorder.pcoId},#{returnedgoods.regId},#{supplier.supplierId},#{remarks})
+    </select>
+
+    <select id="queryByInsId" resultMap="instockMap">
+        select * from instock ins
+       LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
+       LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
+       LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
+	   LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+       LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id where ins.ins_id = #{insId} order by ins.ins_id desc
+    </select>
+
+    <update id="updateInvokeStatus" parameterType="Instock">
+        update instock set ins_id = #{insId},title =#{title},warehouse_id=#{warehouse.warehouseId},fill_time=#{fillTime},status=#{status},filler=#{filler},keeper=#{keeper}
+        ,execution_time=#{executionTime},pco_id=#{purchaseorder.pcoId},reg_id=#{returnedgoods.regId},supplier_id=#{supplier.supplierId},remarks=#{remarks} where ins_id =#{insId}
+    </update>
+
+    <delete id="deleteInstockById">
+        delete from instock where ins_id = #{insId}
+    </delete>
+
+    <delete id="deleteInstockDetailById">
+        delete from instockdetail where ins_id = #{insId}
+    </delete>
+
+    <select id="querySelectAndInputByPage" resultMap="instockMap">
+         select * from instock where 1=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='已入库' || value=='未入库'">
+                    and status=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='入库主题'">
+                and title like #{input}
+            </when>
+        </choose>
+        order by ins_id desc
+    </select>
+
+    <select id="queryInstockByAdvancedSearch" resultMap="instockMap" parameterType="com.zktr.crmproject.vo.InstockAdvancedSearch">
+        select * from instock ins
+        LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
+        LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
+        LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
+        LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id where 1=1
+        <if test="title!=null and title.length!=0">
+            and ins.title = #{title}
+        </if>
+        <if test="warehouseId!=null and warehouseId.length!=0">
+            and ins.warehouse_id in
+            <foreach collection="warehouseId" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="fillTime!=null and fillTime.length!=0">
+            and ins.fill_time between #{s1} and #{s2}
+        </if>
+        <if test="status!=null and status.length!=0">
+            and ins.status in
+            <foreach collection="status" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="filler!=null and filler!=''">
+            and ins.filler = #{filler}
+        </if>
+        <if test="supplierId!=null and supplierId!=''">
+            and ins.supplier_id = #{supplierId}
+        </if>
+        <if test="executionTime!=null and executionTime.length!=0">
+            and ins.execution_time between #{s3} and #{s4}
+        </if>
+        <if test="pcoId!=null and pcoId!=''">
+            and ins.pco_id = #{pcoId}
+        </if>
+        <if test="proId!=null and proId!=''">
+            and ins.pco_id = #{pcoId}
+        </if>
+        <if test="proId!=null and proId!=''">
+            and insd.pro_id = #{proId}
+        </if>
+        order by ins.ins_id desc
+    </select>
+
+</mapper>

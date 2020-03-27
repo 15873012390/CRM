@@ -9,6 +9,8 @@ import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class HTQaController {
     @Autowired
@@ -51,6 +53,11 @@ public class HTQaController {
     @GetMapping("/queryQaByQaId")
     public Qa queryQaByQaId(Integer qaId){
         return qaService.queryQatByQaId(qaId);
+    }
+
+    @GetMapping("/queryByQusetionAndAnswer")
+    public List<Qa> queryByQusetionAndAnswer(String value){
+        return qaService.queryByQusetionAndAnswer(value);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.zktr.crmproject.pojos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -29,6 +31,7 @@ public class Backlogtask {
 
     @Id
     @Column(name = "blt_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getBltId() {
         return bltId;
     }
@@ -141,6 +144,7 @@ public class Backlogtask {
 
     @ManyToOne
     @JoinColumn(name="creator",referencedColumnName = "u_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     public User getUser() {
         return user;
     }

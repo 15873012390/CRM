@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTISupplierDao">
+
+    <resultMap id="supplierMap" type="Supplier">
+        <id column="supplier_id" property="supplierId"></id>
+        <result column="supplier_name" property="supplierName"></result>
+        <result column="sex" property="sex"></result>
+        <result column="phone" property="phone"></result>
+        <result column="job" property="job"></result>
+        <result column="email" property="email"></result>
+        <result column="qq" property="qq"></result>
+        <result column="useStatus" property="useStatus"></result>
+    </resultMap>
+
+    <select id="queryAllSupplier" resultMap="supplierMap">
+        select * from supplier order by supplier_id desc
+    </select>
+</mapper>

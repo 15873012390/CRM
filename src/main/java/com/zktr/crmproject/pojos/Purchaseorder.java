@@ -1,6 +1,8 @@
 package com.zktr.crmproject.pojos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,8 +18,10 @@ public class Purchaseorder {
     private String operator;
     private Integer deal;
     @JsonIgnoreProperties("purchaseorder")
+    @NotFound(action= NotFoundAction.IGNORE)
     private Supplier supplier;
     @JsonIgnoreProperties("purchaseorder")
+    @NotFound(action=NotFoundAction.IGNORE)
     private Audit audit;
     @JsonIgnoreProperties("purchaseorder")
     private List<Pcodetail> pcodetail;
@@ -121,7 +125,7 @@ public class Purchaseorder {
         this.audit = audit;
     }
 
-    @OneToMany(mappedBy = "purchaseorder")
+    @OneToMany(mappedBy = "purchaseorder",cascade = CascadeType.ALL)
     public List<Pcodetail> getPcodetail() {
         return pcodetail;
     }
@@ -130,7 +134,7 @@ public class Purchaseorder {
         this.pcodetail = pcodetail;
     }
 
-    @OneToMany(mappedBy = "purchaseorder")
+    @OneToMany(mappedBy = "purchaseorder",cascade = CascadeType.ALL)
     public List<Purchaseenter> getPurchaseenter() {
         return purchaseenter;
     }
@@ -139,7 +143,7 @@ public class Purchaseorder {
         this.purchaseenter = purchaseenter;
     }
 
-    @OneToMany(mappedBy = "purchaseorder")
+    @OneToMany(mappedBy = "purchaseorder",cascade = CascadeType.ALL)
     public List<Purchaseinvoice> getPurchaseinvoice() {
         return purchaseinvoice;
     }
@@ -148,7 +152,7 @@ public class Purchaseorder {
         this.purchaseinvoice = purchaseinvoice;
     }
 
-    @OneToMany(mappedBy = "purchaseorder")
+    @OneToMany(mappedBy = "purchaseorder",cascade = CascadeType.ALL)
     public List<Instock> getInstock() {
         return instock;
     }

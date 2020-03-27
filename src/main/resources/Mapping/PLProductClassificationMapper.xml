@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLProductClassificationMDao">
+
+    <resultMap id="ProductClassificationMap" type="Productclassification">
+        <id property="claId" column="cla_id"></id>
+        <result property="claName"  column="cla_name"></result>
+        <result property="claIdId" column="cla_id_id"></result>
+        <result property="claState" column="cla_state" ></result>
+        <result property="claDatetime" column="cla_datetime"></result>
+    </resultMap>
+
+    <select id="queryAllProductClassification" resultMap="ProductClassificationMap">
+       SELECT * FROM productclassification WHERE cla_state='正常'
+    </select>
+
+    <select id="findByClaId" resultMap="ProductClassificationMap">
+        SELECT * FROM productclassification WHERE cla_id=#{claid}
+    </select>
+</mapper>

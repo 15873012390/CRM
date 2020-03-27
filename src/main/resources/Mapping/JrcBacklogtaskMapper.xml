@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcBackLogTaskMDao">
+    
+    <resultMap id="backLogTaskMap" type="Backlogtask">
+        <id property="bltId" column="blt_id"/>
+        <result property="bltDescription" column="blt_description"/>
+        <result property="finishDate" column="finish_date"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="precedence" column="precedence"/>
+        <result property="conName" column="con_name"/>
+        <result property="conPhone" column="con_phone"/>
+        <result property="status" column="status"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="delStatus" column="del_status"/>
+        <association property="customer" javaType="Customer">
+            <id property="cusId" column="cus_id"/>
+            <result property="cusName" column="cus_name"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+        </association>
+        <collection property="backlogtaskdetails" ofType="Backlogtaskdetails">
+            <id property="btdId" column="btd_id"/>
+            <result property="finishTime" column="finish_time"/>
+            <result property="status" column="status"/>
+            <association property="user" javaType="User">
+                <id property="uId" column="uid"/>
+                <result property="uName" column="uname"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllByPage" resultMap="backLogTaskMap">
+         select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            where b.del_status=1
+            order by b.blt_id desc
+    </select>
+
+    <select id="queryLikeBackTaskLog" resultMap="backLogTaskMap">
+            select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator where 1=1 
+            <if test="value!=null and value.length!=0">
+                <choose>
+                    <when test='value=="全部数据"'> </when>
+                    <when test='value=="高"||value=="低"'>
+                        <if test='value=="高"'>
+                            and b.precedence=1
+                        </if>
+                        <if test='value=="低"'>
+                            and b.precedence=2
+                        </if>
+                    </when>
+
+                    <otherwise>
+                        <if test='value=="未结束"'>
+                            and b.status=1
+                        </if>
+                        <if test='value=="已结束"'>
+                            and b.status=2
+                        </if>
+                        <if test='value=="意外终止"'>
+                            and b.status=3
+                        </if>
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="inputs.length!=0 and select=='任务主题'">
+                and  b.blt_description like #{inputs}
+            </if>
+            and b.del_status=1 
+            order by b.blt_id desc
+    </select>
+
+    <select id="queryAdvendceBackTaskLog" resultMap="backLogTaskMap">
+         select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            <trim prefix="where" prefixOverrides="and">
+                b.del_status=1
+                <if test="cusId!=''">
+                    and c2.cus_id=#{cusId}
+                </if>
+                <if test="them!=null and them.length!=0">
+                    <choose>
+                        <when test="themSelect!=null and themSelect.length!=0 and themSelect=='包含'">
+                            and b.blt_description like #{them}
+                        </when>
+                        <when test="themSelect!=null and themSelect.length!=0 and themSelect=='不包含'">
+                            and b.blt_description not like #{them}
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </if>
+                <if test="createTimeStart!=null">
+                    and b.creation_time &gt;=#{createTimeStart}
+                </if>
+                <if test="createTimeEnd!=null">
+                    and b.creation_time &lt;=#{createTimeEnd}
+                </if>
+                <if test="precedenceList.size() > 0">
+                    and b.precedence in
+                    <foreach collection="precedenceList" index="index" item="preced"
+                             open="(" separator="," close=")">
+                        #{preced}
+                    </foreach>
+                </if>
+
+                <if test="startList.size() > 0">
+                    and b.status in
+                    <foreach collection="startList" index="index" item="start"
+                             open="(" separator="," close=")">
+                        #{start}
+                    </foreach>
+                </if>
+
+                <if test="userList.size() > 0">
+                    and u.u_id in
+                    <foreach collection="userList" index="index" item="user"
+                             open="(" separator="," close=")">
+                        #{user}
+                    </foreach>
+                </if>
+            </trim>
+            order by b.blt_id desc
+    </select>
+
+    <select id="queryBackLogTaskByCusId" resultMap="backLogTaskMap">
+            select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name,
+            b2.btd_id,b2.finish_time,b2.status,
+            u2.u_id as uid,u2.u_name as uname
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            left join backlogtaskdetails b2 on b.blt_id = b2.blt_id
+            left join user u2 on b2.u_id=u2.u_id
+            where c2.cus_id = #{cusid} and b.del_status=1
+            order by b.blt_id desc
+    </select>
+
+    <select id="queryBackLogTaskByBltId" resultMap="backLogTaskMap">
+            select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name,
+            b2.btd_id,b2.finish_time,b2.status,
+            u2.u_id as uid,u2.u_name as uname
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            left join backlogtaskdetails b2 on b.blt_id = b2.blt_id
+            left join user u2 on b2.u_id=u2.u_id
+            where b.blt_id =#{bltid} and b.del_status=1
+    </select>
+
+    <select id="delBackLogQuery" resultMap="backLogTaskMap">
+            select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            where b.blt_id =#{bltid} and b.del_status=1
+    </select>
+
+    <select id="queryCurMoth" resultMap="backLogTaskMap">
+         select
+            b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
+            b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name
+            from backlogtask b
+            left join customer c2 on b.cus_id = c2.cus_id
+            left join user u on u.u_id=b.creator
+            where DATE_FORMAT(b.creation_time,'%Y%m%d') between DATE_FORMAT(#{startStr},'%Y%m%d') and
+            DATE_FORMAT(#{end},'%Y%m%d')
+            and b.del_status=1
+    </select>
+
+
+
+</mapper>

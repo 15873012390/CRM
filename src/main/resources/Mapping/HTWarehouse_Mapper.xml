@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao">
+    <sql id="warehouseColumns">
+        w.warehouse_id AS 'warehouseId',
+        w.warehouse_name AS 'warehouseName',
+        w.stock_type AS 'stockType',
+        w.stock_value AS 'stockValue',
+        w.remarks AS 'remarks'
+    </sql>
+    <sql id="warehouse_where">
+        1=1
+        <if test="warehouseId != null and warehouseId != ''">
+            AND w.warehouse_id = #{warehouseId}
+        </if>
+        <if test="stockType != null and stockType != ''">
+            AND w.stock_type = #{stockType}
+        </if>
+    </sql>
+    <sql id="warehouse_join">
+        LEFT JOIN purchaseplan p on w.warehouse_id = p.warehouse_id
+        LEFT JOIN outstock o on w.warehouse_id = o.warehouse_id
+        LEFT JOIN stock s on w.warehouse_id = s.warehouse_id
+        LEFT JOIN instock i on w.warehouse_id = i.warehouse_id
+        LEFT JOIN returnedgoods r on w.warehouse_id = r.warehouse_id
+    </sql>
+    <resultMap id="warehouseMap" type="Warehouse">
+        <id column="warehouseId" property="warehouseId"></id>
+        <result column="warehouseName" property="warehouseName"></result>
+        <result column="stockType" property="stockType"></result>
+        <result column="stockValue" property="stockValue"></result>
+        <result column="remarks" property="remarks"></result>
+        <collection property="purchaseplan" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Purchaseplan" select="selectPurchaseplanList">
+            <id column="pur_id" property="purId"></id>
+            <result column="pur_number" property="purNumber"></result>
+            <result column="pur_title" property="purTitle"></result>
+            <result column="plan_time" property="planTime"></result>
+        </collection>
+        <collection property="outstock" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Outstock" select="selectOutStockList">
+            <id column="out_id" property="outId"></id>
+            <result column="out_number" property="outNumber"></result>
+            <result column="status" property="status"></result>
+        </collection>
+        <collection property="stock" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Stock" select="selectStockList">
+            <id column="stock_id" property="stockId"></id>
+            <result column="stock_quantity" property="stockQuantity"></result>
+        </collection>
+        <collection property="instock" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Instock" select="selectInstockList">
+            <id column="ins_id" property="insId"></id>
+            <result column="title" property="title"></result>
+        </collection>
+        <collection property="returnedgoods" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Returnedgoods" select="selectReturnedGoodsList">
+            <id column="reg_id" property="regId"></id>
+            <result column="in_time" property="inTime"></result>
+            <result column="reg_date" property="regDate"></result>
+        </collection>
+    </resultMap>
+    <select id="selectPurchaseplanList" resultMap="warehouseMap">
+        select * from purchaseplan where warehouse_id=#{warehouseId}
+    </select>
+    <select id="selectOutStockList" resultMap="warehouseMap">
+        select * from outstock where warehouse_id=#{warehouseId}
+    </select>
+    <select id="selectStockList" resultMap="warehouseMap">
+        select * from stock where warehouse_id=#{warehouseId}
+    </select>
+    <select id="selectInstockList" resultMap="warehouseMap">
+        select * from instock where warehouse_id=#{warehouseId}
+    </select>
+    <select id="selectReturnedGoodsList" resultMap="warehouseMap">
+        select * from returnedgoods where warehouse_id=#{warehouseId}
+    </select>
+
+    <select id="queryAllByPage" resultMap="warehouseMap">
+        select
+        <include refid="warehouseColumns" />
+         from warehouse w order by w.warehouse_id desc
+    </select>
+
+    <select id="queryByWarehouseId" resultMap="warehouseMap">
+        select
+         <include refid="warehouseColumns" />
+        from warehouse w
+        <!--<include refid="warehouse_join"/>-->
+        where w.warehouse_id = #{warehouseId}
+        <!--<where>
+            <include refid="warehouse_where"></include>
+        </where>-->
+    </select>
+
+    <update id="updateWarehouse" parameterType="com.zktr.crmproject.pojos.Warehouse">
+    update warehouse set warehouse_name = #{warehouseName} ,stock_type= #{stockType},
+    stock_value= #{stockValue},remarks= #{remarks} where warehouse_id = #{warehouseId}
+    </update>
+
+    <select id="queryByAdvanced" parameterType="com.zktr.crmproject.vo.WareHouseAdvancedSearch" resultMap="warehouseMap">
+        select <include refid="warehouseColumns" /> from warehouse w where 1=1
+        <if test="warehouseName!=null and warehouseName.length!=0">
+            and w.warehouse_name like #{warehouseName}
+        </if>
+        <if test="stockType!=null and stockType.length!=0">
+            and w.stock_type in
+            <foreach collection="stockType" index="index" item="el"
+                     open="(" separator="," close=")">
+                #{el}
+            </foreach>
+        </if>
+        order by w.warehouse_id desc
+    </select>
+
+
+    <select id="querySelectOrInput" resultMap="warehouseMap">
+        select <include refid="warehouseColumns" /> from warehouse w where 1=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='原料仓库'||value=='产品仓库'||value=='冷藏仓库'||value=='恒温仓库'||value=='危险品仓库'">
+                    and w.stock_type = #{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='仓库名称'">
+                and w.warehouse_name like #{input}
+            </when>
+        </choose>
+        order by w.warehouse_id desc
+    </select>
+
+</mapper>

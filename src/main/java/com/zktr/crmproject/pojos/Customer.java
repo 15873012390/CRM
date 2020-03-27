@@ -1,5 +1,8 @@
 package com.zktr.crmproject.pojos;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -9,23 +12,43 @@ import java.util.List;
 @Entity
 public class Customer {
     private int cusId;
+    @Excel(name="客户名称")
     private String cusName;
+    @Excel(name="客户等级")
     private String cusLevel;
+    @Excel(name="客户地址")
     private String cusAddr;
+    @Excel(name="客户电话")
     private String cusTel;
+    @Excel(name="客户来源")
     private String cusSource;
+    @Excel(name = "创建时间", exportFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp cusCreationTime;
+    @Excel(name = "更新时间", exportFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp cusUpdateTime;
+    @Excel(name="信用等级")
     private String cusCredit;
+    @Excel(name="邮编")
     private String cusZip;
+    @Excel(name="传真")
     private String cusFax;
+    @Excel(name="生命周期")
     private String cusLifeCycle;
+    @Excel(name="国家或区域")
     private String cusCountry;
+    @Excel(name="省份")
     private String cusProvince;
+    @Excel(name="城市")
     private String cusCity;
+    @Excel(name="区县")
     private String cusDistrict;
+    @Excel(name="客户状态")
     private String cusState;
+    @Excel(name="定级")
     private String cusGrading;
+    @Excel(name="备注")
     private String cusRemarks;
     private List<Duepay> duepay;
     private List<Paid> paid;
@@ -33,6 +56,7 @@ public class Customer {
     private List<Repair> repair;
     @JsonIgnoreProperties("customer")
     private List<Customercare> customercare;
+    @ExcelEntity(id = "syz")
     private User user;
     private List<Customertransfer> customertransfer;
     @JsonIgnoreProperties("customer")
@@ -75,6 +99,7 @@ public class Customer {
 
     @Id
     @Column(name = "cus_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCusId() {
         return cusId;
     }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.IContactsMapperDao">
+    <resultMap id="contactsMap" type="Contacts">
+        <id property="conId" column="con_id"></id>
+        <result property="conName" column="con_name"></result>
+        <result property="conTel" column="con_tel"></result>
+        <result property="conMobile" column="con_mobile"></result>
+        <result property="conTime" column="con_time"></result>
+        <result property="conSex" column="con_sex"></result>
+        <result property="conPosition" column="con_position"></result>
+        <result property="conRemarks" column="con_remarks"></result>
+        <result property="conImg" column="con_img"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id property="cusId" column="cus_id"></id>
+            <result property="cusName" column="cus_name"></result>
+        </association>
+    </resultMap>
+
+    <select id="queryAllContacts" resultMap="contactsMap">
+        select * from contacts a
+        left join customer b on a.cus_id=b.cus_id
+        order by a.con_id desc
+    </select>
+    <select id="queryContactsById" resultMap="contactsMap">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        where c.con_id like CONCAT('%',#{id},'%')
+        order by c.con_id desc
+    </select>
+    <select id="findContactsById" resultMap="contactsMap">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        where c.con_id=#{id}
+    </select>
+    <select id="queryContactsByName" resultMap="contactsMap">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        where c.con_name like CONCAT('%',#{name},'%')
+        order by c.con_id desc
+    </select>
+    <select id="queryContactsByShuJu1" resultMap="contactsMap">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        where c.con_sex = '男'
+        order by c.con_id desc
+    </select>
+    <select id="queryContactsByShuJu2" resultMap="contactsMap">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        where c.con_sex = '女'
+        order by c.con_id desc
+    </select>
+    <select id="queryAllContactsByIdASC" resultMap="contactsMap">
+        select * from contacts a
+        left join customer b on a.cus_id=b.cus_id
+        order by a.con_id asc
+    </select>
+    <select id="queryContactsSenior" resultMap="contactsMap" parameterType="com.zktr.crmproject.vo.AdvancedQueryContactsData">
+        select * from contacts c
+        left join customer u on c.cus_id=u.cus_id
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="conId != null and conId != '' and conId!=0">
+                and c.con_id like concat('%', #{conId}, '%')
+            </if>
+            <if test="conName != null and conName != ''">
+                and c.con_name  like concat('%', #{conName}, '%')
+            </if>
+            <if test="customer.cusId != null and customer.cusId!='' ">
+                and c.cus_id = #{customer.cusId}
+            </if>
+            <if test="conTel != null and conTel != '' and conTel!=0">
+                and c.con_tel  like concat('%', #{conTel}, '%')
+            </if>
+            <if test="conMobile != null and conMobile != ''">
+                and c.con_mobile  like concat('%', #{conMobile}, '%')
+            </if>
+            <if test="conTimeStart != null and conTimeEnd != null">
+                and DATE_FORMAT(con_time, '%Y-%m-%d')  between DATE_FORMAT(#{conTimeStart}, '%Y-%m-%d') and  DATE_FORMAT(#{conTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="conTimeStart != null">
+                and DATE_FORMAT(con_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{conTimeStart}, '%Y-%m-%d')
+            </if>
+            <if test="conTimeEnd != null">
+                and DATE_FORMAT(con_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{conTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="conSex != null and conSex.length>0">
+                and c.con_sex in
+                <foreach collection="conSex" item="conSexs"
+                         open="(" close=")" separator=",">
+                    #{conSexs}
+                </foreach>
+            </if>
+            <if test="conPosition != null and conPosition != ''">
+                and c.con_position  like concat('%', #{conPosition}, '%')
+            </if>
+            <if test="conRemarks != null and conRemarks != ''">
+                and c.con_remarks like concat('%', #{conRemarks}, '%')
+            </if>
+        </trim>
+        order by c.con_id desc
+    </select>
+</mapper>

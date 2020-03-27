@@ -20,6 +20,7 @@ public class Cost {
 
     @Id
     @Column(name = "cos_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getCosId() {
         return cosId;
     }

@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 public class SalesOpportAdvancedSearch {
+    //当前页码
+    private Integer curpage;
+    //当前页大小
+    private Integer pagesize;
     //客户id
     private Integer cusId;
     //客户联系人姓名
@@ -24,10 +28,6 @@ public class SalesOpportAdvancedSearch {
     private Double amount;
     //预期金额选择符
     private String amountSelect;
-    //可能性
-    private String possibility;
-    //可能性选择符
-    private String possibilitySelect;
     //更新日期开始事件
     @JSONField(name = "updateTimeStart",format = "yyyy-MM-dd")
     private Date updateTimeStart;
@@ -54,6 +54,22 @@ public class SalesOpportAdvancedSearch {
     //创建日期结束日期
     @JSONField(name = "createTimeEnd",format = "yyyy-MM-dd")
     private Date createTimeEnd;
+
+    public Integer getCurpage() {
+        return curpage;
+    }
+
+    public void setCurpage(Integer curpage) {
+        this.curpage = curpage;
+    }
+
+    public Integer getPagesize() {
+        return pagesize;
+    }
+
+    public void setPagesize(Integer pagesize) {
+        this.pagesize = pagesize;
+    }
 
     public Integer getCusId() {
         return cusId;
@@ -117,22 +133,6 @@ public class SalesOpportAdvancedSearch {
 
     public void setAmountSelect(String amountSelect) {
         this.amountSelect = amountSelect;
-    }
-
-    public String getPossibility() {
-        return possibility;
-    }
-
-    public void setPossibility(String possibility) {
-        this.possibility = possibility;
-    }
-
-    public String getPossibilitySelect() {
-        return possibilitySelect;
-    }
-
-    public void setPossibilitySelect(String possibilitySelect) {
-        this.possibilitySelect = possibilitySelect;
     }
 
     public Date getUpdateTimeStart() {
@@ -226,7 +226,9 @@ public class SalesOpportAdvancedSearch {
     public SalesOpportAdvancedSearch() {
     }
 
-    public SalesOpportAdvancedSearch(Integer cusId, String conName, String opportunitiesThem, String opportunitiesThemSelect, Date signingTimeStart, Date signingTimeEnd, Double amount, String amountSelect, String possibility, String possibilitySelect, Date updateTimeStart, Date updateTimeEnd, List<String> checkedCustomerSource, List<String> checkedStage, List<Integer> checkedUser, List<Integer> checkedStatus, List<String> checkedPriority, List<String> checkedStarTarget, List<String> checkedType, Date createTimeStart, Date createTimeEnd) {
+    public SalesOpportAdvancedSearch(Integer curpage, Integer pagesize, Integer cusId, String conName, String opportunitiesThem, String opportunitiesThemSelect, Date signingTimeStart, Date signingTimeEnd, Double amount, String amountSelect, Date updateTimeStart, Date updateTimeEnd, List<String> checkedCustomerSource, List<String> checkedStage, List<Integer> checkedUser, List<Integer> checkedStatus, List<String> checkedPriority, List<String> checkedStarTarget, List<String> checkedType, Date createTimeStart, Date createTimeEnd) {
+        this.curpage = curpage;
+        this.pagesize = pagesize;
         this.cusId = cusId;
         this.conName = conName;
         this.opportunitiesThem = opportunitiesThem;
@@ -235,8 +237,6 @@ public class SalesOpportAdvancedSearch {
         this.signingTimeEnd = signingTimeEnd;
         this.amount = amount;
         this.amountSelect = amountSelect;
-        this.possibility = possibility;
-        this.possibilitySelect = possibilitySelect;
         this.updateTimeStart = updateTimeStart;
         this.updateTimeEnd = updateTimeEnd;
         this.checkedCustomerSource = checkedCustomerSource;
@@ -253,7 +253,9 @@ public class SalesOpportAdvancedSearch {
     @Override
     public String toString() {
         return "SalesOpportAdvancedSearch{" +
-                "cusId=" + cusId +
+                "curpage=" + curpage +
+                ", pagesize=" + pagesize +
+                ", cusId=" + cusId +
                 ", conName='" + conName + '\'' +
                 ", opportunitiesThem='" + opportunitiesThem + '\'' +
                 ", opportunitiesThemSelect='" + opportunitiesThemSelect + '\'' +
@@ -261,8 +263,6 @@ public class SalesOpportAdvancedSearch {
                 ", signingTimeEnd=" + signingTimeEnd +
                 ", amount=" + amount +
                 ", amountSelect='" + amountSelect + '\'' +
-                ", possibility='" + possibility + '\'' +
-                ", possibilitySelect='" + possibilitySelect + '\'' +
                 ", updateTimeStart=" + updateTimeStart +
                 ", updateTimeEnd=" + updateTimeEnd +
                 ", checkedCustomerSource=" + checkedCustomerSource +

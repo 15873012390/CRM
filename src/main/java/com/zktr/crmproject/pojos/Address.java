@@ -14,13 +14,53 @@ public class Address {
     private String addAddress;
     private String addType;
     private Integer addPostcode;
-    @JsonIgnoreProperties("address")
-    private List<Sendout> sendout;
+    private String addProvince;
+    private String addCity;
+    private String addDistrict;
+
     @JsonIgnoreProperties("address")
     private Customer customer;
+    @JsonIgnoreProperties("address")
+    private List<Orders> orders;
+
+    @OneToMany(mappedBy = "address")
+    public List<Orders> getOrders() {
+        return orders;
+    }
+    public void setOrders(List<Orders> orders) {
+        this.orders = orders;
+    }
+    @Basic
+    @Column(name = "add_province")
+    public String getAddProvince() {
+        return addProvince;
+    }
+
+    public void setAddProvince(String addProvince) {
+        this.addProvince = addProvince;
+    }
+    @Basic
+    @Column(name = "add_city")
+    public String getAddCity() {
+        return addCity;
+    }
+
+    public void setAddCity(String addCity) {
+        this.addCity = addCity;
+    }
+    @Basic
+    @Column(name = "add_district")
+    public String getAddDistrict() {
+        return addDistrict;
+    }
+
+    public void setAddDistrict(String addDistrict) {
+        this.addDistrict = addDistrict;
+    }
 
     @Id
     @Column(name = "add_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAddId() {
         return addId;
     }
@@ -96,15 +136,6 @@ public class Address {
     @Override
     public int hashCode() {
         return Objects.hash(addId,addName, addPhone, addAddress, addType, addPostcode);
-    }
-
-    @OneToMany(mappedBy = "address")
-    public List<Sendout> getSendout() {
-        return sendout;
-    }
-
-    public void setSendout(List<Sendout> sendout) {
-        this.sendout = sendout;
     }
 
     @ManyToOne

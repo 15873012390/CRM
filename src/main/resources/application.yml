@@ -58,6 +58,7 @@ mybatis:
   mapper-locations: classpath:mapping/*.xml
   config-location: classpath:config.xml
   type-aliases-package: com.zktr.crmproject.pojos
+
 mapper:
   plugin: tk.mybatis.mapper.generator.MapperPlugin
   Mapper: tk.mybatis.mapper.common.Mapper
@@ -73,3 +74,8 @@ pagehelper:
 http:
   encoding:
     charset: UTF-8
+
+#文件保存位置
+uploadFile:
+  resourceHandler: /uploadImgFiles/**   #请求 url 中的资源映射
+  location: E:/PL/uploadImgFiles/ #自定义上传文件本地保存路径
