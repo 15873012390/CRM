@@ -4,12 +4,15 @@ package com.zktr.crmproject.controller;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.service.llAuthorityService;
 import com.zktr.crmproject.service.llUserService;
+import com.zktr.crmproject.utils.ExcelUtils;
 import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 
@@ -65,7 +68,7 @@ public class llUserAndMessageController {
     }
     //获取所有用户信息
     @GetMapping("/query_allusers")
-    public Pager<PowerAndDept> findAllUsers(Integer curpage,Integer pagesize) {
+    public Pager<UserAndPosition> findAllUsers(Integer curpage,Integer pagesize) {
         return llUserService.findAllUsers(curpage,pagesize);
     }
     //单个离职
@@ -81,5 +84,19 @@ public class llUserAndMessageController {
         System.out.println(params);
         llUserService.deleteMore(params.getPostId());
         return Result.SUCCESS;
+    }
+    //导出用户表的数据
+//    @GetMapping("/expUser")
+//    public void expUser(HttpServletResponse response){
+//        List<User> users = llUserService.exportUser();
+//        if(users != null && users.size() > 0){
+//            ExcelUtils.exportExcel(users, null, "用户数据", User.class, "用户"+new Date()+".xlsx", response);
+//        }
+//    }
+    @PostMapping("/uploadExcel")
+    public String impUser(MultipartFile file){
+        List<UserAndPosition> users = ExcelUtils.importData(file, 1, UserAndPosition.class);
+        System.out.println(users);
+        return "succes";
     }
 }

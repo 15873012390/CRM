@@ -6,6 +6,7 @@ import com.zktr.crmproject.dao.mybatis.lliDeptDao;
 import com.zktr.crmproject.dao.mybatis.lliUserDao;
 import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
+import com.zktr.crmproject.vo.DepartmentMes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,8 @@ public class llDeptService {
     @Autowired
     private lliUserDao lliUserDao;
     //获取所有部门信息
-    public List<Department> findAllDept(){
-        List<Department> list=lliDeptDao.findAllDepartment();
+    public List<DepartmentMes> findAllDept(){
+        List<DepartmentMes> list=lliDeptDao.findAllDepartment();
         return list;
     }
     //新增部门

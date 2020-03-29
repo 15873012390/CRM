@@ -62,7 +62,8 @@ public class Power {
         return Objects.hash(powerId, powerName, powerMessage);
     }
 
-    @ManyToMany(mappedBy = "power")
+    @ManyToMany
+    @JoinTable(name="position_power",joinColumns = @JoinColumn(name = "power_id", referencedColumnName = "power_id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "post_id"))
     public List<Position> getPosition() {
         return position;
     }

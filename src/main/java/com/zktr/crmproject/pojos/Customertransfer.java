@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -8,8 +9,8 @@ import java.sql.Timestamp;
 @Entity
 public class Customertransfer {
     private int ctId;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp ctTime;
-    private String ctRemarks;
     private Customer customer;
     @JsonIgnoreProperties("customertransfer3")
     private User user3;
@@ -17,6 +18,18 @@ public class Customertransfer {
     private User user2;
     @JsonIgnoreProperties("customertransfer1")
     private User user1;
+
+    public Customertransfer() {
+    }
+
+    public Customertransfer(int ctId, Timestamp ctTime, Customer customer, User user3, User user2, User user1) {
+        this.ctId = ctId;
+        this.ctTime = ctTime;
+        this.customer = customer;
+        this.user3 = user3;
+        this.user2 = user2;
+        this.user1 = user1;
+    }
 
     @Id
     @Column(name = "ct_id")
@@ -38,16 +51,6 @@ public class Customertransfer {
         this.ctTime = ctTime;
     }
 
-    @Basic
-    @Column(name = "ct_remarks")
-    public String getCtRemarks() {
-        return ctRemarks;
-    }
-
-    public void setCtRemarks(String ctRemarks) {
-        this.ctRemarks = ctRemarks;
-    }
-
 
     @ManyToOne
     @JoinColumn(name="cus_id",referencedColumnName = "cus_id")
@@ -60,7 +63,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name="original_u_id",referencedColumnName = "u_id",insertable = false,updatable = false)
+    @JoinColumn(name="original_u_id",referencedColumnName = "u_id")
     public User getUser3() {
         return user3;
     }
@@ -70,7 +73,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name="now_u_id",referencedColumnName = "u_id",insertable = false,updatable = false)
+    @JoinColumn(name="now_u_id",referencedColumnName = "u_id")
     public User getUser2() {
         return user2;
     }
@@ -80,7 +83,7 @@ public class Customertransfer {
     }
 
     @ManyToOne
-    @JoinColumn(name="operation_u_id",referencedColumnName = "u_id",insertable = false,updatable = false)
+    @JoinColumn(name="operation_u_id",referencedColumnName = "u_id")
     public User getUser1() {
         return user1;
     }

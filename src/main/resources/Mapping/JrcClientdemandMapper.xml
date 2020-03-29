@@ -4,18 +4,123 @@
 <mapper namespace="com.zktr.crmproject.dao.mybatis.JrcClientdemandMDao">
     
     <resultMap id="clientdemandMap" type="Clientdemand">
-        <id property="cdId" column="cdId"/>
+        <id property="cdId" column="cd_id"/>
         <result property="cdTheme" column="cd_theme"/>
         <result property="cdPeople" column="cd_people"/>
         <result property="recordTime" column="record_time"/>
         <result property="importance" column="importance"/>
         <result property="cdContent" column="cd_content"/>
-        <result property="note" column="note"/>
         <association property="salesopport" javaType="Salesopport">
             <id property="soId" column="so_id"/>
             <result property="soTheme" column="so_theme"/>
+            <association property="customer" javaType="Customer">
+                <id property="cusId" column="cus_id"/>
+                <result property="cusName" column="cus_name"/>
+            </association>
         </association>
     </resultMap>
+
+    <select id="queryAllClientDemand" resultMap="clientdemandMap">
+        select c.cd_id,c.cd_id,c.cd_theme,c.cd_people, c.record_time,c.importance,c.cd_content,
+        s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+        from clientdemand c
+        left join salesopport s on c.so_id = s.so_id
+        left join customer c2 on s.cus_id = c2.cus_id
+        where s.del_status=1
+        order by c.cd_id desc
+    </select>
+
+    <select id="queryClientDemandByCdId" resultMap="clientdemandMap">
+         select c.cd_id,c.cd_id,c.cd_theme,c.cd_people, c.record_time,c.importance,c.cd_content,
+         s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+         from clientdemand c
+         left join salesopport s on c.so_id = s.so_id
+         left join customer c2 on s.cus_id = c2.cus_id
+         where s.del_status=1 and c.cd_id=#{cdId}
+    </select>
+
+    <select id="queryClientDemandByLike" resultMap="clientdemandMap">
+         select c.cd_id,c.cd_id,c.cd_theme,c.cd_people, c.record_time,c.importance,c.cd_content,
+         s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+         from clientdemand c
+         left join salesopport s on c.so_id = s.so_id
+         left join customer c2 on s.cus_id = c2.cus_id
+         <trim prefix="where" prefixOverrides="and">
+             and s.del_status=1
+             <if test="value!=null and value.length>0">
+                 <choose>
+                     <when test="value=='非常重要'">
+                         and c.importance=1
+                     </when>
+                     <when test="value=='重要'">
+                         and c.importance=2
+                     </when>
+                     <when test="value=='一般'">
+                         and c.importance=3
+                     </when>
+                     <when test="value=='不重要'">
+                         and c.importance=4
+                     </when>
+                     <otherwise></otherwise>
+                 </choose>
+             </if>
+             <if test="inputs!=''">
+                 and c.cd_theme like #{inputs}
+             </if>
+         </trim>
+         order by c.cd_id desc
+    </select>
+
+    <select id="queryClientDemandAdvenced" resultMap="clientdemandMap">
+        select c.cd_id,c.cd_id,c.cd_theme,c.cd_people, c.record_time,c.importance,c.cd_content,
+        s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+        from clientdemand c
+        left join salesopport s on c.so_id = s.so_id
+        left join customer c2 on s.cus_id = c2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            and s.del_status=1
+            <if test="them!='' and them.length>0">
+                <choose>
+                    <when test="themSelect=='包含' ||  themSelect==''">
+                        and c.cd_theme like #{them}
+                    </when>
+                    <when test="themSelect=='不包含'">
+                        and c.cd_theme not like #{them}
+                    </when>
+                </choose>
+            </if>
+
+            <if test="customer.cusId!=0">
+                and c2.cus_id=#{customer.cusId}
+            </if>
+
+            <if test="recordTimeStart!=null">
+                and c.record_time >=#{recordTimeStart}
+            </if>
+            <if test="recordTimeEnd!=null">
+                and c.record_time &lt;= #{recordTimeEnd}
+            </if>
+
+            <if test="importances.size()>0">
+                and c.importance in
+                <foreach collection="importances" index="index" item="importance" open="(" separator="," close=")">
+                   #{importance}
+                </foreach>
+            </if>
+
+            <if test="demand!='' and demand.length>0">
+                <choose>
+                    <when test="demandSelect=='' || demandSelect=='包含'">
+                        and c.cd_people like #{demand}
+                    </when>
+                    <when test="demandSelect=='不包含'">
+                        and c.cd_people not like #{demand}
+                    </when>
+                </choose>
+            </if>
+        </trim>
+        order by c.cd_id desc
+    </select>
 
     <select id="queryClientdemandBySoid" resultMap="clientdemandMap">
         select c.cd_id, c.cd_theme, c.cd_people,c.record_time, c.importance, c.cd_content,

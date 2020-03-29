@@ -46,7 +46,7 @@
             <result column="insd_quantity" property="insdQuantity"></result>
             <result column="status" property="status"></result>
             <result column="remarks" property="remarks"></result>
-            <collection property="productspecification" ofType="Productspecification">
+            <association property="productspecification" javaType="Productspecification">
                 <id property="speId" column="spe_id"></id>
                 <result property="proName" column="pro_name"></result>
                 <result property="speSpecification" column="spe_specification"></result>
@@ -57,8 +57,37 @@
                     <result property="proName" column="pro_name"></result>
                     <result property="proDate" column="pro_date"></result>
                 </association>
-            </collection>
+            </association>
         </collection>
+    </resultMap>
+
+    <resultMap id="instockdetailMap" type="Instockdetail">
+        <id column="insd_id" property="insdId"></id>
+        <result column="insd_quantity" property="insdQuantity"></result>
+        <result column="status" property="status"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit" ></result>
+            <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            <association property="product" javaType="Product">
+                <id property="proId" column="pro_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="proDate" column="pro_date"></result>
+            </association>
+        </association>
+        <association property="instock" javaType="Instock">
+            <id column="ins_id" property="insId"></id>
+            <result column="title" property="title"></result>
+            <result column="fill_time" property="fillTime"></result>
+            <result column="status" property="status"></result>
+            <result column="filler" property="filler"></result>
+            <result column="keeper" property="keeper"></result>
+            <result column="execution_time" property="executionTime"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
     </resultMap>
 
     <select id="queryByWhId" resultMap="instockMap">
@@ -67,11 +96,12 @@
 
     <select id="selectAllInstock" resultMap="instockMap">
        select * from instock ins
-       LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
-       LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
-       LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
-	   LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
-       LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id order by ins.ins_id desc
+        LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
+        LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
+        LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
+        LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id
+		LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id order by ins.ins_id desc
     </select>
 
     <select id="insertInstock" resultMap="instockMap" parameterType="Instock">
@@ -80,7 +110,7 @@
     </select>
 
     <select id="queryByInsId" resultMap="instockMap">
-        select * from instock ins
+       select * from instock ins
        LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
        LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
        LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
@@ -88,10 +118,12 @@
        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id where ins.ins_id = #{insId} order by ins.ins_id desc
     </select>
 
-    <update id="updateInvokeStatus" parameterType="Instock">
+    <update id="updateInstock" parameterType="Instock">
         update instock set ins_id = #{insId},title =#{title},warehouse_id=#{warehouse.warehouseId},fill_time=#{fillTime},status=#{status},filler=#{filler},keeper=#{keeper}
         ,execution_time=#{executionTime},pco_id=#{purchaseorder.pcoId},reg_id=#{returnedgoods.regId},supplier_id=#{supplier.supplierId},remarks=#{remarks} where ins_id =#{insId}
     </update>
+
+
 
     <delete id="deleteInstockById">
         delete from instock where ins_id = #{insId}
@@ -124,7 +156,9 @@
         LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
         LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
         LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
-        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id where 1=1
+        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id
+        LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id
+        where 1=1
         <if test="title!=null and title.length!=0">
             and ins.title = #{title}
         </if>
@@ -161,9 +195,25 @@
             and ins.pco_id = #{pcoId}
         </if>
         <if test="proId!=null and proId!=''">
-            and insd.pro_id = #{proId}
+            and ppf.pro_id = #{proId}
         </if>
         order by ins.ins_id desc
     </select>
+
+    <select id="queryInstockDetailByInsId" resultMap="instockdetailMap">
+        select * from instockdetail insd
+        LEFT JOIN productspecification ps on insd.spe_id = ps.spe_id
+        LEFT JOIN product pro on ps.pro_id = pro.pro_id
+		LEFT JOIN instock ins on insd.ins_id = ins.ins_id where insd.ins_id = #{InsId}
+    </select>
+
+    <insert id="insertInstockDetail" parameterType="Instockdetail">
+        insert into instockdetail values(#{insdId},#{productspecification.speId},#{insdQuantity},#{status},#{instock.insId},#{remarks})
+    </insert>
+
+    <update id="updateInstockDetail" parameterType="Instockdetail">
+        update instockdetail set insd_id=#{insdId},spe_id=#{productspecification.speId},insd_quantity=#{insdQuantity},status=#{status},ins_id=#{instock.insId},
+        remarks=#{remarks} where insd_id=#{insdId}
+    </update>
 
 </mapper>

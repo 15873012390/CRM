@@ -271,6 +271,47 @@
         order by s.so_id desc
     </select>
 
+    <select id="querySalesOpportByCustomer" resultMap="salesopportMap">
+        select s.so_id,s.so_theme from salesopport s left join customer c2 on s.cus_id = c2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            and s.del_status=1
+            <if test="customer!=null">
+                and c2.cus_id=#{customer.cusId}
+            </if>
+        </trim>
+    </select>
 
+    <select id="querySalesOpportByForecast" resultMap="salesopportMap">
+        select s.so_id, s.so_theme,s.update_date,s.status,s.con_name,
+        s.con_phone,s.cus_id, s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,
+        s.amount,s.star_target,s.del_status,
+        u.u_id,u.u_name
+        from salesopport s
+        left join user u on s.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="timeStart!=null">
+                and s.signing_time>=#{timeStart}
+            </if>
+            <if test="timeEnd!=null">
+                and s.signing_time&lt;=#{timeEnd}
+            </if>
+            <if test="possibolty!='' and possibolty.length>0">
+                and s.possibility=#{possibolty}
+            </if>
+            <if test="status!=null">
+                <choose>
+                    <when test="status==1">
+                        and 1=1
+                    </when>
+                    <when test="status==2">
+                        and s.stage!='合同签约'
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+        </trim>
+        order by s.so_id desc
+    </select>
 
 </mapper>

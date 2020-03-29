@@ -38,6 +38,10 @@ public interface ICustomerMapperDao {
     public List<Customer> queryCustomerBy4(String value);
     //统计客户来源饼图数据
     public List<CountPie> countCusSourcePie();
+    //统计信用等级饼图数据
+    public List<CountPie> countCusCreditPie();
+    //统计定级饼图数据
+    public List<CountPie> countCusGradingPie();
     //根据cusId查询客户详情
     public Customer queryCustomerDetailsById(Integer cusId);
 }

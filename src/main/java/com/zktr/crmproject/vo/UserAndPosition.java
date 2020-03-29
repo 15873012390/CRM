@@ -1,23 +1,37 @@
 package com.zktr.crmproject.vo;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.Position;
 import com.zktr.crmproject.pojos.User;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 public class UserAndPosition {
+    @Excel(name = "用户ID")
     private Integer uId;
-    private Integer postId;
-    private User user;
-    private Position position;
-    private Department department;
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
+    @Excel(name = "姓名")
+    private String uName;
+    @Excel(name = "密码")
+    private String uPass;
+    @Excel(name = "性别")
+    private String uSex;
+//    @Excel(name = "出生日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp uBirth;
+//    @Excel(name = "入职日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Timestamp uJoindate;
+    private String uImg;
+    private Integer uStatus;
+    private Integer dId;
+    @Excel(name = "部门")
+    private String dName;
+    private String postId;
+//    @Excel(name = "职位")
+    private String postName;
     public Integer getuId() {
         return uId;
     }
@@ -26,27 +40,109 @@ public class UserAndPosition {
         this.uId = uId;
     }
 
-    public Integer getPostId() {
+    public String getuName() {
+        return uName;
+    }
+
+    public void setuName(String uName) {
+        this.uName = uName;
+    }
+
+    public String getuPass() {
+        return uPass;
+    }
+
+    public void setuPass(String uPass) {
+        this.uPass = uPass;
+    }
+
+    public String getuSex() {
+        return uSex;
+    }
+
+    public void setuSex(String uSex) {
+        this.uSex = uSex;
+    }
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Timestamp getuBirth() {
+        return uBirth;
+    }
+
+    public void setuBirth(Timestamp uBirth) {
+        this.uBirth = uBirth;
+    }
+
+    public String getuImg() {
+        return uImg;
+    }
+
+    public void setuImg(String uImg) {
+        this.uImg = uImg;
+    }
+
+    public Integer getuStatus() {
+        return uStatus;
+    }
+
+    public void setuStatus(Integer uStatus) {
+        this.uStatus = uStatus;
+    }
+
+    public Integer getdId() {
+        return dId;
+    }
+
+    public void setdId(Integer dId) {
+        this.dId = dId;
+    }
+
+    public String getdName() {
+        return dName;
+    }
+
+    public void setdName(String dName) {
+        this.dName = dName;
+    }
+
+    public String getPostId() {
         return postId;
     }
 
-    public void setPostId(Integer postId) {
+    public void setPostId(String postId) {
         this.postId = postId;
     }
-
-    public User getUser() {
-        return user;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Timestamp getuJoindate() {
+        return uJoindate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setuJoindate(Timestamp uJoindate) {
+        this.uJoindate = uJoindate;
     }
 
-    public Position getPosition() {
-        return position;
+    public String getPostName() {
+        return postName;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void setPostName(String postName) {
+        this.postName = postName;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAndPosition{" +
+                "uId=" + uId +
+                ", uName='" + uName + '\'' +
+                ", uPass='" + uPass + '\'' +
+                ", uSex='" + uSex + '\'' +
+                ", uBirth=" + uBirth +
+                ", uJoindate=" + uJoindate +
+                ", uImg='" + uImg + '\'' +
+                ", uStatus=" + uStatus +
+                ", dId=" + dId +
+                ", dName='" + dName + '\'' +
+                ", postId='" + postId + '\'' +
+                ", postName='" + postName + '\'' +
+                '}';
     }
 }

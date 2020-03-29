@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -9,9 +10,11 @@ import java.sql.Timestamp;
 public class Solution {
     private int solId;
     private String solTheme;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp submissionTime;
     private String solContent;
     private String feedback;
+    @JsonIgnoreProperties("salesopport")
     private Salesopport salesopport;
 
     @Id

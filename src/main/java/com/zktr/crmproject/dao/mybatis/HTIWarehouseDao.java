@@ -19,4 +19,6 @@ public interface HTIWarehouseDao {
     public List<Warehouse> queryByAdvanced(WareHouseAdvancedSearch wareHouseAdvancedSearch);
 
     public List<Warehouse> querySelectOrInput(@Param("value") String value, @Param("input") String input, @Param("select") String select);
+
+    public List<Warehouse> querySameNameWarehouse(String warehouseName);
 }

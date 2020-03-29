@@ -109,7 +109,9 @@
                         <when test="themSelect!=null and themSelect.length!=0 and themSelect=='不包含'">
                             and b.blt_description not like #{them}
                         </when>
-                        <otherwise></otherwise>
+                        <otherwise>
+                            and b.blt_description like #{them}
+                        </otherwise>
                     </choose>
                 </if>
                 <if test="createTimeStart!=null">

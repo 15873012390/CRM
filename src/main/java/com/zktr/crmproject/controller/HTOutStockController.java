@@ -4,6 +4,7 @@ import com.zktr.crmproject.pojos.Orders;
 import com.zktr.crmproject.pojos.Outstock;
 import com.zktr.crmproject.pojos.Outstockdetails;
 import com.zktr.crmproject.service.HTOustStockService;
+import com.zktr.crmproject.vo.OutStockAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,10 @@ public class HTOutStockController {
     public Pager<Outstock> queryOutStockSelectAndInputByPage(String value, String input, String select, Integer curpage, Integer pagesize){
         System.out.println("1111111111111111"+value);
         return outStockService.queryOutStockSelectAndInputByPage(value, input, select, curpage, pagesize);
+    }
+
+    @PostMapping("/queryOutstockByAdvancedSearch")
+    public Pager<Outstock> queryOutstockByAdvancedSearch(@RequestBody  OutStockAdvancedSearch oas){
+        return outStockService.queryOutstockByAdvancedSearch(oas);
     }
 }

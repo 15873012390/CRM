@@ -15,17 +15,11 @@ public class Returnedgoods {
     private BigDecimal retiredMoney;
     private String regState;
     private Integer regDelState;
-    @JsonIgnoreProperties("returnedgoods")
     private List<Instock> instock;
-    @JsonIgnoreProperties("returnedgoods")
     private Orders orders;
-    @JsonIgnoreProperties("returnedgoods")
     private Warehouse warehouse;
-    @JsonIgnoreProperties("returnedgoods")
     private Customer customer;
-    @JsonIgnoreProperties("returnedgoods")
     private User user;
-    @JsonIgnoreProperties("returnedgoods")
     private List<Returnedgoodsdetial> returnedgoodsdetial;
 
     @Id

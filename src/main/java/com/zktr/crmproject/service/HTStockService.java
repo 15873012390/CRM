@@ -61,4 +61,13 @@ public class HTStockService {
         return istockDao.queryStockByStockId(stockId);
     }
 
+    /**
+     * 根据规格ID查询库存
+     * @param speId
+     * @return
+     */
+    public Integer queryQuantityBySpeId(Integer speId){
+        return istockDao.queryQuantityBySpeId(speId).getStockQuantity();
+    }
+
 }

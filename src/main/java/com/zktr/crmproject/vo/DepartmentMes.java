@@ -9,7 +9,7 @@ public class DepartmentMes {
     private String dFunction;
     private Integer dBoss;
     private Integer parentId;
-    private User user;
+    private String uName;
     private String dName2;
 
     public int getdId() {
@@ -52,12 +52,12 @@ public class DepartmentMes {
         this.parentId = parentId;
     }
 
-    public User getUser() {
-        return user;
+    public String getuName() {
+        return uName;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setuName(String uName) {
+        this.uName = uName;
     }
 
     public String getdName2() {
@@ -76,7 +76,7 @@ public class DepartmentMes {
                 ", dFunction='" + dFunction + '\'' +
                 ", dBoss=" + dBoss +
                 ", parentId=" + parentId +
-                ", user=" + user +
+                ", uName=" + uName +
                 '}';
     }
 }

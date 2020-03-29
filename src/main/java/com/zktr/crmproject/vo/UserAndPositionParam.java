@@ -1,7 +1,9 @@
 package com.zktr.crmproject.vo;
 
+import java.util.Arrays;
+
 public class UserAndPositionParam {
-    private Integer uId;//用户id，和部门id
+    private Integer uId;//用户id，和部门id,职位id
     private Integer[] postId;
 
     public Integer getuId() {
@@ -20,4 +22,11 @@ public class UserAndPositionParam {
         this.postId = postId;
     }
 
+    @Override
+    public String toString() {
+        return "UserAndPositionParam{" +
+                "uId=" + uId +
+                ", postId=" + Arrays.toString(postId) +
+                '}';
+    }
 }

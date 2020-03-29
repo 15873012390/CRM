@@ -15,6 +15,7 @@ public class PowerManage {
     private List<PowerFather> powerfather;
     @Id
     @Column(name = "pm_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getPmId() {
         return pmId;
     }
@@ -65,7 +66,7 @@ public class PowerManage {
 
     @Override
     public String toString() {
-        return "Powermanage{" +
+        return "PowerManage{" +
                 "pmId=" + pmId +
                 ", pmName='" + pmName + '\'' +
                 ", pmMessage='" + pmMessage + '\'' +

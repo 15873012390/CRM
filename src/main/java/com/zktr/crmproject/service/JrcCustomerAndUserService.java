@@ -1,14 +1,18 @@
 package com.zktr.crmproject.service;
 
 import com.zktr.crmproject.dao.mybatis.JrcCustomerMDao;
+import com.zktr.crmproject.dao.mybatis.JrcDeptMDao;
 import com.zktr.crmproject.dao.mybatis.JrcUserMDao;
 import com.zktr.crmproject.pojos.Customer;
+import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -17,7 +21,8 @@ public class JrcCustomerAndUserService {
     private JrcCustomerMDao customerMDao;
     @Autowired
     private JrcUserMDao userMDao;
-
+    @Autowired
+    private JrcDeptMDao deptMDao;
     /**
      * 查看所有的客户
      * @return
@@ -67,5 +72,12 @@ public class JrcCustomerAndUserService {
         return userMDao.queryByUserName(uName);
     }
 
+    /**
+     * 查询所有部门底下的员工
+     * @return
+     */
+    public List<Department> queryDeptAllUser(){
+       return deptMDao.queryAllDeptBelow();
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.User;
-import com.zktr.crmproject.vo.Pager;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

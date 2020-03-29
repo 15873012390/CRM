@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.TWCustomerTransfer2MapperDao">
+    <resultMap id="TWCustomerTransferMap" type="com.zktr.crmproject.pojos.Customertransfer">
+        <id property="ctId" column="ct_id"></id>
+        <result property="ctTime" column="ct_time"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id property="cusId" column="cus_id"></id>
+            <result property="cusName" column="cus_name"></result>
+        </association>
+    </resultMap>
+
+    <select id="findAllCustomerTransfer" resultMap="TWCustomerTransferMap">
+        select *
+        from customertransfer a
+        left JOIN customer b on a.cus_id=b.cus_id
+        inner JOIN user c on a.original_u_id=c.u_id
+        inner JOIN user d on a.now_u_id=d.u_id
+        inner JOIN user e on a.operation_u_id=e.u_id
+        ORDER BY a.ct_id DESC
+    </select>
+    <select id="findCustomerTransferById1" resultMap="TWCustomerTransferMap">
+        select *
+        from customertransfer a
+        left JOIN customer b on a.cus_id=b.cus_id
+        inner JOIN user c on a.original_u_id=c.u_id
+        inner JOIN user d on a.now_u_id=d.u_id
+        inner JOIN user e on a.operation_u_id=e.u_id
+        where a.original_u_id=#{uId}
+        ORDER BY a.ct_id DESC
+    </select>
+    <select id="findCustomerTransferById2" resultMap="TWCustomerTransferMap">
+        select *
+        from customertransfer a
+        left JOIN customer b on a.cus_id=b.cus_id
+        inner JOIN user c on a.original_u_id=c.u_id
+        inner JOIN user d on a.now_u_id=d.u_id
+        inner JOIN user e on a.operation_u_id=e.u_id
+        where a.now_u_id=#{uId}
+        ORDER BY a.ct_id DESC
+    </select>
+</mapper>

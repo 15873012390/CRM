@@ -38,13 +38,13 @@
             <result column="osd_number" property="osdNumber"></result>
             <result column="status" property="status"></result>
             <result column="remarks" property="remarks"></result>
-            <collection property="productspecification" ofType="Productspecification">
+            <association property="productspecification" javaType="Productspecification">
                 <id property="speId" column="spe_id"></id>
                 <result property="proName" column="pro_name"></result>
                 <result property="speSpecification" column="spe_specification"></result>
                 <result property="speUnit" column="spe_unit" ></result>
                 <result property="speUnitConversion" column="spe_unit_conversion"></result>
-            </collection>
+            </association>
         </collection>
     </resultMap>
     <resultMap id="outDetailsMap" type="Outstockdetails">
@@ -63,21 +63,25 @@
             <result column="pass_time" property="passTime"></result>
             <result column="remarks" property="remarks"></result>
         </association>
-        <collection property="productspecification" ofType="Productspecification">
+        <association property="productspecification" javaType="Productspecification">
             <id property="speId" column="spe_id"></id>
             <result property="proName" column="pro_name"></result>
             <result property="speSpecification" column="spe_specification"></result>
             <result property="speUnit" column="spe_unit" ></result>
             <result property="speUnitConversion" column="spe_unit_conversion"></result>
-        </collection>
+        </association>
     </resultMap>
 
     <select id="queryAllOutstock" resultMap="outStockMap">
-        select * from outstock ou
-        LEFT JOIN customer cus on ou.cus_id = cus.cus_id
-        LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
-        LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
-        LEFT JOIN orders ord on ou.ord_id = ord.ord_id order by ou.out_id desc
+            select * from outstock ou
+            LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+            LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+            LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+            LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+            LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+            LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+            LEFT JOIN product p on prop.pro_id = p.pro_id
+            order by ou.out_id desc
     </select>
 
     <select id="queryOutstockByOutId" resultMap="outStockMap">
@@ -123,7 +127,11 @@
         LEFT JOIN customer cus on ou.cus_id = cus.cus_id
         LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
         LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
-        LEFT JOIN orders ord on ou.ord_id = ord.ord_id where 1=1
+        LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+        LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+        LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+        LEFT JOIN product p on prop.pro_id = p.pro_id
+        where 1=1
             <if test="value!=null and value.length!=0 and value!='全部数据'">
                 <choose>
                     <when test="value=='未出库' || value=='已出库' || value=='已发货'">
@@ -138,5 +146,56 @@
             </choose>
             order by ou.out_id desc
      </select>
+
+    <select id="queryoutStockByAdvancedSearch" resultMap="outStockMap" parameterType="com.zktr.crmproject.vo.OutStockAdvancedSearch">
+        select * from outstock ou
+        LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+        LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+        LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+        LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+        LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+        LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+        LEFT JOIN product p on prop.pro_id = p.pro_id
+        where 1=1
+        <if test="title!=null and title.length!=0">
+            and ou.title = #{title}
+        </if>
+        <if test="warehouseId!=null and warehouseId.length!=0">
+            and ou.warehouse_id in
+            <foreach collection="warehouseId" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="fillTime!=null and fillTime.length!=0">
+            and ou.fill_time between #{s1} and #{s2}
+        </if>
+        <if test="status!=null and status.length!=0">
+            and ou.status in
+            <foreach collection="status" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="passPerson!=null and passPerson!=''">
+            and ou.pass_person = #{passPerson}
+        </if>
+        <if test="cusId!=null and cusId!=''">
+            and ou.cusId = #{cusId}
+        </if>
+        <if test="passTime!=null and passTime.length!=0">
+            and ou.pass_time between #{s3} and #{s4}
+        </if>
+        <if test="ordId!=null and ordId!=''">
+            and ou.ord_id = #{ordId}
+        </if>
+        <if test="proId!=null and proId!=''">
+            and prop.pro_id = #{proId}
+        </if>
+        <if test="preturnId!=null and preturnId!=''">
+            and purr.preturn_id =#{preturnId}
+        </if>
+        order by ou.out_id desc
+    </select>
 
 </mapper>

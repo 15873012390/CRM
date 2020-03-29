@@ -1,15 +1,15 @@
 package com.zktr.crmproject.vo;
 
+import java.math.BigDecimal;
+
 public class JrcSalesFunnel {
     private String stage;
-    private Integer number;//数量
-    private String numberConversion;//转化
-    private String nmberHistoryConversion;//历史转化
-    private String numberAvgen;//全局平均
-    private String money;//预估金额
-    private String moneyConversion;//转化
-    private String moneyHistoryConversion;//历史转化
-    private String moneyAvgen;//全局平均
+    private Integer numbers;//数量
+    private Integer nmberHistoryConversion;//历史数量
+    private Integer numberAvgen;//全局数量
+    private BigDecimal money;//金额
+    private BigDecimal moneyHistoryConversion;//历史转化
+    private BigDecimal moneyAvgen;//全局平均
 
     public String getStage() {
         return stage;
@@ -19,82 +19,77 @@ public class JrcSalesFunnel {
         this.stage = stage;
     }
 
-    public Integer getNumber() {
-        return number;
+    public Integer getNumbers() {
+        return numbers;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setNumbers(Integer numbers) {
+        this.numbers = numbers;
     }
 
-    public String getNumberConversion() {
-        return numberConversion;
-    }
-
-    public void setNumberConversion(String numberConversion) {
-        this.numberConversion = numberConversion;
-    }
-
-    public String getNmberHistoryConversion() {
+    public Integer getNmberHistoryConversion() {
         return nmberHistoryConversion;
     }
 
-    public void setNmberHistoryConversion(String nmberHistoryConversion) {
+    public void setNmberHistoryConversion(Integer nmberHistoryConversion) {
         this.nmberHistoryConversion = nmberHistoryConversion;
     }
 
-    public String getNumberAvgen() {
+    public Integer getNumberAvgen() {
         return numberAvgen;
     }
 
-    public void setNumberAvgen(String numberAvgen) {
+    public void setNumberAvgen(Integer numberAvgen) {
         this.numberAvgen = numberAvgen;
     }
 
-    public String getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 
-    public String getMoneyConversion() {
-        return moneyConversion;
-    }
-
-    public void setMoneyConversion(String moneyConversion) {
-        this.moneyConversion = moneyConversion;
-    }
-
-    public String getMoneyHistoryConversion() {
+    public BigDecimal getMoneyHistoryConversion() {
         return moneyHistoryConversion;
     }
 
-    public void setMoneyHistoryConversion(String moneyHistoryConversion) {
+    public void setMoneyHistoryConversion(BigDecimal moneyHistoryConversion) {
         this.moneyHistoryConversion = moneyHistoryConversion;
     }
 
-    public String getMoneyAvgen() {
+    public BigDecimal getMoneyAvgen() {
         return moneyAvgen;
     }
 
-    public void setMoneyAvgen(String moneyAvgen) {
+    public void setMoneyAvgen(BigDecimal moneyAvgen) {
+        this.moneyAvgen = moneyAvgen;
+    }
+
+    public JrcSalesFunnel(String stage, Integer numbers, Integer nmberHistoryConversion, Integer numberAvgen, BigDecimal money, BigDecimal moneyHistoryConversion, BigDecimal moneyAvgen) {
+        this.stage = stage;
+        this.numbers = numbers;
+        this.nmberHistoryConversion = nmberHistoryConversion;
+        this.numberAvgen = numberAvgen;
+        this.money = money;
+        this.moneyHistoryConversion = moneyHistoryConversion;
         this.moneyAvgen = moneyAvgen;
     }
 
     public JrcSalesFunnel() {
     }
 
-    public JrcSalesFunnel(String stage, Integer number, String numberConversion, String nmberHistoryConversion, String numberAvgen, String money, String moneyConversion, String moneyHistoryConversion, String moneyAvgen) {
-        this.stage = stage;
-        this.number = number;
-        this.numberConversion = numberConversion;
-        this.nmberHistoryConversion = nmberHistoryConversion;
-        this.numberAvgen = numberAvgen;
-        this.money = money;
-        this.moneyConversion = moneyConversion;
-        this.moneyHistoryConversion = moneyHistoryConversion;
-        this.moneyAvgen = moneyAvgen;
+    @Override
+    public String toString() {
+        return "JrcSalesFunnel{" +
+                "stage='" + stage + '\'' +
+                ", numbers=" + numbers +
+                ", nmberHistoryConversion=" + nmberHistoryConversion +
+                ", numberAvgen=" + numberAvgen +
+                ", money=" + money +
+                ", moneyHistoryConversion=" + moneyHistoryConversion +
+                ", moneyAvgen=" + moneyAvgen +
+                '}';
     }
 }

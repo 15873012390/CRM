@@ -1,6 +1,7 @@
 package com.zktr.crmproject.controller;
 
 import com.zktr.crmproject.pojos.Customer;
+import com.zktr.crmproject.pojos.Customertransfer;
 import com.zktr.crmproject.service.TWCustomerService;
 import com.zktr.crmproject.utils.ExcelUtils;
 import com.zktr.crmproject.vo.*;
@@ -17,6 +18,46 @@ import java.util.List;
 public class TWCustomerController {
     @Autowired
     private TWCustomerService TWCustomerService;
+
+
+    /**
+     * 根据用户id查询客户转移日志
+     * @param uId
+     * @param num
+     * @param curpage
+     * @param pagesize
+     * @return
+     * @throws ParseException
+     */
+    @ResponseBody
+    @GetMapping("/query_customertransfer_byId")
+    public Pager<Customertransfer> queryCustomertransferById(Integer uId,Integer num, int curpage, int pagesize) throws ParseException {
+        return TWCustomerService.queryCustomerTransferById(uId,num,curpage,pagesize);
+    }
+
+    /**
+     * 查询所有客户转移日志
+     * @param curpage
+     * @param pagesize
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/query_all_customertransfer")
+    public Pager<Customertransfer> queryAllCustomertransfer(int curpage, int pagesize) throws ParseException {
+        return TWCustomerService.queryAllCustomerTransfer(curpage,pagesize);
+    }
+
+    /**
+     * 添加客户转移日志
+     * @param customertransfer
+     * @return
+     */
+    @PostMapping("/add_customertransfer") //restful风格
+    @ResponseBody
+    public Result addCustomerTransfer(@RequestBody Customertransfer customertransfer){
+        TWCustomerService.saveCustomerTransfer(customertransfer);
+        return Result.SUCCESS;
+    }
 
     /**
      * 分页查询所有客户

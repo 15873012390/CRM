@@ -148,4 +148,14 @@ public class PLproductController {
     public Product findBySpeid(Integer speid){
         return pservice.findBySpeid(speid);
     }
+    //HT
+    @GetMapping("/queryAllProductInstock")
+    public List<Product> queryAllProductInstock(){
+        return pservice.queryAllProductInstock();
+    }
+
+    @GetMapping("/findBySpeidInstock")
+    public Product findBySpeidInstock(Integer speid){
+        return pservice.findBySpeidInstock(speid);
+    }
 }

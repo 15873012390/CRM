@@ -11,8 +11,8 @@
     <select id="querySalesOpportByStageNumber" resultMap="charTypeMap">
         select ROUND(count(s.so_id)/(SELECT count(s2.so_id) from salesopport s2 where s2.STATUS=1)*100,2) as value,
         CONCAT_WS(',',s.stage,count(s.so_id)) as name from salesopport s
-        <trim prefix="where" prefixOverrides="and" >
-            and s.status=1
+        <trim prefix="where" prefixOverrides="and">
+            and s.status=1 and s.stage=#{stage}
             <if test="users.size() > 0">
                 and s.u_id in
                 <foreach collection="users" index="index" item="customerSource"
@@ -40,84 +40,7 @@
         group  by s.stage
     </select>
 
-   <!--数量转化率-->
-    <select id="numberConversion" resultType="String">
-        select count(s.so_id)/(SELECT count(s2.so_id) from salesopport s2 where s2.status=1 and s2.stage=#{one}),
-         from salesopport s
-        <trim prefix="where" prefixOverrides="and" >
-            and s.status=1
-            <if test="users.size() > 0">
-                and s.u_id in
-                <foreach collection="users" index="index" item="customerSource"
-                         open="(" separator="," close=")">
-                    #{customerSource.uId}
-                </foreach>
-            </if>
-        </trim>
-        s.stage=#{two} group  by s.stage
-    </select>
 
-    <!--数量历史转化率 不过滤状态-->
-    <select id="numberHistoryConversion" resultType="String">
-        select count(s.so_id)/(SELECT count(s2.so_id) from salesopport s2 where s2.stage=#{one}),
-        from salesopport s
-        <trim prefix="where" prefixOverrides="and" >
-            <if test="users.size() > 0">
-                and s.u_id in
-                <foreach collection="users" index="index" item="customerSource"
-                         open="(" separator="," close=")">
-                    #{customerSource.uId}
-                </foreach>
-            </if>
-        </trim>
-        s.stage=#{two} group  by s.stage
-    </select>
 
-    <!--数量全局平均转化率 不过来人-->
-    <select id="numberAvgConversion" resultType="String">
-        select count(s.so_id)/(SELECT count(s2.so_id) from salesopport s2 where s2.status=1 and s2.stage=#{one}),
-        from salesopport s
-        s.stage=#{two} group  by s.stage
-    </select>
-
-    <!--金额转化率-->
-    <select id="moneyConversion" resultType="String">
-        select count(s.amount)/(SELECT count(s2.amount) from salesopport s2 where s2.status=1 and s2.stage=#{one}),
-        from salesopport s
-        <trim prefix="where" prefixOverrides="and" >
-            and s.status=1
-            <if test="users.size() > 0">
-                and s.u_id in
-                <foreach collection="users" index="index" item="customerSource"
-                         open="(" separator="," close=")">
-                    #{customerSource.uId}
-                </foreach>
-            </if>
-        </trim>
-        s.stage=#{two} group  by s.stage
-    </select>
-
-    <!--金额历史转化率 不过滤状态-->
-    <select id="moneyHistoryConversion" resultType="String">
-        select count(s.amount)/(SELECT count(s2.amount) from salesopport s2 where s2.stage=#{one}),
-        from salesopport s
-        <trim prefix="where" prefixOverrides="and" >
-            <if test="users.size() > 0">
-                and s.u_id in
-                <foreach collection="users" index="index" item="customerSource"
-                         open="(" separator="," close=")">
-                    #{customerSource.uId}
-                </foreach>
-            </if>
-        </trim>
-        s.stage=#{two} group  by s.stage
-    </select>
-
-    <!--金额全局平均转化率 不过来人-->
-    <select id="moneyAvgConversion" resultType="String">
-        select count(s.amount)/(SELECT count(s2.amount) from salesopport s2 where s2.status=1 and s2.stage=#{one}),
-        from salesopport s
-        s.stage=#{two} group  by s.stage
-    </select>
 
 </mapper>

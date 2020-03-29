@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.HTOutstockDao;
 import com.zktr.crmproject.dao.jpa.HTOutStockDetailsDao;
+import com.zktr.crmproject.dao.jpa.HTStockDao;
 import com.zktr.crmproject.dao.jpa.PLOrdersDao;
 import com.zktr.crmproject.dao.mybatis.HTIOutstockDao;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
@@ -11,6 +12,8 @@ import com.zktr.crmproject.dao.mybatis.PLIOrdersDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.utils.UUIDUtils;
+import com.zktr.crmproject.vo.InstockAdvancedSearch;
+import com.zktr.crmproject.vo.OutStockAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,9 @@ public class HTOustStockService {
     private HTIStockDao istockDao;
     @Autowired
     private HTOutStockDetailsDao outStockDetailsDao;
+    @Autowired
+    private HTStockDao stockDao;
+
     /**
      * 查询所有的出库
      * @param curpage
@@ -43,7 +49,7 @@ public class HTOustStockService {
         PageHelper.startPage(curpage,pagesize);
         List<Outstock> list = iOutstockDao.queryAllOutstock();
         PageInfo<Outstock> pager = new PageInfo<>(list);
-        return new Pager<Outstock>(pager.getTotal(),pager.getList());
+        return new Pager<Outstock>(pager.getList().size(),pager.getList());
     }
 
     /**
@@ -79,7 +85,7 @@ public class HTOustStockService {
                 for(Orderdetail o: order.getOrderdetail()){
                     od.setProductspecification(o.getProductspecification());
                     od.setOsdNumber(o.getDetNumber());
-                    Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId());
+                    Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
                     istockDao.updatestockQuantity((num-o.getDetNumber()),o.getProductspecification().getSpeId());
                     od.setStatus("已出库");
                     od.setOutstock(outstock);
@@ -128,8 +134,19 @@ public class HTOustStockService {
             for (Outstockdetails o : outstockdetailsList) {
                 o.setStatus("未出库");
                 iOutstockDao.updateOutDeatails(o);
-                Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId());
-                istockDao.updatestockQuantity((num + o.getOsdNumber()), o.getProductspecification().getSpeId());
+                Stock stock = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId());
+                //库存为空则增加,否则修改
+                if(stock!=null){
+                    Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
+                    istockDao.updatestockQuantity((num + o.getOsdNumber()), o.getProductspecification().getSpeId());
+                }else{
+                    Stock stock1 = new Stock();
+                    stock1.setProductspecification(o.getProductspecification());
+                    stock1.setWarehouse(outstock.getWarehouse());
+                    stock1.setStockQuantity(o.getOsdNumber());
+                    stockDao.save(stock);
+                }
+
             }
         }else{
             outstock.setStatus("已出库");
@@ -138,7 +155,7 @@ public class HTOustStockService {
             for (Outstockdetails o : outstockdetailsList) {
                 o.setStatus("已出库");
                 iOutstockDao.updateOutDeatails(o);
-                Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId());
+                Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
                 istockDao.updatestockQuantity((num - o.getOsdNumber()), o.getProductspecification().getSpeId());
             }
         }
@@ -191,7 +208,27 @@ public class HTOustStockService {
         PageHelper.startPage(curpage,pagesize);
         List<Outstock> clist = iOutstockDao.queryOutStockSelectAndInputByPage(value,"%"+input.trim()+"%",select);
         PageInfo<Outstock> pager = new PageInfo<>(clist);
-        return new Pager<Outstock>(pager.getTotal(),pager.getList());
+        return new Pager<Outstock>(pager.getList().size(),pager.getList());
+    }
+
+    /**
+     * 高级查询入库
+     * @param oas
+     * @return
+     */
+    public Pager<Outstock> queryOutstockByAdvancedSearch(OutStockAdvancedSearch oas){
+        PageHelper.startPage(oas.getCurPage(),oas.getPageSize());
+        if(oas.getFillTime()!=null && oas.getFillTime().length!=0){
+            oas.setS1(oas.getFillTime()[0]);
+            oas.setS1(oas.getFillTime()[1]);
+        }
+        if(oas.getPassTime()!=null && oas.getPassTime().length!=0){
+            oas.setS3(oas.getPassTime()[0]);
+            oas.setS4(oas.getPassTime()[1]);
+        }
+        List<Outstock> list = iOutstockDao.queryoutStockByAdvancedSearch(oas);
+        PageInfo<Outstock> pager = new PageInfo<>(list);
+        return new Pager<Outstock>(pager.getList().size(),pager.getList());
     }
 
 }

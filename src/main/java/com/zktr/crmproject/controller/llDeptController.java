@@ -4,6 +4,7 @@ import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.service.llDeptService;
 
+import com.zktr.crmproject.vo.DepartmentMes;
 import com.zktr.crmproject.vo.Result;
 import com.zktr.crmproject.vo.UserAndPositionParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class llDeptController {
     private llDeptService llDeptService;
     //获取所有部门信息
     @GetMapping("/findAllDept")
-    public List<Department> findAllDept(){
+    public List<DepartmentMes> findAllDept(){
         return llDeptService.findAllDept();
     }
     //增加部门信息

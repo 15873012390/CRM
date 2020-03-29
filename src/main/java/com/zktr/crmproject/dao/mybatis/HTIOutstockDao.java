@@ -2,6 +2,7 @@ package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.Outstock;
 import com.zktr.crmproject.pojos.Outstockdetails;
+import com.zktr.crmproject.vo.OutStockAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
@@ -28,4 +29,6 @@ public interface HTIOutstockDao {
     public void updateOutDeatails(Outstockdetails outstockdetails);
 
     public List<Outstock> queryOutStockSelectAndInputByPage(String value,String input,String select);
+
+    public List<Outstock> queryoutStockByAdvancedSearch(OutStockAdvancedSearch oas);
 }

@@ -47,14 +47,12 @@
 
 
     <select id="queryAllProduct"  resultMap="productMap">
-        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,st.stock_quantity,cla.cla_name
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,cla.cla_name
         FROM product p
         LEFT JOIN productspecification s
         ON p.pro_id=s.pro_id
         LEFT JOIN productclassification cla
         ON p.cla_id=cla.cla_id
-        LEFT JOIN stock st
-        ON s.spe_id=st.spe_id
         WHERE p.pro_del_state=1
         ORDER BY p.pro_id DESC
     </select>
@@ -245,5 +243,31 @@
     <select id="selectByValue" resultMap="productMap">
         select * from product where pro_del_state=1 and pro_name=#{value}
     </select>
+
+    <select id="findMaxProid" resultType="java.lang.Integer">
+        SELECT MAX(pro_id) FROM product
+    </select>
+
+    <select id="queryAllProductInstock"  resultMap="productMap">
+       SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_id,s.spe_specification,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        WHERE p.pro_del_state=1
+        ORDER BY p.pro_id DESC
+    </select>
+
+    <select id="findBySpeidInstock" resultMap="productMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,s.spe_id,s.pro_name,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        WHERE p.pro_del_state=1 and s.spe_id=#{speid} limit  1
+    </select>
+
 
 </mapper>

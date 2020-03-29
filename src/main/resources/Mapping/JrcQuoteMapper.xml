@@ -2,60 +2,72 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zktr.crmproject.dao.mybatis.JrcQuoteMDao">
-    
+
     <resultMap id="quoteMap" type="Quote">
-        <id property="quoId" column="quo_id"/>
-        <result property="quoTheme" column="quo_theme"/>
-        <result property="toOrder" column="to_order"/>
-        <result property="quoPhone" column="quo_phone"/>
-        <result property="quoDate" column="quo_date"/>
-        <result property="totalMoney" column="total_money"/>
-        <result property="grossProfit" column="gross_profit"/>
-        <result property="instructions" column="instructions"/>
-        <result property="remarks" column="remarks"/>
-        <result property="approver" column="approver"/>
-        <result property="auditStatus" column="audit_status"/>
-        <result property="delStatus" column="del_status"/>
+        <id property="quoId" column="quo_id"></id>
+        <result property="quoTheme" column="quo_theme"></result>
+        <result property="toOrder" column="to_order"></result>
+        <result property="quoPhone" column="quo_phone"></result>
+        <result property="quoDate" column="quo_date"></result>
+        <result property="totalMoney" column="total_money"></result>
+        <result property="grossProfit" column="gross_profit"></result>
+        <result property="instructions" column="instructions"></result>
+        <result property="remarks" column="remarks"></result>
+        <result property="approver" column="approver"></result>
+        <result property="auditStatus" column="audit_status"></result>
+        <result property="delStatus" column="del_status"></result>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id property="cusId" column="cus_id"></id>
+            <result property="cusName" column="cus_name"></result>
+        </association>
+        <!--员工-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
         <!--销售机会-->
         <association property="salesopport" javaType="Salesopport">
             <id property="soId" column="so_id"/>
             <result property="soTheme" column="so_theme"/>
-        </association>
-        <!--客户-->
-        <association property="customer" javaType="Customer">
-            <id property="cusId" column="cus_id"/>
-            <result property="cusName" column="cus_name"/>
-        </association>
-        <!--用户-->
-        <association property="user" javaType="User">
-            <id property="uId" column="u_id"/>
-            <result property="uName" column="u_name"/>
+            <result property="updateDate" column="update_date"/>
+            <!--状态-->
+            <result property="status" column="status"/>
+            <result property="conName" column="con_name"/>
+            <result property="conPhone" column="con_phone"/>
+            <!--类型-->
+            <result property="architecture" column="architecture"/>
+            <result property="cusSource" column="cus_source"/>
+
+            <result property="priority" column="priority"/>
+            <!--阶段-->
+            <result property="stage" column="stage"/>
+            <result property="disTime" column="dis_time"/>
+            <result property="provider" column="provider"/>
+            <result property="cusDemand" column="cus_demand"/>
+            <result property="signingTime" column="signing_time"/>
+            <result property="possibility" column="possibility"/>
+            <result property="delStatus" column="del_status"/>
+            <result property="amount" column="amount"/>
+            <result property="starTarget" column="star_target"/>
         </association>
         <!--审核-->
         <association property="audit" javaType="Audit">
-            <id property="audId" column="aud_id"/>
-            <result property="audTheme" column="aud_theme"/>
+            <id property="audId" column="aud_id"></id>
+            <result property="audTheme" column="aud_theme"></result>
+            <result property="audType" column="aud_type"></result>
+            <result property="audTime" column="aud_time"></result>
+            <result property="audStatus" column="aud_status"></result>
+            <result property="delStatus" column="del_status"></result>
         </association>
-        <!--报价详情-->
-        <collection property="quotedetails" ofType="Quotedetails">
-            <id property="qdId" column="qd_id"/>
-            <result property="specification" column="specification"/>
-            <result property="unit" column="unit"/>
-            <result property="quantity" column="quantity"/>
-            <result property="unitPrice" column="unit_price"/>
-            <result property="discount" column="discount"/>
-            <result property="money" column="money"/>
-            <result property="remarks" column="remarks"/>
-        </collection>
 
     </resultMap>
 
-    <select id="queryQuoteBySoid" resultMap="quoteMap">
-        select q.quo_id, q.quo_theme, q.to_order, q.quo_phone, q.quo_date, q.total_money, q.gross_profit,
-        q.instructions, q.remarks, q.approver,q.audit_status, q.del_status,
-        s.so_id,s.so_theme
-        from quote q left join salesopport s on q.so_id = s.so_id
-        where q.so_id=#{soId}
-        order by q.quo_id desc
+    <select id="PLqueryAllQuote" resultMap="quoteMap">
+        SELECT quo_id,quo_theme,cus_id
+        FROM quote
+        WHERE del_status=1
+        AND to_order=1
     </select>
+
 </mapper>

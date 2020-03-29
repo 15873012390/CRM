@@ -17,6 +17,7 @@ public class PowerFather {
     private List<Power> power;
     @Id
     @Column(name = "power_fid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getPowerFid() {
         return powerFid;
     }
@@ -42,15 +43,15 @@ public class PowerFather {
     public void setPowerFmessage(String powerFmessage) {
         this.powerFmessage = powerFmessage;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PowerFather powerfather=(PowerFather)o;
-        return powerFid == powerfather.powerFid &&
-                Objects.equals(powerFname, powerfather.powerFname) &&
-                Objects.equals(powerFmessage, powerfather.powerFmessage);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Powerfather powerfather=(Powerfather)o;
+//        return powerFid == powerfather.powerFid &&
+//                Objects.equals(powerFname, powerfather.powerFname) &&
+//                Objects.equals(powerFmessage, powerfather.powerFmessage);
+//    }
 
     @Override
     public int hashCode() {

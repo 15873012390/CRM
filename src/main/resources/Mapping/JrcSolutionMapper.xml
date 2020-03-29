@@ -12,8 +12,72 @@
         <association property="salesopport" javaType="Salesopport">
             <id property="soId" column="so_id"/>
             <result property="soTheme" column="so_theme"/>
+            <association property="customer" javaType="Customer">
+                <id property="cusId" column="cus_id"/>
+                <result property="cusName" column="cus_name"/>
+            </association>
         </association>
     </resultMap>
+
+    <select id="querySolutionAllByPage" resultMap="solutionMap">
+        select s.sol_id,s.sol_theme, s.submission_time,s.sol_content, feedback,
+        s2.so_id,s2.so_theme,c.cus_id,c.cus_name
+        from solution s left join salesopport s2 on s.so_id = s2.so_id
+        left join customer c on c.cus_id=s2.cus_id
+        order by s.sol_id desc
+    </select>
+
+    <select id="querySolutionByLike" resultMap="solutionMap">
+        select s.sol_id,s.sol_theme, s.submission_time,s.sol_content, feedback,
+        s2.so_id,s2.so_theme,c.cus_id,c.cus_name
+        from solution s left join salesopport s2 on s.so_id = s2.so_id
+        left join customer c on c.cus_id=s2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="inputs!='' and inputs.length>0">
+                and s.sol_theme like #{inputs}
+            </if>
+        </trim>
+        order by s.sol_id desc
+    </select>
+
+    <select id="querySolutionAdvenceSearch" resultMap="solutionMap">
+        select s.sol_id,s.sol_theme, s.submission_time,s.sol_content, feedback,
+        s2.so_id,s2.so_theme,c.cus_id,c.cus_name
+        from solution s left join salesopport s2 on s.so_id = s2.so_id
+        left join customer c on c.cus_id=s2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="customer.cusId!=0">
+                and c.cus_id=#{customer.cusId}
+            </if>
+            <if test="them!='' and them.length>0">
+                <choose>
+                    <when test="themSelect=='' || themSelect=='包含'">
+                        and s.sol_theme like #{them}
+                    </when>
+                    <when test="themSelect=='不包含'">
+                        and s.sol_theme  not like #{them}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="timeStart!=null">
+                and s.submission_time >= #{timeStart}
+            </if>
+            <if test="timeEnd!=null">
+                and s.submission_time &lt;=#{timeEnd}
+            </if>
+        </trim>
+        order by s.sol_id desc
+    </select>
+
+    <select id="querySolutionById" resultMap="solutionMap">
+         select s.sol_id,s.sol_theme, s.submission_time,s.sol_content, feedback,
+        s2.so_id,s2.so_theme,c.cus_id,c.cus_name
+        from solution s left join salesopport s2 on s.so_id = s2.so_id
+        left join customer c on c.cus_id=s2.cus_id
+        where s.sol_id=#{solId}
+        order by s.sol_id desc
+    </select>
 
     <select id="querySolutionBySoid" resultMap="solutionMap">
         select so.sol_id, so.sol_theme,so.submission_time,so.sol_content, so.feedback,

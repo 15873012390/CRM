@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zktr.crmproject.dao.mybatis.HTIContactsDao">
 
-    <resultMap id="contactsMap" type="com.zktr.crmproject.pojos.Contacts">
+    <resultMap id="contactsMap1" type="com.zktr.crmproject.pojos.Contacts">
         <id column="con_id" property="conId"></id>
         <result column="con_name" property="conName"></result>
         <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
@@ -12,7 +12,7 @@
         </association>
     </resultMap>
 
-   <select id="queryNameByCusId" resultMap="contactsMap">
+   <select id="queryNameByCusId" resultMap="contactsMap1">
        select con_name from contacts where cus_id = #{cusId}
    </select>
 </mapper>

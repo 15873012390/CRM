@@ -27,12 +27,16 @@ public class HTStockController {
 
     @PostMapping("/queryStockByAdvanced")
     public Pager<Stock> queryStockByAdvanced(@RequestBody StockAdvancedSearch sas){
-        System.out.println("1111"+sas.getStockQuantity());
         return stockService.queryStockByAdvanced(sas);
     }
 
     @GetMapping("/queryStockByStockId")
     public Stock queryStockByStockId(Integer stockId){
         return stockService.queryStockByStockId(stockId);
+    }
+
+    @GetMapping("/queryQuantityBySpeId")
+    public Integer queryQuantityBySpeId(Integer speId){
+        return stockService.queryQuantityBySpeId(speId);
     }
 }

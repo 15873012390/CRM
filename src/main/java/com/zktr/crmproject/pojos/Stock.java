@@ -17,6 +17,7 @@ public class Stock {
     @Id
     @Basic
     @Column(name = "stock_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getStockId() {
         return stockId;
     }

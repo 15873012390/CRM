@@ -10,4 +10,6 @@ import java.util.List;
 public interface JrcQuoteMDao {
 
     public List<Quote> queryQuoteBySoid(@Param("soId") Integer soId);
+    public List<Quote> PLqueryAllQuote();
+
 }

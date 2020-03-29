@@ -13,16 +13,19 @@ import java.util.Objects;
 
 @Entity
 public class User {
-    @Excel(name="所有者id_syz",needMerge = true)
+    @Excel(name="用户ID",needMerge = true)
     private int uId;
+    @Excel(name = "姓名")
     private String uName;
     private String uPass;
     private Integer uStatus;
+    @Excel(name = "性别")
     private String uSex;
 //    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uBirth;
 //    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    @Excel(name = "加入日期")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uJoindate;
     private String uImg;

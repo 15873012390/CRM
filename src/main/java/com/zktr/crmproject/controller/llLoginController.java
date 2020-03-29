@@ -16,7 +16,7 @@ public class llLoginController {
     @PostMapping("/login")
     public PowerAndDept login(@RequestBody User user){
         PowerAndDept po = llUserService.login(user.getuName(), user.getuPass());
-        System.out.println(po.getuBrith());
+        System.out.println(po+"dddddddddddddddddddddd");
         return po;
     }
 }

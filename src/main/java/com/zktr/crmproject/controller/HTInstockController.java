@@ -2,6 +2,7 @@ package com.zktr.crmproject.controller;
 
 import com.zktr.crmproject.dao.mybatis.HTIWarehouseDao;
 import com.zktr.crmproject.pojos.Instock;
+import com.zktr.crmproject.pojos.Instockdetail;
 import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.service.HTInstockService;
 import com.zktr.crmproject.vo.InstockAdvancedSearch;
@@ -43,9 +44,8 @@ public class HTInstockController {
     }
 
     @GetMapping("/updateInstockStatus")
-    public Result updateInstockStatus(Integer insId){
-        System.out.println("12323"+insId);
-        instockService.updateInvockStatus(insId);
+    public Result updateInstockStatus(Integer insId,Integer type){
+        instockService.updateInstockStatus(insId,type);
         return Result.SUCCESS;
     }
 
@@ -67,6 +67,16 @@ public class HTInstockController {
     @PostMapping("/queryInstockByAdvancedSearch")
     public Pager<Instock> queryInstockByAdvancedSearch(@RequestBody InstockAdvancedSearch ias){
         return instockService.queryInstockByAdvancedSearch(ias);
+    }
+
+    @GetMapping("/queryInstockDetailByInsId")
+    public List<Instockdetail> queryInstockDetailByInsId(Integer insId){
+        return instockService.queryInstockDetailByInsId(insId);
+    }
+
+    @PostMapping("/addorEditInstockdetails")
+    public void addorEditInstockdetails(@RequestBody List<Instockdetail> instockdetails){
+        instockService.addorEditInstockdetails(instockdetails);
     }
 
 

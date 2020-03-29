@@ -9,14 +9,11 @@
         <result property="dBoss" column="d_boss"></result>
         <result property="parentId" column="parent_id"></result>
         <result property="dName2" column="d_name1"></result>
-        <association property="user" javaType="com.zktr.crmproject.pojos.User">
-            <id column="u_id" property="uId"/>
-            <result property="uName" column="u_name"></result>
-        </association>
+        <result property="uName" column="u_name"></result>
     </resultMap>
 
     <select id="findAllDepartment" resultMap="llDeptMap">
-        SELECT d.d_id,d.d_name,d.d_function,u_name,de.d_name d_name1 FROM department d
+        SELECT d.d_id,d.d_name,d.d_function,u_name,de.d_name d_name1,d.parent_id FROM department d
         left join user u ON d.d_boss = u.u_id
         left join department de ON d.parent_id = de.d_id
     </select>

@@ -2,6 +2,7 @@ package com.zktr.crmproject.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.User;
 
 import java.sql.Date;
@@ -23,7 +24,7 @@ public class BackLogTaskVo {
     //优先级
     private Integer precedence;
     //客户(cusId)
-    private Integer cusId;
+    private Customer customer;
     //联系人
     private String conName;
     //状态
@@ -71,12 +72,12 @@ public class BackLogTaskVo {
         this.precedence = precedence;
     }
 
-    public Integer getCusId() {
-        return cusId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCusId(Integer cusId) {
-        this.cusId = cusId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getConName() {
@@ -106,30 +107,17 @@ public class BackLogTaskVo {
     public BackLogTaskVo() {
     }
 
-    public BackLogTaskVo(Integer bltId, String bltDescription, Date finishDate, Time finishTime, Integer precedence, Integer cusId, String conName, Integer status, List<User> userList) {
+    public BackLogTaskVo(Integer bltId, String bltDescription, Date finishDate, Time finishTime, Integer precedence, Customer customer, String conName, Integer status, List<User> userList) {
         this.bltId = bltId;
         this.bltDescription = bltDescription;
         this.finishDate = finishDate;
         this.finishTime = finishTime;
         this.precedence = precedence;
-        this.cusId = cusId;
+        this.customer = customer;
         this.conName = conName;
         this.status = status;
         this.userList = userList;
     }
 
-    @Override
-    public String toString() {
-        return "BackLogTaskVo{" +
-                "bltId=" + bltId +
-                ", bltDescription='" + bltDescription + '\'' +
-                ", finishDate=" + finishDate +
-                ", finishTime=" + finishTime +
-                ", precedence=" + precedence +
-                ", cusId=" + cusId +
-                ", conName='" + conName + '\'' +
-                ", status=" + status +
-                ", userList=" + userList +
-                '}';
-    }
+
 }

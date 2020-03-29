@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -8,8 +9,11 @@ import java.util.Objects;
 
 @Entity
 public class Department {
+    @Excel(name="部门ID",needMerge = true)
     private int dId;
+    @Excel(name="部门名")
     private String dName;
+    @Excel(name="部门权限")
     private String dFunction;
     private Integer dBoss;
     private Integer parentId;

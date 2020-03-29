@@ -8,10 +8,7 @@ import com.zktr.crmproject.dao.mybatis.HTIInstockDao;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
 import com.zktr.crmproject.dao.mybatis.HTIWarehouseDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
-import com.zktr.crmproject.pojos.Complaint;
-import com.zktr.crmproject.pojos.Instock;
-import com.zktr.crmproject.pojos.Product;
-import com.zktr.crmproject.pojos.Warehouse;
+import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.vo.InstockAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,10 @@ public class HTInstockService {
     private HTIInstockDao iIstockDao;
     @Autowired
     private PLproductMDao iproductMDao;
+    @Autowired
+    private HTIStockDao istockDao;
+    @Autowired
+    private HTStockDao stockDao;
 
 
     /**
@@ -40,7 +41,7 @@ public class HTInstockService {
         PageHelper.startPage(curpage,pagesize);
         List<Instock> list = iIstockDao.selectAllInstock();
         PageInfo<Instock> pager = new PageInfo<>(list);
-        return new Pager<Instock>(pager.getTotal(),pager.getList());
+        return new Pager<Instock>(pager.getList().size(),pager.getList());
     }
 
 
@@ -59,7 +60,7 @@ public class HTInstockService {
      * @param instock
      */
     public void updateInstock(Instock instock){
-        iIstockDao.updateInvokeStatus(instock);
+        iIstockDao.updateInstock(instock);
     }
 
     /**
@@ -75,10 +76,40 @@ public class HTInstockService {
      * 修改入库状态
      * @param insId
      */
-    public void updateInvockStatus(Integer insId){
-       Instock instock = iIstockDao.queryByInsId(insId);
-        instock.setStatus("未入库");
-        iIstockDao.updateInvokeStatus(instock);
+    public void updateInstockStatus(Integer insId,Integer type){
+        Instock instock = iIstockDao.queryByInsId(insId);
+        ////如type=1，则辙销入库
+        if(type==1){
+            instock.setStatus("未入库");
+            iIstockDao.updateInstock(instock);
+            List<Instockdetail> instockdetails = iIstockDao.queryInstockDetailByInsId(insId);
+            for(Instockdetail ins : instockdetails){
+                ins.setStatus("未入库");
+                iIstockDao.updateInstockDetail(ins);
+                Integer num = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId()).getStockQuantity();
+                istockDao.updatestockQuantity((num - ins.getInsdQuantity()), ins.getProductspecification().getSpeId());
+            }
+        }else{
+            instock.setStatus("已入库");
+            iIstockDao.updateInstock(instock);
+            List<Instockdetail> instockdetails = iIstockDao.queryInstockDetailByInsId(insId);
+            for(Instockdetail ins : instockdetails){
+                ins.setStatus("已入库");
+                iIstockDao.updateInstockDetail(ins);
+                Stock s1 = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId());
+                if(s1!=null){
+                    Integer num = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId()).getStockQuantity();
+                    istockDao.updatestockQuantity((num + ins.getInsdQuantity()), ins.getProductspecification().getSpeId());
+                }else{
+                    Stock stock = new Stock();
+                    stock.setProductspecification(ins.getProductspecification());
+                    stock.setWarehouse(instock.getWarehouse());
+                    stock.setStockQuantity(ins.getInsdQuantity());
+                    stockDao.save(stock);
+                }
+
+            }
+        }
     }
 
     /**
@@ -100,7 +131,7 @@ public class HTInstockService {
         PageHelper.startPage(curpage,pagesize);
         List<Instock> clist = iIstockDao.querySelectAndInputByPage(value,"%"+input.trim()+"%",select);
         PageInfo<Instock> pager = new PageInfo<>(clist);
-        return new Pager<Instock>(pager.getTotal(),pager.getList());
+        return new Pager<Instock>(pager.getList().size(),pager.getList());
     }
 
     /**
@@ -130,6 +161,31 @@ public class HTInstockService {
         PageInfo<Instock> pager = new PageInfo<>(list);
         return new Pager<Instock>(pager.getTotal(),pager.getList());
     }
+
+    /**
+     * 通过入库单查询入库详情
+     * @param insId
+     * @return
+     */
+    public List<Instockdetail> queryInstockDetailByInsId(Integer insId){
+        return iIstockDao.queryInstockDetailByInsId(insId);
+    }
+
+    /**
+     * 编辑或编辑入库详情单
+     * @param instockdetails
+     */
+    public void addorEditInstockdetails(List<Instockdetail> instockdetails){
+        for(Instockdetail insd : instockdetails){
+            if(insd.getInsdId()==0){
+                iIstockDao.insertInstockDetail(insd);
+            }else{
+                iIstockDao.updateInstockDetail(insd);
+            }
+        }
+    }
+
+
 
 
 }

@@ -1,26 +1,34 @@
 package com.zktr.crmproject.service;
 
 
+import com.zktr.crmproject.dao.jpa.llPositionDao;
+import com.zktr.crmproject.dao.jpa.llPowerDao;
 import com.zktr.crmproject.dao.mybatis.llUserAndPositionDao;
+import com.zktr.crmproject.dao.mybatis.lliPowerTreeDao;
 import com.zktr.crmproject.pojos.Position;
 import com.zktr.crmproject.pojos.Power;
+import com.zktr.crmproject.pojos.PowerManage;
 import com.zktr.crmproject.pojos.User;
+import com.zktr.crmproject.vo.UserAndPositionParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class llAuthorityService {
     @Autowired
-    private com.zktr.crmproject.dao.jpa.llPositionDao llPositionDao;
+    private llPositionDao llPositionDao;
     @Autowired
     private com.zktr.crmproject.dao.jpa.llUserDao llUserDao;
     @Autowired
     private llUserAndPositionDao llUserAndPositionDao;
+    @Autowired
+    private lliPowerTreeDao lliPowerTreeDao;
+    @Autowired
+    private llPowerDao llPowerDao;
     //用户增加修改职位
     public void addAndUserPosition(Integer uid,Integer[] postids){
         User user=llUserDao.findById(uid).get();
@@ -42,19 +50,68 @@ public class llAuthorityService {
     3，将其返回
      */
     public Integer[] checkPower(Integer uid){
-        List<Power> po=new ArrayList<>();
-        Position p1=new Position();
-        Integer i[]=new Integer[10];
-        int j=0;
+        //用户对象
         User user= llUserDao.findById(uid).get();
-        System.out.println(user+"3");
-        for (Position p:user.getPosition()){
-            po=p.getPower();
-            i[j]=po.get(0).getPowerId();
-//            System.out.println("来了");
-//            System.out.println(i[j]+"j");
-            j++;
+        //该用户的职位
+        List<Position> p=user.getPosition();
+        Integer[] i=new Integer[200];
+        int j=0;
+        for(Position p1:p) {
+            //职位所有的权限
+            List<Power> po = p1.getPower();
+            for (Power pow : po) {
+                i[j] = pow.getPowerId();
+                j++;
+            }
         }
         return i;
+    }
+    //获得所有权限
+    public List<PowerManage> findAllPower(){
+        List<PowerManage> list=lliPowerTreeDao.findAllPower();
+        System.out.println(list);
+        return list;
+    }
+    //获得职位上的所有权限
+    public Integer[] positionPower(Integer pid){
+        Position p=llPositionDao.findById(pid).get();
+        List<Power> po=p.getPower();
+        if(po.size()>0){
+            Integer i[]=new Integer[po.size()];
+            int j=0;
+            for(Power pow:po){
+                i[j]=pow.getPowerId();
+                j++;
+            }
+            return i;
+        }else {
+            return null;
+        }
+    }
+    //给职位添加修改权限
+    public void addUpdateRole(UserAndPositionParam u){
+        //将需要的权限id挑出来
+        Integer i[]=new Integer[u.getPostId().length];
+        int k=0;
+        for(int j=0;j<u.getPostId().length;j++){
+            if(u.getPostId()[j]>100){
+                i[k]=u.getPostId()[j];
+                k++;
+            }
+        }
+        //将职位原有的权限全部删除
+        Position p=llPositionDao.findById(u.getuId()).get();
+        System.out.println(p);
+        for(Power po:p.getPower()){
+            po.getPosition().remove(p);
+        }
+        //然后将权限加上去
+        for(Integer powerId:i){
+            if(powerId!=null) {
+                Power power = llPowerDao.findById(powerId).get();
+                System.out.println(power);
+                power.getPosition().add(p);
+            }
+        }
     }
 }

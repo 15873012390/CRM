@@ -27,6 +27,7 @@ public class Actionhistory {
 
     @Id
     @Column(name = "ah_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAhId() {
         return ahId;
     }

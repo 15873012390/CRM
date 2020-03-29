@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -79,21 +80,29 @@ public class JrcSalesOpportController {
         return Result.SUCCESS;
     }
 
-    @PostMapping("/query_salesOpport_byStage_number")
+    @PostMapping("/query_salesOpport_byStage_number_and_money")
     @ResponseBody
-    public List<JrcCharType> querySalesOpportByStageNumber(@RequestBody List<User> users){
-        return jrcSalesopportService.querySalesOpportByStageNumber(users);
+    public Map querySalesOpportByStageNumberAndMoney(@RequestBody List<User> users){
+        return jrcSalesopportService.querySalesOpportByStageNumberAndMoney(users);
     }
 
-    @PostMapping("/query_salesOpport_byStage_signMoney")
+    @PostMapping("/query_salesopport_funnle")
     @ResponseBody
-    public List<JrcCharType> querySalesOpportByStageSignMoney(@RequestBody List<User> users){
-        return jrcSalesopportService.querySalesOpportByStageSignMoney(users);
+    public Map querySalesOpportFunnle(@RequestBody List<User> users){
+        System.out.println(users.toString());
+        return jrcSalesopportService.querySalesOpportFunnle(users);
     }
 
-//    @PostMapping("/query_salesOpport_byStage_generneDate")
-//    @ResponseBody
-//    public Map querySalesOpportByStageGenerneDate(@RequestBody List<User> users){
-//
-//    }
+    @PostMapping("/query_salesopport_by_customer")
+    @ResponseBody
+    public List<Salesopport> querySalesOpportByCustomer(@RequestBody Customer customer){
+        return jrcSalesopportService.querySalesOpportByCustomer(customer);
+    }
+
+    @GetMapping("/query_salesopport_by_forecast")
+    @ResponseBody
+    public List<Salesopport> querySalesOpportByForecast(Date timeStart,Date timeEnd,String possibity,Integer status){
+        return jrcSalesopportService.querySalesOpportByForecast(timeStart,timeEnd,possibity,status);
+    }
+
 }

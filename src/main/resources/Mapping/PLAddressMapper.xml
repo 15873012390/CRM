@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLAddressMDao">
+
+    <resultMap id="addressMap" type="Address">
+        <id property="addId" column="add_id"></id>
+        <result property="addName" column="add_name"></result>
+        <result property="addPhone" column="add_phone"></result>
+        <result property="addAddress" column="add_address"></result>
+        <result property="addType" column="add_type"></result>
+        <result property="addPostcode" column="add_postcode"></result>
+        <result property="addProvince" column="add_province"></result>
+        <result property="addCity" column="add_city"></result>
+        <result property="addDistrict" column="add_district"></result>
+        <!--客户对象-->
+        <association property="customer" javaType="Customer">
+           <id property="cusId" column="cus_id"></id>
+            <result property="cusName" column="cus_name"></result>
+        </association>
+
+    </resultMap>
+    <!--根据id查找-->
+    <select id="findByAddid" resultMap="addressMap">
+        SELECT add_id,cus_id,add_name,add_phone,add_address,add_type,add_postcode,add_province,add_city,add_district
+        FROM address
+        WHERE add_id=#{addid}
+    </select>
+    <select id="queryAllAdress" resultMap="addressMap">
+        select add_id,add_name from address group by add_id desc
+    </select>
+    <insert id="insertAddress" parameterType="com.zktr.crmproject.vo.PLaddressVo" >
+        insert into address(cus_id,add_name,add_phone,add_address,add_type,add_postcode,add_province,add_city,add_district)
+               value (#{cusId},#{addName},#{addPhone},#{addAddress},#{addType},#{addPostcode},#{addProvince},#{addCity},#{addDistrict})
+    </insert>
+
+    <update id="updateAddress" parameterType="com.zktr.crmproject.vo.PLaddressVo">
+        update address set cus_id=#{cusId},add_name=#{addName},add_phone=#{addPhone},add_address=#{addAddress},add_type=#{addType},add_postcode=#{addPostcode},add_province=#{addProvince},add_city=#{addCity},add_district=#{addDistrict}   where add_id=#{addId} ;
+    </update>
+
+</mapper>

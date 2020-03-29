@@ -20,14 +20,34 @@
         <result column="out_status" property="outStatus"></result>
         <result column="ord_remark" property="ordRemark"></result>
         <result column="ord_del_state" property="ordDelState"></result>
+        <!--客户-->
         <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
             <id column="cus_id" property="cusId"></id>
             <result column="cus_name" property="cusName"></result>
         </association>
+        <!--员工-->
         <association property="user" javaType="User">
             <id property="uId" column="u_id"></id>
             <result property="uName" column="u_name"></result>
         </association>
+        <!--报价-->
+        <association property="quote" javaType="Quote">
+            <id property="quoId" column="quo_id"></id>
+            <result property="quoTheme" column="quo_theme"></result>
+            <result property="totalMoney" column="total_money"></result>
+            <!--报价里的客户-->
+            <association property="customer" javaType="Customer">
+                <id property="cusId" column="cus_id"></id>
+                <result property="cusName" column="cus_name"></result>
+            </association>
+        </association>
+        <!--地址-->
+        <association property="address" javaType="Address">
+            <id property="addId" column="add_id"></id>
+            <result property="addName" column="add_name"></result>
+            <result property="addProvince" column="add_province"></result>
+        </association>
+        <!--订单详情-->
         <collection property="orderdetail" ofType="Orderdetail">
             <id column="det_id" property="detId"></id>
             <result column="det_number"  property="detNumber"></result>
@@ -35,6 +55,7 @@
             <result column="det_require" property="detRequire" ></result>
             <result column="det_condition" property="detCondition"></result>
             <result column="det_remark" property="detRemark"></result>
+            <!--规格-->
             <collection property="productspecification" ofType="Productspecification">
                 <id property="speId" column="spe_id"></id>
                 <result property="proName" column="pro_name"></result>
@@ -68,7 +89,63 @@
         det_condition=#{detCondition},det_remark=#{detRemark} where det_id=#{detId}
     </update>
 
+    <!--饼状图 根据执行状态统计-->
+    <select id="Countpie" resultType="com.zktr.crmproject.vo.PLCountPie">
+    SELECT ord_executing_state name,COUNT(ord_executing_state) value FROM orders WHERE ord_del_state=1 GROUP BY ord_executing_state
+    </select>
+    <!--柱状图 根据每月统计订单金额-->
+    <select id="CountBar" resultType="com.zktr.crmproject.vo.PLCountPie">
+        select date_format(ord_time, '%Y-%m') name, sum(ord_total_amount) value from orders group by date_format(ord_time, '%Y-%m')
+    </select>
+    <!--分页查询全部-->
+    <select id="queryAllOrders" resultMap="ordersMap">
+        SELECT o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
+        FROM orders o
+        LEFT JOIN quote q
+        ON o.quo_id=q.quo_id
+        LEFT JOIN customer c
+        ON o.cus_id=c.cus_id
+        LEFT JOIN `user` u
+        ON o.u_id=u.u_id
+        LEFT JOIN address a
+        ON a.add_id=o.add_id
+        WHERE o.ord_del_state=1 group by ord_id desc
+    </select>
 
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(ord_total_amount) as amount ,SUM(ord_send_out_money) as sendmoney FROM orders WHERE ord_del_state=1
+    </select>
 
+    <select id="findMaxOrdid" resultType="java.lang.Integer">
+        SELECT MAX(ord_id) FROM orders
+    </select>
+    <insert id="insertOrders" parameterType="com.zktr.crmproject.vo.PLOrdersVo">
+        insert into orders(ord_number,ord_theme,ord_classify,ord_payment,ord_total_amount,ord_send_out_money,ord_margin,ord_time,ord_executing_state,ord_purchase_way,ord_habit,ord_send_out_state,out_status,ord_remark,add_id,quo_id,u_id,cus_id,ord_del_state)
+                value (#{ordNumber},#{ordTheme},#{ordClassify},#{ordPayment},#{ordTotalAmount},#{ordSendOutMoney},#{ordMargin},#{ordTime},#{ordExecutingState},#{ordPurchaseWay},#{ordHabit},#{ordSendOutState},#{outStatus},#{ordRemark},#{addId},#{quoId},#{uId},#{cusId},#{ordDelState})
+    </insert>
+    <!--订单号、总金额、执行状态、发货状态、出库状态、地址id新建赋值-->
+    <update id="updateOrders" parameterType="com.zktr.crmproject.vo.PLOrdersVo">
+        update orders set ord_theme=#{ordTheme},ord_classify=#{ordClassify},ord_payment=#{ordPayment},ord_send_out_money=#{ordSendOutMoney},ord_margin=#{ordMargin},ord_time=#{ordTime},ord_purchase_way=#{ordPurchaseWay},ord_habit=#{ordHabit},ord_remark=#{ordRemark},quo_id=#{quoId},u_id=#{uId},cus_id=#{cusId}
+        where ord_id=#{ordId}
+    </update>
+    <!--根据id查询-->
+    <select id="findByOrdid" resultMap="ordersMap">
+        SELECT o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
+        FROM orders o
+        LEFT JOIN quote q
+        ON o.quo_id=q.quo_id
+        LEFT JOIN customer c
+        ON o.cus_id=c.cus_id
+        LEFT JOIN `user` u
+        ON o.u_id=u.u_id
+        LEFT JOIN address a
+        ON a.add_id=o.add_id
+        WHERE o.ord_del_state=1 and ord_id=#{ordid}
+    </select>
+
+    <update id="delOrdersById" parameterType="com.zktr.crmproject.vo.PLOrdersVo">
+        update orders set ord_del_state=2
+        where ord_id=#{ordId}
+    </update>
 
 </mapper>

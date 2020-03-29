@@ -128,4 +128,8 @@
         order by w.warehouse_id desc
     </select>
 
+    <select id="querySameNameWarehouse" resultMap="warehouseMap">
+        select <include refid="warehouseColumns" /> from warehouse w where w.warehouse_name = #{warehouseName}
+    </select>
+
 </mapper>

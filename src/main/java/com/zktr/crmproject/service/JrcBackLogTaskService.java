@@ -57,11 +57,14 @@ public class JrcBackLogTaskService {
         b2.setConName(backLogTaskVo.getConName());
         b2.setStatus(backLogTaskVo.getStatus());
         b2.setDelStatus(1);
+        //客户
+        if(backLogTaskVo.getCustomer()!=null){
+            b2.setCustomer(backLogTaskVo.getCustomer());
+        }
         //判断详情id为不为空
         if(b1!=null){
             b2.setBltId(backLogTaskVo.getBltId());
             b2.setUser(b1.getUser());
-            b2.setCustomer(b1.getCustomer());
             b2.setCreationTime(b1.getCreationTime());
             List<Backlogtaskdetails> bd2=backLogTaskDetailsMDao.queryBackLogTaskUserBybltId(b1.getBltId());
             System.out.println(bd2.size());
@@ -74,10 +77,8 @@ public class JrcBackLogTaskService {
             //创建人目前是1号员工 有了session改session里当前登录的员工
             User user = customerAndUserService.queryByUid(1);
             b2.setUser(user);
-            //客户
-            Customer customer =customerAndUserService.queryContactByCusId(backLogTaskVo.getCusId());
-            b2.setCustomer(customer);
         }
+
         //保存待办任务
         backLogTaskJDao.save(b2);
 
@@ -233,7 +234,7 @@ public class JrcBackLogTaskService {
             BackLogTaskVo b=new BackLogTaskVo();
             while (qualifi){
                 if((o.getCusName()==null||o.getCusName().length()<=0)||(o.getUserList()== null ||o.getUserList().length() <= 0)||
-                   (o.getBltDescription()==null||o.getBltDescription().length()<=0)||(o.getPrecedence()==null||o.getPrecedence().length()<=0)||
+                   (o.getBltDescription()==null||o.getBltDescription().length()<=0)||(o.getFinishDate()==null)||
                         (o.getPrecedence()==null||o.getPrecedence().length()<=0)||(o.getStatus()==null||o.getStatus().length()<=0)
                 ){
                     qualifi=false;
@@ -243,7 +244,7 @@ public class JrcBackLogTaskService {
                     Customer customers=customerAndUserService.queryByCusNameAndConName(o.getCusName(),o.getConName());
                     System.out.println(customers!=null);
                     if(customers!=null){
-                        b.setCusId(customers.getCusId());
+                        b.setCustomer(customers);
                         b.setConName(o.getConName());
                     }else{
                         qualifi=false;
@@ -251,13 +252,16 @@ public class JrcBackLogTaskService {
                         break;
                     }
                     List<String> users=new ArrayList<>();
+                    o.setUserList(o.getUserList().replace("，",","));
                     if(o.getUserList().indexOf(",")!=-1){
                         users=Arrays.asList(o.getUserList().split(","));
                     }else{
                         users.add(o.getUserList());
                     }
+
                     List<User> users1=new ArrayList<>();
                     for(String s:users){
+                        System.out.println("user"+s);
                         List<User> list=customerAndUserService.queryByUserName(s);
                         if (list.size() == 0) {
                             numer++;
@@ -270,7 +274,6 @@ public class JrcBackLogTaskService {
                     b.setUserList(users1);
                     b.setBltDescription(o.getBltDescription());
                     b.setFinishDate(o.getFinishDate());
-                    b.setFinishTime(o.getFinishTime());
                     if(o.getPrecedence().equals("低")){
                         b.setPrecedence(1);
                     }else if(o.getPrecedence().equals("高")){
@@ -298,14 +301,17 @@ public class JrcBackLogTaskService {
 
         }
         Map map=new HashMap();
-
         if(qualifiBackLogTaskVo.size()==0){
             map.put("success",outBackLogTaskVos.size()+"条数据均不合格数据，未导入");
         }else{
             for(BackLogTaskVo vo:qualifiBackLogTaskVo){
                 AddBackLogTaskAndDetail(vo);
             }
-            map.put("success","成功导入了"+(outBackLogTaskVos.size()-numer)+"条数据"+numer+"不合格数据未导入");
+            if(qualifiBackLogTaskVo.size()==outBackLogTaskVos.size()){
+                map.put("success","数据导入成功!");
+            }else{
+                map.put("success","成功导入了"+(outBackLogTaskVos.size()-numer)+"条数据"+numer+"不合格数据未导入");
+            }
         }
         return map;
     }
@@ -313,4 +319,5 @@ public class JrcBackLogTaskService {
     public List<Backlogtask> queryCurMonth(Date startStr,Date end){
         return backLogTaskMDao.queryCurMoth(startStr,end);
     }
+
 }

@@ -58,11 +58,14 @@ public class PLproductService {
      */
     public void addAndUpdateProduct(Product product){
        product.setProDelState(1);
-
+       //保存
        pjpdao.save(product);
 
        ProductSpecificationVo productSpecificationVo=new ProductSpecificationVo();
-       productSpecificationVo.setProId(product.getProId());
+        //找到最大的id添加进去
+        //Integer proid=pmpdao.findMaxProid();
+        List<Product> list=pmpdao.queryAllProduct();
+       productSpecificationVo.setProId(list.get(0).getProId());
        productSpecificationVo.setProName(product.getProName());
        productSpecificationVo.setSpeSpecification("基准");
        productSpecificationVo.setSpeUnit("个");
@@ -191,5 +194,22 @@ public class PLproductService {
     }
     public Product findBySpeid(Integer speid){
         return pmpdao.findBySpeid(speid);
+    }
+
+    /** HT
+     * 入库所需的产品
+     * @return
+     */
+    public List<Product> queryAllProductInstock(){
+        return pmpdao.queryAllProductInstock();
+    }
+
+    /** HT
+     * 选择入库所需的产品
+     * @param speid
+     * @return
+     */
+    public Product findBySpeidInstock(Integer speid){
+        return pmpdao.findBySpeidInstock(speid);
     }
 }

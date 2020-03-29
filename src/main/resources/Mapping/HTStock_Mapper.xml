@@ -96,8 +96,8 @@
         update stock set stock_quantity = #{stockQuantity} where spe_id = #{speId}
     </update>
 
-    <select id="queryQuantityBySpeId" resultType="java.lang.Integer">
-        Select stock_quantity from stock where spe_id = #{speId}
+    <select id="queryQuantityBySpeId" resultMap="stockMap">
+        Select * from stock where spe_id = #{speId}
     </select>
 
 

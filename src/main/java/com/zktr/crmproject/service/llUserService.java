@@ -8,6 +8,7 @@ import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.PowerAndDept;
+import com.zktr.crmproject.vo.UserAndPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,19 +76,18 @@ public class llUserService {
             po.setuImg(user1.getuImg());
             po.setPower(a);
             po.setDeptName(dept);
-            System.out.println(po);
             return po!=null?po:null;
         }else {
             return null;
         }
     }
     //获取用户所有信息
-    public Pager<PowerAndDept> findAllUsers(Integer curpage,Integer pagesize){
-        System.out.println("首页"+curpage+"大小"+pagesize);
+    public Pager<UserAndPosition> findAllUsers(Integer curpage,Integer pagesize){
+//        System.out.println("首页"+curpage+"大小"+pagesize);
         PageHelper.startPage(curpage,pagesize);
-        List<PowerAndDept> user= llUserAndPositionDao.findAllUsers();
-        PageInfo<PowerAndDept> pager = new PageInfo<>(user);
-        return new Pager<PowerAndDept>(pager.getTotal(),pager.getList());
+        List<UserAndPosition> user= llUserAndPositionDao.findAllUsers();
+        PageInfo<UserAndPosition> pager = new PageInfo<>(user);
+        return new Pager<UserAndPosition>(pager.getTotal(),pager.getList());
     }
     //名字模糊查询
     public Pager<PowerAndDept> queryLikeName(String name){
@@ -105,5 +105,10 @@ public class llUserService {
         for (Integer i:params){
             llUserDao.findById(i).get().setuStatus(0);
         }
+    }
+    //导出用户信息
+    public List<User> exportUser(){
+        return lliUserDao.queryAtUser();
+//        return llUserAndPositionDao.findAllUsers();
     }
 }

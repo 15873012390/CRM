@@ -20,5 +20,5 @@ public interface HTIStockDao {
 
     public void updatestockQuantity(Integer stockQuantity,Integer speId);
 
-    public Integer queryQuantityBySpeId(Integer speId);
+    public Stock queryQuantityBySpeId(Integer speId);
 }

@@ -10,6 +10,7 @@ import com.zktr.crmproject.dao.mybatis.*;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.utils.JrcCharType;
 import com.zktr.crmproject.vo.JrcSalesFunnel;
+import com.zktr.crmproject.vo.JrcSalesFunnelSourceDate;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.SalesOpportAdvancedSearch;
 import org.apache.ibatis.annotations.Param;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -36,69 +39,78 @@ public class JrcSalesopportService {
     private JrcStagelogJDao stagelogJDao;
     @Autowired
     private JrcCharTypeMDao charTypeMDao;
+
+    @Autowired
+    private JrcSalesFunnelMDao salesFunnelMDao;
+
     /**
      * 分页查看全部
+     *
      * @param curpage
      * @param pagesize
      * @return
      */
-    public Pager<Salesopport> queryAllSalesOppoerByPage(int curpage, int pagesize){
-        PageHelper.startPage(curpage,pagesize);
-        List<Salesopport> slist=salesOpportMDao.queryAll();
-        PageInfo<Salesopport> pager=new PageInfo<>(slist);
-        return new Pager<Salesopport>(pager.getTotal(),pager.getList());
+    public Pager<Salesopport> queryAllSalesOppoerByPage(int curpage, int pagesize) {
+        PageHelper.startPage(curpage, pagesize);
+        List<Salesopport> slist = salesOpportMDao.queryAll();
+        PageInfo<Salesopport> pager = new PageInfo<>(slist);
+        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
     }
 
     /**
      * 模糊搜索
-     * @param value 下拉框的值
-     * @param inputs 输入框的值
-     * @param select 下拉列表【机会主题、客户名称】
+     *
+     * @param value    下拉框的值
+     * @param inputs   输入框的值
+     * @param select   下拉列表【机会主题、客户名称】
      * @param pagesize 页大小
      * @return
      */
-    public Pager<Salesopport> querySalesOpportByLikeSearchPage(String value,String inputs,String select,int curpage,int pagesize){
-        PageHelper.startPage(curpage,pagesize);
-        String input="";
-        System.out.println(inputs.trim().length()!=0);
-        if(inputs.trim().length()!=0){
-           input="%"+inputs.trim()+"%";
-        }else{
-          input=inputs.trim();
+    public Pager<Salesopport> querySalesOpportByLikeSearchPage(String value, String inputs, String select, int curpage, int pagesize) {
+        PageHelper.startPage(curpage, pagesize);
+        String input = "";
+        System.out.println(inputs.trim().length() != 0);
+        if (inputs.trim().length() != 0) {
+            input = "%" + inputs.trim() + "%";
+        } else {
+            input = inputs.trim();
         }
-        List<Salesopport> list=salesOpportMDao.queryByLikeSearch(value,input,select);
-        PageInfo<Salesopport> pager=new PageInfo<>(list);
-        return new Pager<Salesopport>(pager.getTotal(),pager.getList());
+        List<Salesopport> list = salesOpportMDao.queryByLikeSearch(value, input, select);
+        PageInfo<Salesopport> pager = new PageInfo<>(list);
+        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
     }
 
     /**
      * 查看所有客户
+     *
      * @return
      */
-    public List<Customer> queryAllCustomer(){
+    public List<Customer> queryAllCustomer() {
         return customerMDao.queryAll();
     }
 
     /**
      * 查看所有员工
+     *
      * @return
      */
-    public List<User> queryAllUser(){
+    public List<User> queryAllUser() {
         return userMDao.queryAll();
     }
 
     /**
      * 高级搜索员工
+     *
      * @param salesOpportAdvancedSearch
      * @return
      */
-    public Pager<Salesopport> querySalesOpportByAdvancedSearch(SalesOpportAdvancedSearch salesOpportAdvancedSearch){
-        String opportunites="%"+salesOpportAdvancedSearch.getOpportunitiesThem().trim()+"%";
+    public Pager<Salesopport> querySalesOpportByAdvancedSearch(SalesOpportAdvancedSearch salesOpportAdvancedSearch) {
+        String opportunites = "%" + salesOpportAdvancedSearch.getOpportunitiesThem().trim() + "%";
         salesOpportAdvancedSearch.setOpportunitiesThem(opportunites);
-        PageHelper.startPage(salesOpportAdvancedSearch.getCurpage(),salesOpportAdvancedSearch.getPagesize());
-        List<Salesopport> list=salesOpportMDao.queryByAdvancedSearch(salesOpportAdvancedSearch);
-        PageInfo<Salesopport> pager=new PageInfo<>(list);
-        return new Pager<Salesopport>(pager.getTotal(),pager.getList());
+        PageHelper.startPage(salesOpportAdvancedSearch.getCurpage(), salesOpportAdvancedSearch.getPagesize());
+        List<Salesopport> list = salesOpportMDao.queryByAdvancedSearch(salesOpportAdvancedSearch);
+        PageInfo<Salesopport> pager = new PageInfo<>(list);
+        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
     }
 
     /**
@@ -107,15 +119,16 @@ public class JrcSalesopportService {
      * 2.修改时 判断有没有更改销售机会的阶段备注或者阶段
      * （a.修改了阶段备注/阶段 则新增一条阶段日志记录和修改销售机会表
      * （b.没有修改则仅仅修改销售机会表
+     *
      * @param salesopport
      */
-    public void addSalesOpport(Salesopport salesopport){
-        Stagelog stagelog=new Stagelog();
-        if(salesopport.getSoId()!=0){
-            Salesopport s=salesOpportMDao.queryBySoid(salesopport.getSoId());
+    public void addSalesOpport(Salesopport salesopport) {
+        Stagelog stagelog = new Stagelog();
+        if (salesopport.getSoId() != 0) {
+            Salesopport s = salesOpportMDao.queryBySoid(salesopport.getSoId());
             salesOpportJDao.save(salesopport);
-            if(!((s.getStage().equals(salesopport.getStage()))&&
-                    (s.getConPhone().equals(salesopport.getConPhone())))){
+            if (!((s.getStage().equals(salesopport.getStage())) &&
+                    (s.getConPhone().equals(salesopport.getConPhone())))) {
                 stagelog.setSlNote(salesopport.getConPhone());
                 stagelog.setRecordTime(new Timestamp(new Date().getTime()));
                 stagelog.setStageName(salesopport.getStage());
@@ -125,12 +138,12 @@ public class JrcSalesopportService {
 
             }
             //新增
-        }else{
-            Customer c=customerMDao.queryContactByCusid(salesopport.getCustomer().getCusId());
+        } else {
+            Customer c = customerMDao.queryContactByCusid(salesopport.getCustomer().getCusId());
             salesopport.setUpdateDate(new Timestamp(new Date().getTime()));
             salesopport.setCustomer(c);
             salesOpportJDao.save(salesopport);
-            Salesopport s2=salesOpportMDao.queryAll().get(0);
+            Salesopport s2 = salesOpportMDao.queryAll().get(0);
             stagelog.setSlNote(salesopport.getConPhone());
             stagelog.setRecordTime(new Timestamp(new Date().getTime()));
             stagelog.setStageName(salesopport.getStage());
@@ -144,30 +157,33 @@ public class JrcSalesopportService {
 
     /**
      * 根据销售机会id查找销售机会和销售阶段日志
+     *
      * @param soid
      * @return
      */
-    public Salesopport queryBySoid(Integer soid){
+    public Salesopport queryBySoid(Integer soid) {
         return salesOpportMDao.queryBySoid(soid);
     }
 
     /**
      * 删除销售机会
+     *
      * @param soid
      */
-    public void delSalesOpport(Integer soid){
-        Salesopport s=salesOpportMDao.deleteQueryById(soid);
+    public void delSalesOpport(Integer soid) {
+        Salesopport s = salesOpportMDao.deleteQueryById(soid);
         s.setDelStatus(2);
         salesOpportJDao.save(s);
     }
 
     /**
      * 批量删除销售机会
+     *
      * @param soids
      */
-    public void delBatchSalesopport(Integer[] soids){
-        for (Integer soid:soids){
-            Salesopport s=salesOpportMDao.deleteQueryById(soid);
+    public void delBatchSalesopport(Integer[] soids) {
+        for (Integer soid : soids) {
+            Salesopport s = salesOpportMDao.deleteQueryById(soid);
             s.setDelStatus(2);
             salesOpportJDao.save(s);
         }
@@ -175,35 +191,231 @@ public class JrcSalesopportService {
 
     /**
      * 销售漏斗（销售机会阶段个数）
+     *
      * @param users
      * @return
      */
-    public List<JrcCharType> querySalesOpportByStageNumber(List<User> users){
+    public Map querySalesOpportByStageNumberAndMoney(List<User> users) {
+        HashMap map=new HashMap();
+        List<JrcSalesFunnel> salesFunnels=new ArrayList<>();
+        //个数
+        List<JrcCharType> charTypes=new ArrayList<>();
+        //金额
+        List<JrcCharType> charTypeMoneys=new ArrayList<>();
 
-        return charTypeMDao.querySalesOpportByStageNumber( users);
+        String stage = "";
+        for (int i = 1; i <= 6; i++) {
+            if (i == 1) {
+                stage = "初期沟通";
+            } else if (i == 2) {
+                stage = "需求分析";
+            } else if (i == 3) {
+                stage = "方案制定";
+            } else if (i == 4) {
+                stage = "招投标竞争";
+            } else if (i == 5) {
+                stage = "商务谈判";
+            } else if (i == 6) {
+                stage = "合同签约";
+            }
+            JrcSalesFunnel salesFunnel= salesFunnelMDao.querySalesOpportByStageNumberAndMoney(users,stage);
+            if(salesFunnel!=null){
+                salesFunnels.add(salesFunnel);
+            }
+        }
+        BigDecimal length=new BigDecimal(100);
+        BigDecimal lengthMoney=new BigDecimal(100);
+        for(int i=0;i<salesFunnels.size();i++){
+            JrcCharType charType=new JrcCharType();
+            JrcCharType charTypeMoney=new JrcCharType();
+            if(i==0){
+                //个数
+                charType.setValue(length.doubleValue());
+                charType.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getNumbers());
+                charTypes.add(charType);
+
+                //金额
+                charTypeMoney.setValue(length.doubleValue());
+                charTypeMoney.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getMoney());
+                charTypeMoneys.add(charTypeMoney);
+
+            }else{
+                //个数
+                if(!(new BigDecimal(salesFunnels.get(i).getNumbers()).divide(new BigDecimal(salesFunnels.get(i-1).getNumbers()),2,BigDecimal.ROUND_HALF_UP).compareTo(new BigDecimal("1"))==1)){
+                    length=(new BigDecimal(salesFunnels.get(i).getNumbers()).divide(new BigDecimal(salesFunnels.get(i-1).getNumbers()),2,BigDecimal.ROUND_HALF_UP).multiply(length)).setScale(0,BigDecimal.ROUND_HALF_UP);
+                }
+                charType.setValue(length.doubleValue());
+                charType.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getNumbers());
+                charTypes.add(charType);
+                //金额
+                if(!(salesFunnels.get(i).getMoney().divide(salesFunnels.get(i-1).getMoney(),2,BigDecimal.ROUND_HALF_UP).compareTo(new BigDecimal("1"))==1)){
+                    lengthMoney=(salesFunnels.get(i).getMoney().divide(salesFunnels.get(i-1).getMoney(),2,BigDecimal.ROUND_HALF_UP).multiply(lengthMoney)).setScale(0,BigDecimal.ROUND_HALF_UP);
+                }
+                charTypeMoney.setValue(lengthMoney.doubleValue());
+                charTypeMoney.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getMoney());
+                charTypeMoneys.add(charTypeMoney);
+
+            }
+        }
+        map.put("charTypeNumbers",charTypes);
+        map.put("charTypeMoneys",charTypeMoneys);
+        return map;
     }
 
     /**
-     * 销售漏斗（销售机会总金额）
-     * @param users
-     * @return
+     * 销售漏斗表格数据
      */
-    public List<JrcCharType> querySalesOpportByStageSignMoney(List<User> users){
-        return charTypeMDao.querySalesOpportByStageSignMoney(users);
+    public Map querySalesOpportFunnle(List<User> users) {
+        Map map = new HashMap();
+        List<JrcSalesFunnel> lists = new ArrayList<>();
+        String stage = "";
+        for (int i = 1; i <= 6; i++) {
+            if (i == 1) {
+                stage = "初期沟通";
+            } else if (i == 2) {
+                stage = "需求分析";
+            } else if (i == 3) {
+                stage = "方案制定";
+            } else if (i == 4) {
+                stage = "招投标竞争";
+            } else if (i == 5) {
+                stage = "商务谈判";
+            } else if (i == 6) {
+                stage = "合同签约";
+            }
+
+
+            JrcSalesFunnel s2 = salesFunnelMDao.querySalesFunnel(users, stage);
+            if (s2 == null) {
+                JrcSalesFunnel s1=new JrcSalesFunnel();
+                s1.setStage(stage);
+                s1.setNumbers(0);
+                s1.setNmberHistoryConversion(0);
+                s1.setNumberAvgen(0);
+                s1.setMoney(new BigDecimal(0));
+                s1.setMoneyHistoryConversion(new BigDecimal(0));
+                s1.setMoneyAvgen(new BigDecimal(0));
+                lists.add(s1);
+            }else{
+                lists.add(s2);
+            }
+        }
+        List<JrcSalesFunnelSourceDate> listSourceDate = new ArrayList<>();
+        for (int i = 0; i < lists.size(); i++) {
+            JrcSalesFunnelSourceDate ssd = new JrcSalesFunnelSourceDate();
+            while (i != lists.size() - 1) {
+                lists.get(i).setNumbers(integerIfNull(lists.get(i).getNumbers()));
+                lists.get(i+1).setNumbers(integerIfNull(lists.get(i+1).getNumbers()));
+                lists.get(i).setNmberHistoryConversion(integerIfNull(lists.get(i).getNmberHistoryConversion()));
+                lists.get(i+1).setNmberHistoryConversion(integerIfNull(lists.get(i+1).getNmberHistoryConversion()));
+                lists.get(i).setNumberAvgen(integerIfNull(lists.get(i).getNumberAvgen()));
+                lists.get(i+1).setNumberAvgen(integerIfNull(lists.get(i+1).getNumberAvgen()));
+
+                lists.get(i).setMoney(bigDecimalIfNull(lists.get(i).getMoney()));
+                lists.get(i+1).setMoney(bigDecimalIfNull(lists.get(i+1).getMoney()));
+                lists.get(i).setMoneyHistoryConversion(bigDecimalIfNull(lists.get(i).getMoneyHistoryConversion()));
+                lists.get(i+1).setMoneyHistoryConversion(bigDecimalIfNull(lists.get(i+1).getMoneyHistoryConversion()));
+                lists.get(i).setMoneyAvgen(bigDecimalIfNull(lists.get(i).getMoneyAvgen()));
+                lists.get(i+1).setMoneyAvgen(bigDecimalIfNull(lists.get(i+1).getMoneyAvgen()));
+
+                ssd.setStage(lists.get(i).getStage());
+                ssd.setNumbers(lists.get(i).getNumbers());
+                BigDecimal numberConversion = bigDecimalDivide(BigDecimal.valueOf(lists.get(i + 1).getNumbers()), BigDecimal.valueOf(lists.get(i).getNumbers()),1);
+                ssd.setNumberConversion(numberConversion.toString() + "%");
+
+                BigDecimal numberHistoryConversion = bigDecimalDivide(BigDecimal.valueOf(lists.get(i + 1).getNmberHistoryConversion()), BigDecimal.valueOf(lists.get(i).getNmberHistoryConversion()),1);
+                ssd.setNmberHistoryConversion(numberHistoryConversion + "%");
+
+                BigDecimal numberAvgen = bigDecimalDivide(BigDecimal.valueOf(lists.get(i + 1).getNumberAvgen()), BigDecimal.valueOf(lists.get(i).getNumberAvgen()),1);
+                ssd.setNumberAvgen(numberAvgen + "%");
+
+                ssd.setMoney(lists.get(i).getMoney());
+
+                BigDecimal moneyConversion = bigDecimalDivide(lists.get(i + 1).getMoney(), lists.get(i).getMoney(),1);
+                ssd.setMoneyConversion(moneyConversion + "%");
+
+                BigDecimal moneyHistoryConversion = bigDecimalDivide(lists.get(i + 1).getMoneyHistoryConversion(), lists.get(i).getMoneyHistoryConversion(),1);
+                ssd.setMoneyHistoryConversion(moneyHistoryConversion + "%");
+
+                BigDecimal moneyAvgen = bigDecimalDivide(lists.get(i + 1).getMoneyAvgen(), lists.get(i).getMoneyAvgen(),1);
+                ssd.setMoneyAvgen(moneyAvgen + "%");
+
+                listSourceDate.add(ssd);
+                break;
+            }
+            if (i == lists.size() - 1) {
+                ssd.setStage(lists.get(i).getStage());
+                ssd.setNumbers(lists.get(i).getNumbers());
+                ssd.setMoney(lists.get(i).getMoney());
+                listSourceDate.add(ssd);
+            }
+        }
+        map.put("listSourceDate", listSourceDate);
+        return map;
     }
 
-  /*  *//**
-     * 生成表格数据
+    /**
+     * 两个BigDecimal数相除保留一位小数
+     *
+     * @param a
+     * @param b
      * @return
-     *//*
-    public Map querySalesOpportByStageGenerneDate(List<User> users){
+     */
+    public static BigDecimal bigDecimalDivide(BigDecimal a, BigDecimal b,int scale) {
+        if (a.compareTo(BigDecimal.ZERO) == 0 || b.compareTo(BigDecimal.ZERO) == 0) {
+            return new BigDecimal(0);
+        }else {
+            return (a.multiply(new BigDecimal(100))).divide(b, scale, BigDecimal.ROUND_HALF_UP);
+        }
+    }
 
-        List<JrcSalesFunnel> list=new ArrayList<>();
-        JrcSalesFunnel salesFunnel=new JrcSalesFunnel();
-        //数量转化率
-        salesFunnel.setNumberConversion(charTypeMDao.numberConversion("初期沟通","需求分析",users));
-        //数量历史转化率
-        salesFunnel.setNmberHistoryConversion(charTypeMDao.);
+    /**
+     * 判断BigDecimal类型为不为空
+     * @param bigDecimal
+     * @return
+     */
+    public BigDecimal  bigDecimalIfNull(BigDecimal bigDecimal){
+        if(bigDecimal==null){
+            return new BigDecimal(0);
+        }else{
+            return bigDecimal;
+        }
+    }
 
-    }*/
+    /**
+     * 判断integer类型为不为空
+     * @param integer
+     * @return
+     */
+    public Integer integerIfNull(Integer integer){
+        if(integer==null){
+            return 0;
+        }else{
+            return integer;
+        }
+    }
+
+    /**
+     * 根据客户找到对应的销售机会
+     * @param customer
+     * @return
+     */
+    public List<Salesopport> querySalesOpportByCustomer(Customer customer){
+        System.out.println(" dfdfdfdf"+customer.getCusId());
+        return salesOpportMDao.querySalesOpportByCustomer(customer);
+    }
+
+    /**
+     * 销售预测
+     * @param timeStart
+     * @param timeEnd
+     * @param possibity
+     * @param status
+     * @return
+     */
+    public List<Salesopport> querySalesOpportByForecast(Date timeStart,Date timeEnd,String possibity,Integer status){
+        return salesOpportMDao.querySalesOpportByForecast(timeStart,timeEnd,possibity,status);
+    }
+
+
 }

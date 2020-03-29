@@ -90,26 +90,7 @@
     <select id="queryCustomerBy4" resultMap="customerMap">
         select * from customer c
         left join user u on c.u_id=u.u_id
-       <!-- where 1=1 -->
-<!--        <if test="value!=null and value!=''">-->
-<!--            <choose>-->
-<!--                <when test="value =='客户介绍'.toString() || value =='电话来访' || value =='媒体宣传' || value =='网站填表'.toString() || value =='其他'">-->
-<!--                    and c.cus_source=#{value}-->
-<!--                </when>-->
-<!--                <when test="value =='高' || value =='较高' || value =='中' || value =='较低' || value =='低'">-->
-<!--                    and c.cus_credit=#{value}-->
-<!--                </when>-->
-<!--                <when test="value =='一次性' || value =='重复购买' || value =='长期合作'">-->
-<!--                    and c.cus_life_cycle=#{value}-->
-<!--                </when>-->
-<!--                <when test="value =='正常' || value =='预警' || value =='流失'">-->
-<!--                    and c.cus_state=#{value}-->
-<!--                </when>-->
-<!--                <when test="value =='特级' || value =='大单' || value =='正常' || value =='小单'">-->
-<!--                    and c.cus_grading=#{value}-->
-<!--                </when>-->
-<!--            </choose>-->
-<!--        </if>-->
+
         <trim prefix="where" prefixOverrides="and | or">
             <if test='value =="客户介绍".toString() || value =="电话来访" || value =="媒体宣传" || value =="网站填表" || value =="其他"'>
                 and c.cus_source=#{value}
@@ -240,6 +221,16 @@
         SELECT cus_source name,COUNT(cus_source) value
         FROM customer
         GROUP BY cus_source
+    </select>
+    <select id="countCusCreditPie" resultType="com.zktr.crmproject.vo.CountPie">
+        SELECT cus_credit name,COUNT(cus_credit) value
+        FROM customer
+        GROUP BY cus_credit
+    </select>
+    <select id="countCusGradingPie" resultType="com.zktr.crmproject.vo.CountPie">
+        SELECT cus_grading name,COUNT(cus_grading) value
+        FROM customer
+        GROUP BY cus_grading
     </select>
     <resultMap id="customerMap2" type="Customer">
         <id property="cusId" column="cus_id"></id>
