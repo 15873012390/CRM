@@ -1,6 +1,7 @@
 package com.zktr.crmproject.pojos;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -15,6 +16,7 @@ public class Salesopport {
     private int soId;
     private String soTheme;
     @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp updateDate;
     private Integer status;
     private String conName;
@@ -24,10 +26,12 @@ public class Salesopport {
     private String priority;
     private String stage;
     @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp disTime;
     private String provider;
     private String cusDemand;
     @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp signingTime;
     private String possibility;
     private BigDecimal amount;

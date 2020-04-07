@@ -75,4 +75,16 @@ public class Instockdetail {
     public void setInstock(Instock instock) {
         this.instock = instock;
     }
+
+    @Override
+    public String toString() {
+        return "Instockdetail{" +
+                "insdId=" + insdId +
+                ", insdQuantity=" + insdQuantity +
+                ", status='" + status + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", productspecification=" + productspecification +
+                ", instock=" + instock +
+                '}';
+    }
 }

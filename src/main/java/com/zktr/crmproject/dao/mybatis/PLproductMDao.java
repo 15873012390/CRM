@@ -22,8 +22,10 @@ public interface PLproductMDao {
     public List<Product> findAll();
     public Product findBySpeid(@Param("speid") Integer speid);
     public int findMaxProid();
+
     //HT
     public List<Product> queryAllProductInstock();
     public Product findBySpeidInstock(@Param("speid") Integer speid);
+
 
 }

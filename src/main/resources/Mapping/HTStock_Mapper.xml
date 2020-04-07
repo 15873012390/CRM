@@ -6,6 +6,7 @@
     <resultMap id="stockMap" type="Stock">
             <id column="stock_id" property="stockId"></id>
             <result column="stock_quantity" property="stockQuantity"></result>
+            <result column="stock_status" property="stockStatus"></result>
             <association property="productspecification">
                 <id property="speId" column="spe_id"></id>
                 <result property="proName" column="pro_name"></result>
@@ -46,9 +47,9 @@
         left join alarmdetail a on sto.stock_id = a.stock_id order by sto.stock_id desc
     </select>
 
-    <delete id="removeStockisZero">
-        delete from stock where stock_quantity = 0
-    </delete>
+    <update id="removeStockisZero">
+        update stock set stock_status = 0 where stock_quantity = 0
+    </update>
 
     <select id="queryStockByAdvanced" parameterType="com.zktr.crmproject.vo.StockAdvancedSearch" resultMap="stockMap">
          select * from stock sto
@@ -98,6 +99,11 @@
 
     <select id="queryQuantityBySpeId" resultMap="stockMap">
         Select * from stock where spe_id = #{speId}
+    </select>
+
+    <!--统计每个仓库有多少库存-->
+    <select id="PLQueryByStock" resultType="com.zktr.crmproject.vo.PLCountPie">
+    SELECT w.warehouse_name as name,sum(s.stock_quantity) as value FROM stock s LEFT JOIN warehouse w ON s.warehouse_id=w.warehouse_id GROUP BY w.warehouse_name
     </select>
 
 

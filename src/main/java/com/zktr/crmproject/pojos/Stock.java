@@ -9,6 +9,7 @@ import java.util.List;
 public class Stock {
     private Integer stockId;
     private Integer stockQuantity;
+    private Integer stockStatus;
     private Productspecification productspecification;
     @JsonIgnoreProperties("stock")
     private Warehouse warehouse;
@@ -37,6 +38,15 @@ public class Stock {
         this.stockQuantity = stockQuantity;
     }
 
+    @Basic
+    @Column(name = "stock_status")
+    public Integer getStockStatus() {
+        return stockStatus;
+    }
+
+    public void setStockStatus(Integer stockStatus) {
+        this.stockStatus = stockStatus;
+    }
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id")

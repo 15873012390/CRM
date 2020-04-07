@@ -1,21 +1,23 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 public class Log {
     private int logId;
-    private Timestamp loginTime;
-    private Timestamp outTime;
-    @JsonIgnoreProperties("log")
-    private User user;
-    @JsonIgnoreProperties("log")
-    private List<Logdetail> logdetail;
-
+    private String uName; //用户名
+    private String operation; //操作
+    private String method; //方法名
+    private String params; //参数
+    private String ip; //ip地址
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date createDate; //操作时间
     @Id
     @Column(name = "log_id")
     public int getLogId() {
@@ -25,44 +27,59 @@ public class Log {
     public void setLogId(int logId) {
         this.logId = logId;
     }
-
-
     @Basic
-    @Column(name = "login_time")
-    public Timestamp getLoginTime() {
-        return loginTime;
+    @Column(name ="u_name")
+    public String getuName() {
+        return uName;
     }
 
-    public void setLoginTime(Timestamp loginTime) {
-        this.loginTime = loginTime;
+    public void setuName(String uName) {
+        this.uName = uName;
     }
-
     @Basic
-    @Column(name = "out_time")
-    public Timestamp getOutTime() {
-        return outTime;
+    @Column(name ="operation")
+    public String getOperation() {
+        return operation;
     }
 
-    public void setOutTime(Timestamp outTime) {
-        this.outTime = outTime;
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+    @Basic
+    @Column(name ="method")
+    public String getMethod() {
+        return method;
     }
 
-    @ManyToOne
-    @JoinColumn(name="u_id",referencedColumnName = "u_id")
-    public User getUser() {
-        return user;
+    public void setMethod(String method) {
+        this.method = method;
+    }
+    @Basic
+    @Column(name ="params")
+    public String getParams() {
+        return params;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setParams(String params) {
+        this.params = params;
+    }
+    @Basic
+    @Column(name ="ip")
+    public String getIp() {
+        return ip;
     }
 
-    @OneToMany(mappedBy = "log")
-    public List<Logdetail> getLogdetail() {
-        return logdetail;
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+    @Basic
+    @Column(name ="create_date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setLogdetail(List<Logdetail> logdetail) {
-        this.logdetail = logdetail;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

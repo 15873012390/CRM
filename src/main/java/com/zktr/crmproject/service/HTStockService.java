@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
 import com.zktr.crmproject.pojos.Complaint;
+import com.zktr.crmproject.pojos.Outstockdetails;
 import com.zktr.crmproject.pojos.Stock;
 import com.zktr.crmproject.pojos.Warehouse;
 import com.zktr.crmproject.vo.Pager;
@@ -68,6 +69,27 @@ public class HTStockService {
      */
     public Integer queryQuantityBySpeId(Integer speId){
         return istockDao.queryQuantityBySpeId(speId).getStockQuantity();
+    }
+
+    /**
+     * 判断出库量是否大于库存量
+     * @param outstockdetails
+     * @return
+     */
+    public String queryIsBigStock(List<Outstockdetails> outstockdetails){
+        boolean flag = false;
+        String value = "以下产品库存不足："+"<br/>";
+        for(Outstockdetails o:outstockdetails){
+           if(queryQuantityBySpeId(o.getProductspecification().getSpeId())<o.getOsdNumber()){
+               flag = true;
+               value+=o.getProductspecification().getProName()+"["+o.getProductspecification().getSpeSpecification()+"]"+"<br/>";
+           }
+        }
+        value+="请通知库管备货(或减少数量）！！！";
+        if(flag){
+            return value;
+        }
+        return "1";
     }
 
 }

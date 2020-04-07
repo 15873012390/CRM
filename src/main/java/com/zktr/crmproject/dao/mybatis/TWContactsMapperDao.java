@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface IContactsMapperDao {
+public interface TWContactsMapperDao {
     //查询所有联系人
     public List<Contacts> queryAllContacts();
     //根据ID查询联系人

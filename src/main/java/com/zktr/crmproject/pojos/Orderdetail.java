@@ -1,20 +1,25 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
 public class Orderdetail {
     private int detId;
     private Integer detNumber;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp detTime;
     private String detRequire;
     private String detCondition;
     private String detRemark;
+    private BigDecimal detMoney;
     @JsonIgnoreProperties("orderdetail")
     private Orders orders;
+    @JsonIgnoreProperties("orderdetail")
     private Productspecification productspecification;
     @JsonIgnoreProperties("orderdetail")
     private User user;
@@ -30,7 +35,15 @@ public class Orderdetail {
     public void setDetId(int detId) {
         this.detId = detId;
     }
+    @Basic
+    @Column(name = "det_money")
+    public BigDecimal getDetMoney() {
+        return detMoney;
+    }
 
+    public void setDetMoney(BigDecimal detMoney) {
+        this.detMoney = detMoney;
+    }
 
     @Basic
     @Column(name = "det_number")

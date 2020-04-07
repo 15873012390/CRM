@@ -4,10 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.ICustomerDao;
 import com.zktr.crmproject.dao.jpa.TWCustomerTransferDao;
-import com.zktr.crmproject.dao.mybatis.ICustomerMapperDao;
+import com.zktr.crmproject.dao.mybatis.TWCustomerMapperDao;
 import com.zktr.crmproject.dao.mybatis.TWCustomerTransfer2MapperDao;
 import com.zktr.crmproject.dao.mybatis.TWCustomerTransferMapperDao;
-import com.zktr.crmproject.dao.mybatis.lliUserDao;
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.Customertransfer;
 import com.zktr.crmproject.pojos.User;
@@ -16,13 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -30,7 +24,7 @@ public class TWCustomerService {
     @Autowired
     private ICustomerDao customerDao;
     @Autowired(required = false)
-    private ICustomerMapperDao iCustomerMapperDao;
+    private TWCustomerMapperDao TWCustomerMapperDao;
     @Autowired
     private TWCustomerTransferDao twCustomerTransferDao;
     @Autowired(required = false)
@@ -132,6 +126,7 @@ public class TWCustomerService {
     public void saveCustomerTransfer(Customertransfer customertransfer){
         Customer customer=findCustomer(customertransfer.getCustomer().getCusId());
         customer.setUser(customertransfer.getUser2());
+        customer.setCusUpdateTime(customertransfer.getCtTime());
         saveCustomer(customer);
         twCustomerTransferDao.save(customertransfer);
     }
@@ -175,7 +170,7 @@ public class TWCustomerService {
      * @return
      */
     public Customer findCustomer(Integer cusid){
-        return iCustomerMapperDao.findCustomerById(cusid);
+        return TWCustomerMapperDao.findCustomerById(cusid);
     }
 
     /**
@@ -184,16 +179,46 @@ public class TWCustomerService {
      * @return
      */
     public Customer findCustomerByName(String cusName){
-        return iCustomerMapperDao.findCustomerByName(cusName);
+        return TWCustomerMapperDao.findCustomerByName(cusName);
     }
 
     /**
-     * 根据id查询客户详情
+     * 根据id查询客户详情（左）
      * @param cusId
      * @return
      */
     public Customer queryCustomerDetailsById(Integer cusId){
-        return iCustomerMapperDao.queryCustomerDetailsById(cusId);
+        return TWCustomerMapperDao.queryCustomerDetailsById(cusId);
+    }
+
+    /**
+     * 根据id查询客户详情（右）
+     * @param cusId
+     * @return
+     */
+    public Customer findCustomerDetailsById1(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById1(cusId);
+    }
+    public Customer findCustomerDetailsById2(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById2(cusId);
+    }
+    public Customer findCustomerDetailsById3(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById3(cusId);
+    }
+    public Customer findCustomerDetailsById4(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById4(cusId);
+    }
+    public Customer findCustomerDetailsById5(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById5(cusId);
+    }
+    public Customer findCustomerDetailsById6(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById6(cusId);
+    }
+    public Customer findCustomerDetailsById7(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById7(cusId);
+    }
+    public Customer findCustomerDetailsById8(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById8(cusId);
     }
 
     /**
@@ -202,7 +227,7 @@ public class TWCustomerService {
      */
     public Pager<Customer> queryAllCustomers(Integer curpage,Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
-        List<Customer> list=iCustomerMapperDao.queryAllCustomer();
+        List<Customer> list= TWCustomerMapperDao.queryAllCustomer();
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
         return new Pager<Customer>(pageInfo.getTotal(),pageInfo.getList());
     }
@@ -212,7 +237,7 @@ public class TWCustomerService {
      * @return
      */
     public List<Customer> queryAllCustomers2(){
-        List<Customer> list=iCustomerMapperDao.queryAllCustomer();
+        List<Customer> list= TWCustomerMapperDao.queryAllCustomer();
         return list;
     }
 
@@ -226,16 +251,16 @@ public class TWCustomerService {
         List<Customer> list=null;
         PageHelper.startPage(curpage,pagesize);
         if (prop.equals("cusId")&&order.equals("ascending")){
-            list=iCustomerMapperDao.queryAllCustomerByIdASC();
+            list= TWCustomerMapperDao.queryAllCustomerByIdASC();
         }else if (prop.equals("cusId")&&order.equals("descending")){
-            list=iCustomerMapperDao.queryAllCustomer();
+            list= TWCustomerMapperDao.queryAllCustomer();
         }else if (prop.equals("cusUpdateTime")&&order.equals("ascending")){
-            list=iCustomerMapperDao.queryAllCustomerBycusUpdateTimeASC();
+            list= TWCustomerMapperDao.queryAllCustomerBycusUpdateTimeASC();
         }else if (prop.equals("cusUpdateTime")&&order.equals("descending")){
-            list=iCustomerMapperDao.queryAllCustomerBycusUpdateTimeDESC();
+            list= TWCustomerMapperDao.queryAllCustomerBycusUpdateTimeDESC();
         }
         else {
-            list=iCustomerMapperDao.queryAllCustomer();
+            list= TWCustomerMapperDao.queryAllCustomer();
         }
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
         return new Pager<Customer>(pageInfo.getTotal(),pageInfo.getList());
@@ -248,7 +273,7 @@ public class TWCustomerService {
      */
     public Pager<Customer> queryCustomerSenior(AdvancedQueryCustomerData advancedQueryCustomerData){
         PageHelper.startPage(advancedQueryCustomerData.getCurpage(),advancedQueryCustomerData.getPagesize());
-        List<Customer> list=iCustomerMapperDao.queryCustomerSenior(advancedQueryCustomerData);
+        List<Customer> list= TWCustomerMapperDao.queryCustomerSenior(advancedQueryCustomerData);
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
         return new Pager<Customer>(pageInfo.getTotal(),pageInfo.getList());
     }
@@ -259,7 +284,7 @@ public class TWCustomerService {
      */
     public Pager<Customer> queryCustomerById(Integer id,Integer curpage,Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
-        List<Customer> list=iCustomerMapperDao.queryCustomerById(id);
+        List<Customer> list= TWCustomerMapperDao.queryCustomerById(id);
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
         return new Pager<Customer>(pageInfo.getTotal(),pageInfo.getList());
     }
@@ -273,7 +298,7 @@ public class TWCustomerService {
      */
     public Pager<Customer> queryCustomerByName(String name,Integer curpage,Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
-        List<Customer> list=iCustomerMapperDao.queryCustomerByName(name);
+        List<Customer> list= TWCustomerMapperDao.queryCustomerByName(name);
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
         return new Pager<Customer>(pageInfo.getTotal(),pageInfo.getList());
     }
@@ -289,13 +314,13 @@ public class TWCustomerService {
         PageHelper.startPage(curpage,pagesize);
         List<Customer> list=null;
         if (value.equals("一周内")){
-            list=iCustomerMapperDao.queryCustomerBy1();
+            list= TWCustomerMapperDao.queryCustomerBy1();
         }else if (value.equals("一个月内")){
-            list=iCustomerMapperDao.queryCustomerBy2();
+            list= TWCustomerMapperDao.queryCustomerBy2();
         }else if (value.equals("一年内")){
-            list=iCustomerMapperDao.queryCustomerBy3();
+            list= TWCustomerMapperDao.queryCustomerBy3();
         }else{
-            list=iCustomerMapperDao.queryCustomerBy4(value);
+            list= TWCustomerMapperDao.queryCustomerBy4(value);
         }
         System.out.println(value);
         PageInfo<Customer> pageInfo=new PageInfo<>(list);
@@ -310,12 +335,12 @@ public class TWCustomerService {
     public List<CountPie> countPie(Integer num){
         List<CountPie> list=null;
         if (num==1){
-            list=iCustomerMapperDao.countCusSourcePie();
+            list= TWCustomerMapperDao.countCusSourcePie();
         }else if (num==2){
-            list=iCustomerMapperDao.countCusCreditPie();
+            list= TWCustomerMapperDao.countCusCreditPie();
         }
         else if (num==3){
-            list=iCustomerMapperDao.countCusGradingPie();
+            list= TWCustomerMapperDao.countCusGradingPie();
         }
         for (int i=0;i<list.size();i++){
             if (list.get(i).getName()==null||list.get(i).getName().equals("")){

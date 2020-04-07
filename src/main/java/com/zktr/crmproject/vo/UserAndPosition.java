@@ -18,17 +18,21 @@ public class UserAndPosition {
     private String uPass;
     @Excel(name = "性别")
     private String uSex;
-//    @Excel(name = "出生日期")
+    @Excel(name = "生日日期")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uBirth;
-//    @Excel(name = "入职日期")
+    @Excel(name = "注册时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uJoindate;
+    @Excel(name = "头像")
     private String uImg;
+    @Excel(name = "状态")
     private Integer uStatus;
+    @Excel(name = "部门ID")
     private Integer dId;
     @Excel(name = "部门")
     private String dName;
+    @Excel(name = "职位ID")
     private String postId;
 //    @Excel(name = "职位")
     private String postName;

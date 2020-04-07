@@ -60,14 +60,27 @@
             <result property="audStatus" column="aud_status"></result>
             <result property="delStatus" column="del_status"></result>
         </association>
-
     </resultMap>
 
     <select id="PLqueryAllQuote" resultMap="quoteMap">
         SELECT quo_id,quo_theme,cus_id
         FROM quote
         WHERE del_status=1
-        AND to_order=1
+        AND to_order=2
     </select>
+
+    <update id="PLupdateByQutId" >
+        update quote set to_order=3 where quo_id=#{quoId}
+    </update>
+
+    <select id="queryAllByPage" resultMap="quoteMap">
+        select q.quo_id, q.quo_theme, q.to_order, q.quo_phone, q.quo_date, q.total_money, q.gross_profit,
+        q.instructions, q.remarks, q.approver,q.audit_status, q.del_status,
+        s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+        from quote q left join salesopport s on q.so_id = s.so_id
+        left join customer c2 on q.cus_id = c2.cus_id
+        order by q.quo_id desc
+    </select>
+
 
 </mapper>

@@ -3,6 +3,7 @@ package com.zktr.crmproject.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.HTInstockDao;
+import com.zktr.crmproject.dao.jpa.HTInstockDetailDao;
 import com.zktr.crmproject.dao.jpa.HTStockDao;
 import com.zktr.crmproject.dao.mybatis.HTIInstockDao;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
@@ -10,11 +11,15 @@ import com.zktr.crmproject.dao.mybatis.HTIWarehouseDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.vo.InstockAdvancedSearch;
+import com.zktr.crmproject.vo.InstockDetailVo;
 import com.zktr.crmproject.vo.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,6 +34,8 @@ public class HTInstockService {
     private HTIStockDao istockDao;
     @Autowired
     private HTStockDao stockDao;
+    @Autowired
+    private HTInstockDetailDao instockDetailDao;
 
 
     /**
@@ -38,10 +45,17 @@ public class HTInstockService {
      * @return
      */
     public Pager<Instock> queryAllInstockByPage(Integer curpage,Integer pagesize){
-        PageHelper.startPage(curpage,pagesize);
-        List<Instock> list = iIstockDao.selectAllInstock();
-        PageInfo<Instock> pager = new PageInfo<>(list);
-        return new Pager<Instock>(pager.getList().size(),pager.getList());
+        List<Instock> list1 = iIstockDao.selectAllInstock();
+        List list2 = new ArrayList();
+        for(int i = 0; i < pagesize; i ++){
+            int index = (curpage - 1) * pagesize + i;
+            if(index<list1.size()) {
+                if(list1.get(index)!=null) {
+                    list2.add(list1.get(index));
+                }
+            }
+        }
+        return new Pager<Instock>(list1.size(),list2);
     }
 
 
@@ -91,6 +105,7 @@ public class HTInstockService {
             }
         }else{
             instock.setStatus("已入库");
+            instock.setExecutionTime(new Timestamp(System.currentTimeMillis()));
             iIstockDao.updateInstock(instock);
             List<Instockdetail> instockdetails = iIstockDao.queryInstockDetailByInsId(insId);
             for(Instockdetail ins : instockdetails){
@@ -128,10 +143,11 @@ public class HTInstockService {
      * @return
      */
     public Pager<Instock> queryInstockSelectAndInputByPage(String value, String input, String select, Integer curpage, Integer pagesize){
+        List<Instock> clist2 = iIstockDao.querySelectAndInputByPage(value,"%"+input.trim()+"%",select);
         PageHelper.startPage(curpage,pagesize);
         List<Instock> clist = iIstockDao.querySelectAndInputByPage(value,"%"+input.trim()+"%",select);
         PageInfo<Instock> pager = new PageInfo<>(clist);
-        return new Pager<Instock>(pager.getList().size(),pager.getList());
+        return new Pager<Instock>(clist2.size(),pager.getList());
     }
 
     /**
@@ -148,6 +164,7 @@ public class HTInstockService {
      * @return
      */
     public Pager<Instock> queryInstockByAdvancedSearch(InstockAdvancedSearch ias){
+        List<Instock> list2 = iIstockDao.queryInstockByAdvancedSearch(ias);
         PageHelper.startPage(ias.getCurPage(),ias.getPageSize());
         if(ias.getFillTime()!=null && ias.getFillTime().length!=0){
             ias.setS1(ias.getFillTime()[0]);
@@ -159,7 +176,7 @@ public class HTInstockService {
        }
         List<Instock> list = iIstockDao.queryInstockByAdvancedSearch(ias);
         PageInfo<Instock> pager = new PageInfo<>(list);
-        return new Pager<Instock>(pager.getTotal(),pager.getList());
+        return new Pager<Instock>(list2.size(),pager.getList());
     }
 
     /**
@@ -173,15 +190,18 @@ public class HTInstockService {
 
     /**
      * 编辑或编辑入库详情单
-     * @param instockdetails
+     * @param
      */
-    public void addorEditInstockdetails(List<Instockdetail> instockdetails){
-        for(Instockdetail insd : instockdetails){
+    public void addorEditInstockdetails(InstockDetailVo instockDetailVo){
+        for(Instockdetail insd : instockDetailVo.getList()){
             if(insd.getInsdId()==0){
                 iIstockDao.insertInstockDetail(insd);
             }else{
                 iIstockDao.updateInstockDetail(insd);
             }
+        }
+        for(Integer speId:instockDetailVo.getDelList()){
+            instockDetailDao.deleteBySpeId(speId);
         }
     }
 

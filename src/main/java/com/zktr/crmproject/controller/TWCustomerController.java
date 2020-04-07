@@ -19,6 +19,51 @@ public class TWCustomerController {
     @Autowired
     private TWCustomerService TWCustomerService;
 
+    /**
+     * 加载客户详情（右）
+     * @param cusId
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/find_customer_by_id1")
+    public Customer findCustomerById1(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById1(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id2")
+    public Customer findCustomerById2(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById2(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id3")
+    public Customer findCustomerById3(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById3(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id4")
+    public Customer findCustomerById4(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById4(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id5")
+    public Customer findCustomerById5(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById5(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id6")
+    public Customer findCustomerById6(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById6(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id7")
+    public Customer findCustomerById7(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById7(cusId);
+    }
+    @ResponseBody
+    @GetMapping("/find_customer_by_id8")
+    public Customer findCustomerById8(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById8(cusId);
+    }
 
     /**
      * 根据用户id查询客户转移日志
@@ -140,7 +185,7 @@ public class TWCustomerController {
     }
 
     /**
-     * 加载客户
+     * 加载客户（左）
      * @param cusId
      * @return
      */

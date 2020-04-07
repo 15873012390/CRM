@@ -17,4 +17,6 @@ public interface PLProductSpecificationMDao {
     public void updateSpe(@Param("speSpecification") String speSpecification, @Param("speUnit") String speUnit, @Param("speUnitConversion") Integer speUnitConversion, @Param("speid") Integer speid);
 
     public Productspecification queryBySepId(@Param("speid") Integer speid);
+    //合同 查询分类是服务的产品
+    public List<Productspecification> queryByClaState();
 }

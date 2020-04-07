@@ -6,11 +6,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.PLProductJDao;
 import com.zktr.crmproject.dao.jpa.PLProductSpecificationJDao;
+import com.zktr.crmproject.dao.mybatis.HTIStockDao;
 import com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
 import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.pojos.Productclassification;
 import com.zktr.crmproject.pojos.Salesopport;
+import com.zktr.crmproject.vo.PLCountPie;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.ProductAdvancedSearch;
 import com.zktr.crmproject.vo.ProductSpecificationVo;
@@ -36,6 +38,8 @@ public class PLproductService {
     private PLProductSpecificationMDao psmdao;
     @Autowired
     private PLProductSpecificationJDao psjdao;
+    @Autowired
+    private HTIStockDao stockDao;
 
     /**
      * 分页查询全部产品
@@ -56,21 +60,25 @@ public class PLproductService {
      * 新增和修改
      * @param product
      */
-    public void addAndUpdateProduct(Product product){
+    public Integer addAndUpdateProduct(Product product){
        product.setProDelState(1);
        //保存
        pjpdao.save(product);
-
-       ProductSpecificationVo productSpecificationVo=new ProductSpecificationVo();
+        ProductSpecificationVo productSpecificationVo=new ProductSpecificationVo();
         //找到最大的id添加进去
         //Integer proid=pmpdao.findMaxProid();
         List<Product> list=pmpdao.queryAllProduct();
-       productSpecificationVo.setProId(list.get(0).getProId());
-       productSpecificationVo.setProName(product.getProName());
-       productSpecificationVo.setSpeSpecification("基准");
-       productSpecificationVo.setSpeUnit("个");
-       productSpecificationVo.setSpeUnitConversion(1);
-       psmdao.insertSpe(productSpecificationVo);
+        productSpecificationVo.setProId(list.get(0).getProId());
+        productSpecificationVo.setProName(product.getProName());
+        productSpecificationVo.setSpeSpecification("基准");
+        productSpecificationVo.setSpeUnit("个");
+        productSpecificationVo.setSpeUnitConversion(1);
+        psmdao.insertSpe(productSpecificationVo);
+       return product.getProId();
+
+    }
+
+    public void addSpe(){
 
     }
 
@@ -211,5 +219,9 @@ public class PLproductService {
      */
     public Product findBySpeidInstock(Integer speid){
         return pmpdao.findBySpeidInstock(speid);
+    }
+    //产品详情页上 统计每个仓库还有多少库存
+    public List<PLCountPie> PLQueryByStock(){
+        return stockDao.PLQueryByStock();
     }
 }

@@ -3,10 +3,7 @@ package com.zktr.crmproject.controller;
 import com.zktr.crmproject.pojos.Contacts;
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.service.TWContactsService;
-import com.zktr.crmproject.vo.AdvancedQueryContactsData;
-import com.zktr.crmproject.vo.AdvancedQueryCustomerData;
-import com.zktr.crmproject.vo.Pager;
-import com.zktr.crmproject.vo.Result;
+import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +45,7 @@ public class TWContactsController {
      * @param advancedQueryContactsData
      * @return
      */
+
     @ResponseBody
     @RequestMapping("/query_contacts_senior")
     public Pager<Contacts> queryCustomerSenior(@RequestBody AdvancedQueryContactsData advancedQueryContactsData){
@@ -108,6 +106,7 @@ public class TWContactsController {
      * @param contacts
      * @return
      */
+//    @MyLog(value = "添加/修改联系人")
     @PostMapping("/add_and_update_contacts") //restful风格
     @ResponseBody
     public Result addAndUpdateCustomer(@RequestBody Contacts contacts){
@@ -122,8 +121,20 @@ public class TWContactsController {
      */
     @DeleteMapping("/delete_contacts")
     @ResponseBody
-    public Result deleteCustomer(Integer conid){
+    public Result deleteContacts(Integer conid){
         twContactsService.deleteContacts(conid);
+        return Result.SUCCESS;
+    }
+
+    /**
+     * 批量删除联系人
+     * @param conIds
+     * @return
+     */
+    @DeleteMapping("/delete_contacts_byids")
+    @ResponseBody
+    public Result deleteContactsByIds(Integer[] conIds){
+        twContactsService.deleteContactsByIds(conIds);
         return Result.SUCCESS;
     }
 }

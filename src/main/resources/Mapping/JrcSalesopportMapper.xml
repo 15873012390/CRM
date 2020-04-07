@@ -51,11 +51,8 @@
     <select id="queryAll" resultMap="salesopportMap">
         select
         s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
-        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
-        c.cus_id,c.cus_name,u.u_id,u.u_name
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status
         from salesopport s
-        left join customer c on s.cus_id = c.cus_id
-        left join user u on s.u_id = u.u_id
         where s.del_status=1
         order by s.so_id desc
     </select>
@@ -281,6 +278,11 @@
         </trim>
     </select>
 
+    <select id="querySalesOpportByCusId" resultMap="salesopportMap">
+        select s.so_id,s.so_theme from salesopport s left join customer c2 on s.cus_id = c2.cus_id
+        where s.del_status=1 and c2.cus_id=#{cusid}
+    </select>
+
     <select id="querySalesOpportByForecast" resultMap="salesopportMap">
         select s.so_id, s.so_theme,s.update_date,s.status,s.con_name,
         s.con_phone,s.cus_id, s.architecture,s.cus_source,s.priority,
@@ -296,7 +298,7 @@
             <if test="timeEnd!=null">
                 and s.signing_time&lt;=#{timeEnd}
             </if>
-            <if test="possibolty!='' and possibolty.length>0">
+            <if test="possibolty!=null and possibolty.length>0">
                 and s.possibility=#{possibolty}
             </if>
             <if test="status!=null">
@@ -313,5 +315,43 @@
         </trim>
         order by s.so_id desc
     </select>
+
+    <select id="queryFinalllSalesOpportByForecast" resultMap="salesopportMap">
+        select s.so_id, s.so_theme,s.update_date,s.status,s.con_name,
+        s.con_phone,s.cus_id, s.architecture,s.cus_source,s.priority,
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,
+        s.amount,s.star_target,s.del_status,
+        u.u_id,u.u_name
+        from salesopport s
+        left join user u on s.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="timeStart!=null">
+                and s.signing_time>=#{timeStart}
+            </if>
+            <if test="timeEnd!=null">
+                and s.signing_time&lt;=#{timeEnd}
+            </if>
+            <if test="possibolty!=null and possibolty.length>0">
+                and s.possibility=#{possibolty}
+            </if>
+            <if test="uId!=null">
+                and u.u_id=#{uId}
+            </if>
+        </trim>
+        order by s.so_id desc
+    </select>
+
+    <select id="queryFinallStage" resultType="com.zktr.crmproject.vo.JrcSalesOpportStage">
+       select s.stage as stage,count(s.so_id) as counts from salesopport s
+        left join user u on s.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="uId!=null">
+                u.u_id=#{uId}
+            </if>
+        </trim>
+        group by s.stage
+    </select>
+
+
 
 </mapper>

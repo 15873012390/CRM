@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLISendOutDao">
+    <resultMap id="sendOutMap" type="Sendout">
+        <id column="sen_id" property="senId"></id>
+        <result column="sen_receiving" property="senReceiving"></result>
+        <result column="sen_date" property="senDate"></result>
+        <result column="sen_freight" property="senFreight"></result>
+        <result column="sen_state" property="senState"></result>
+        <result column="sen_way" property="senWay"></result>
+        <result column="sen_remark" property="senRemark"></result>
+        <result column="sen_del_state" property="senDelState"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_number" property="ordNumber"></result>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <collection property="sendoutdetial" ofType="Sendoutdetial">
+            <id column="sod_id" property="sodId"></id>
+            <result column="sod_number" property="sodNumber"></result>
+            <result column="sod_date" property="sodDate"></result>
+            <result column="sod_money" property="sodMoney"></result>
+            <result column="sod_remark" property="sodRemark"></result>
+            <association property="sendout" javaType="Sendout">
+                <id column="sen_id" property="senId"></id>
+                <result column="sen_receiving" property="senReceiving"></result>
+                <result column="sen_date" property="senDate"></result>
+                <result column="sen_freight" property="senFreight"></result>
+                <result column="sen_state" property="senState"></result>
+                <result column="sen_way" property="senWay"></result>
+                <result column="sen_remark" property="senRemark"></result>
+                <result column="sen_del_state" property="senDelState"></result>
+                <association property="productspecification" javaType="Productspecification">
+                    <id property="speId" column="spe_id"></id>
+                    <result property="proName" column="pro_name"></result>
+                    <result property="speSpecification" column="spe_specification"></result>
+                    <result property="speUnit" column="spe_unit" ></result>
+                    <result property="speUnitConversion" column="spe_unit_conversion"></result>
+                    <association property="product" javaType="Product">
+                        <id property="proId" column="pro_id"></id>
+                        <result property="proName" column="pro_name"></result>
+                        <result property="proDate" column="pro_date"></result>
+                    </association>
+                </association>
+            </association>
+        </collection>
+    </resultMap>
+
+    <insert id="insertSendOut" parameterType="Sendout" useGeneratedKeys="true" keyProperty="senId">
+        insert into sendout values(#{senId},#{customer.cusId},#{orders.ordId},#{senReceiving},#{senDate},#{senFreight},#{senState},#{senWay},#{senRemark},#{senDelState})
+    </insert>
+
+    <insert id="insertSendOutDetail" parameterType="Sendoutdetial">
+        insert into sendoutdetial values(#{sodId},#{sendout.senId},#{productspecification.speId},#{sodNumber},#{sodDate},#{sodMoney},#{sodRemark})
+    </insert>
+
+
+
+
+
+
+
+</mapper>

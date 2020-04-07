@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class Audit {
     private int audId;
     private String audTheme;
     private Integer audType;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp audTime;
     private int audStatus;
     private int delStatus;
@@ -160,4 +162,9 @@ public class Audit {
     public void setAuditdetails(List<Auditdetails> auditdetails) {
         this.auditdetails = auditdetails;
     }
+
+    public Audit() {
+    }
+
+
 }

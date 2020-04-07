@@ -11,5 +11,8 @@ public interface JrcQuoteMDao {
 
     public List<Quote> queryQuoteBySoid(@Param("soId") Integer soId);
     public List<Quote> PLqueryAllQuote();
+    //把报价状态修改成3
+    public void PLupdateByQutId(Integer quoId);
+    public List<Quote> queryAllByPage();
 
 }

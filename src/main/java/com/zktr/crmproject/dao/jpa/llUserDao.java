@@ -18,5 +18,4 @@ public interface llUserDao extends CrudRepository<User,Integer> {
     public List<User> findDeleteDept(Integer did);
     @Query("from User u where u.department.dId=?1")
     public List<User> disbandUsers(Integer id);
-
 }

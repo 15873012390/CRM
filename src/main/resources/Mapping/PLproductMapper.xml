@@ -269,5 +269,4 @@
         WHERE p.pro_del_state=1 and s.spe_id=#{speid} limit  1
     </select>
 
-
 </mapper>

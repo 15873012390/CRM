@@ -3,7 +3,6 @@ package com.zktr.crmproject.controller;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.service.PLOrdersService;
 import com.zktr.crmproject.vo.*;
-import jdk.nashorn.internal.ir.LiteralNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +23,7 @@ public class PLOrdersController {
         return oservice.countBar(n);
     }
     @GetMapping("/queryAllOrders")
-    public Pager<Orders> queryAllOrders(int curpage,int pagesize){
+    public Pager<Orders> queryAllOrders(int curpage, int pagesize){
         return oservice.queryAllOrders(curpage,pagesize);
     }
     @GetMapping("/statisticsByMoney")
@@ -49,16 +48,13 @@ public class PLOrdersController {
     }
     @PostMapping("/insertOrders")
     public Result insertOrders(@RequestBody PLOrdersVo plOrdersVo){
-
         oservice.insertOrders(plOrdersVo);
-
         return Result.SUCCESS;
     }
 
     @PostMapping("/saveAddress")
-    public Result saveAddress(@RequestBody PLaddressVo pLaddressVo){
-        oservice.saveAddress(pLaddressVo);
-        return Result.SUCCESS;
+    public Integer saveAddress(@RequestBody Address address){
+        return oservice.saveAddress(address);
     }
 
     @GetMapping("/findByOrdid")
@@ -71,10 +67,39 @@ public class PLOrdersController {
         return oservice.findByAddid(addid);
     }
 
-    @PostMapping("/delOrdersById")
+    @GetMapping("/delOrdersById")
     public Result delOrdersById(Integer ordid){
+        //System.out.println(ordid);
         oservice.delOrdersById(ordid);
         return Result.SUCCESS;
+    }
+    @PostMapping("/BatchOrdids")
+    public Result BatchOrdids(@RequestBody Integer[] ordids){
+        oservice.BatchOrdids(ordids);
+        return Result.SUCCESS;
+    }
+
+    @GetMapping("/queryByLikeQuery")
+    public Pager<Orders> queryByLikeQuery(int curpage, int pagesize, String select, String value, String input1){
+        //System.out.println("ssssss"+value);
+        return oservice.queryByLikeQuery(curpage,pagesize,select,value,input1);
+    }
+    @PostMapping("/OrdersAdvancedSearch")
+    public Pager<Orders> OrdersAdvancedSearch(@RequestBody PLOdersAdvancedSearch plOdersAdvancedSearch){
+        for(String s: plOdersAdvancedSearch.getAddProvince()){
+            System.out.println(s);
+        }
+        System.out.println(plOdersAdvancedSearch.toString());
+        return oservice.OrdersAdvancedSearch(plOdersAdvancedSearch);
+    }
+    @PostMapping("/insetOdersDetail")
+    public Result insetOdersDetail(@RequestBody PLordersDetailVo pLordersDetailVo){
+        oservice.addAndEditOrderDdetail(pLordersDetailVo);
+        return Result.SUCCESS;
+    }
+    @GetMapping("/queryOrderdetailByOrdId")
+    public List<Orderdetail> queryOrderdetailByOrdId(Integer ordid){
+        return oservice.queryOrderdetailByOrdid(ordid);
     }
 
 }

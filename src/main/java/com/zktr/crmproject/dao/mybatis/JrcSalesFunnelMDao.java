@@ -14,4 +14,5 @@ public interface JrcSalesFunnelMDao {
     public JrcSalesFunnel querySalesFunnel(@Param("users") List<User> users, @Param("stage") String stage);
 
     public JrcSalesFunnel querySalesOpportByStageNumberAndMoney(@Param("users") List<User> users, @Param("stage") String stage);
+
 }

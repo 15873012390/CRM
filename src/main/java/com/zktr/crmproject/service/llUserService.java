@@ -9,6 +9,7 @@ import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.PowerAndDept;
 import com.zktr.crmproject.vo.UserAndPosition;
+import com.zktr.crmproject.vo.UserMes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,6 @@ public class llUserService {
     //添加用户
     public User addUser(User user,Integer dId){
         User user1=llUserDao.save(user);
-        System.out.println("lm"+dId);
         Department d=llDeptDao.findById(dId).get();
         user1.setDepartment(d);
         return user1;
@@ -110,5 +110,27 @@ public class llUserService {
     public List<User> exportUser(){
         return lliUserDao.queryAtUser();
 //        return llUserAndPositionDao.findAllUsers();
+    }
+    //判断密码
+    public Integer passTrue(Integer id,String pass){
+        User user=lliUserDao.findById(id);
+        if (pass.equals(user.getuPass())){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+    //修改密码
+    public void updatePass(Integer id,String pass){
+        User user=lliUserDao.findById(id);
+        user.setuPass(pass);
+    }
+    //编辑资料
+    public void editMes(UserMes userMes){
+        User user=llUserDao.findById(userMes.getuId()).get();
+        user.setuBirth(userMes.getuBirth());
+        user.setuSex(userMes.getuSex());
+        user.setuName(userMes.getuName());
+        user.setuImg(userMes.getuImg());
     }
 }

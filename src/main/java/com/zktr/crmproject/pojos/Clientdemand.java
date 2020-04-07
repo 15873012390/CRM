@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -10,6 +12,7 @@ public class Clientdemand {
     private int cdId;
     private String cdTheme;
     private String cdPeople;
+    @JSONField(format = "yyyy-MM-dd")
     private Timestamp recordTime;
     private Integer importance;
     private String cdContent;

@@ -13,8 +13,8 @@ public class PowerAndDept {
     private String deptName;
     private String uName;
     private String uSex;
-    private Date uBrith;
-    private Date uJoindate;
+    private Timestamp uBrith;
+    private Timestamp uJoindate;
     private String uImg;
 
     public String getuName() {
@@ -33,19 +33,19 @@ public class PowerAndDept {
         this.uSex = uSex;
     }
 
-    public Date getuBrith() {
+    public Timestamp getuBrith() {
         return uBrith;
     }
 
-    public void setuBrith(Date uBrith) {
+    public void setuBrith(Timestamp uBrith) {
         this.uBrith = uBrith;
     }
 
-    public Date getuJoindate() {
+    public Timestamp getuJoindate() {
         return uJoindate;
     }
 
-    public void setuJoindate(Date uJoindate) {
+    public void setuJoindate(Timestamp uJoindate) {
         this.uJoindate = uJoindate;
     }
 

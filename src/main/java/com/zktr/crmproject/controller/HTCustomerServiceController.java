@@ -11,6 +11,7 @@ import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -90,6 +91,16 @@ public class HTCustomerServiceController {
     @GetMapping("/queryCustomerIDorNameorPhone")
     public List<Customer> queryCustomerIDorNameorPhone(String value){
         return customerServiceService.queryByLikeCustomer(value);
+    }
+
+    @GetMapping("/queryQueryDistribution")
+    public List queryQueryDistribution(String value){
+        return customerServiceService.queryQueryDistribution(value);
+    }
+
+    @GetMapping("/queryQueryMonth")
+    public List queryQueryMonth(String value){
+        return customerServiceService.queryQueryMonth(value);
     }
 
 }

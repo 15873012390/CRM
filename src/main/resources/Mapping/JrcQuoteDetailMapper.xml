@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcQuoteDetailsMDao">
+
+    <resultMap id="quotedetailsMap" type="Quotedetails">
+        <id property="qdId" column="qd_id"></id>
+        <result property="specification" column="specification"></result>
+        <result property="unit" column="unit"></result>
+        <result property="quantity" column="quantity"></result>
+        <result property="unitPrice" column="unit_price"></result>
+        <result property="discount" column="discount"></result>
+        <result property="money" column="money"></result>
+        <result property="remarks" column="remarks"></result>
+        <result property="conQdid" column="con_qdid"></result>
+        <!--报价id-->
+        <association property="quote" javaType="Quote">
+            <id property="quoId" column="quo_id"></id>
+            <result property="quoTheme" column="quo_theme"></result>
+            <result property="toOrder" column="to_order"></result>
+            <association property="customer" javaType="Customer">
+                <id column="cus_id" property="cusId"></id>
+                <result column="cus_name" property="cusName"></result>
+            </association>
+        </association>
+        <!--规格id-->
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit"></result>
+            <result property="proName" column="pro_name"></result>
+            <!--产品id-->
+            <association property="product" javaType="Product">
+                <id column="pro_id" property="proId"></id>
+                <result column="pro_name" property="proName"></result>
+            </association>
+        </association>
+    </resultMap>
+    <!--PL 根据报价id查询报价详情-->
+    <select id="queryByQuoId" resultMap="quotedetailsMap">
+        select quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks,spe.spe_id,spe.pro_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        where quo_id=#{quoid}
+    </select>
+    <!--PL 查询出服务类的产品的报价详情-->
+    <select id="findAllByClaIdId" resultMap="quotedetailsMap">
+        select q.quo_theme,q.quo_id,quo.qd_id,quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks,spe.spe_id,spe.pro_name,spe.pro_id,spe.spe_specification,cla.cla_id,c.cus_id,c.cus_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        LEFT JOIN quote q
+        on quo.quo_id=q.quo_id
+        LEFT JOIN product p
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        LEFT JOIN customer c
+        ON c.cus_id=q.cus_id
+        WHERE cla.cla_id_id=13
+    </select>
+    <!--PL 根据qdId查询 合同编辑-->
+    <select id="findByQuoteClaIdId" resultMap="quotedetailsMap">
+        select q.quo_theme,q.quo_id,quo.qd_id,quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks,spe.spe_id,spe.pro_name,spe.pro_id,spe.spe_specification,cla.cla_id,c.cus_id,c.cus_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        LEFT JOIN quote q
+        on quo.quo_id=q.quo_id
+        LEFT JOIN product p
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        LEFT JOIN customer c
+        ON c.cus_id=q.cus_id
+        WHERE cla.cla_id_id=13 and quo.qd_id=#{qdid}
+    </select>
+</mapper>

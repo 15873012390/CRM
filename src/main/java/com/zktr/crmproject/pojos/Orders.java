@@ -1,11 +1,13 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Orders {
@@ -17,6 +19,7 @@ public class Orders {
     private BigDecimal ordTotalAmount;
     private BigDecimal ordSendOutMoney;
     private BigDecimal ordMargin;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp ordTime;
     private String ordExecutingState;
     private String ordPurchaseWay;
@@ -47,6 +50,45 @@ public class Orders {
     private List<Invoice> invoice;
     @JsonIgnoreProperties("orders")
     private Address address;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Orders orders = (Orders) o;
+        return ordId == orders.ordId &&
+                Objects.equals(ordNumber, orders.ordNumber) &&
+                Objects.equals(ordTheme, orders.ordTheme) &&
+                Objects.equals(ordClassify, orders.ordClassify) &&
+                Objects.equals(ordPayment, orders.ordPayment) &&
+                Objects.equals(ordTotalAmount, orders.ordTotalAmount) &&
+                Objects.equals(ordSendOutMoney, orders.ordSendOutMoney) &&
+                Objects.equals(ordMargin, orders.ordMargin) &&
+                Objects.equals(ordTime, orders.ordTime) &&
+                Objects.equals(ordExecutingState, orders.ordExecutingState) &&
+                Objects.equals(ordPurchaseWay, orders.ordPurchaseWay) &&
+                Objects.equals(ordHabit, orders.ordHabit) &&
+                Objects.equals(ordSendOutState, orders.ordSendOutState) &&
+                Objects.equals(outStatus, orders.outStatus) &&
+                Objects.equals(ordRemark, orders.ordRemark) &&
+                Objects.equals(ordDelState, orders.ordDelState) &&
+                Objects.equals(outstock, orders.outstock) &&
+                Objects.equals(customer, orders.customer) &&
+                Objects.equals(user, orders.user) &&
+                Objects.equals(quote, orders.quote) &&
+                Objects.equals(orderdetail, orders.orderdetail) &&
+                Objects.equals(sendout, orders.sendout) &&
+                Objects.equals(returnedgoods, orders.returnedgoods) &&
+                Objects.equals(returnedmoney, orders.returnedmoney) &&
+                Objects.equals(returnedmoneyplan, orders.returnedmoneyplan) &&
+                Objects.equals(invoice, orders.invoice) &&
+                Objects.equals(address, orders.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ordId, ordNumber, ordTheme, ordClassify, ordPayment, ordTotalAmount, ordSendOutMoney, ordMargin, ordTime, ordExecutingState, ordPurchaseWay, ordHabit, ordSendOutState, outStatus, ordRemark, ordDelState, outstock, customer, user, quote, orderdetail, sendout, returnedgoods, returnedmoney, returnedmoneyplan, invoice, address);
+    }
 
     @ManyToOne
     @JoinColumn(name="add_id",referencedColumnName = "add_id")

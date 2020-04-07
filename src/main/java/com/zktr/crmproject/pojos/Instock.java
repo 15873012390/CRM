@@ -1,6 +1,7 @@
 package com.zktr.crmproject.pojos;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -12,20 +13,18 @@ import java.util.List;
 public class Instock {
     private int insId;
     private String title;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp fillTime;
     private String status;
     private String filler;
     private Integer keeper;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp executionTime;
     private String remarks;
     private Warehouse warehouse;
-    @NotFound(action=NotFoundAction.IGNORE)
     private Purchaseorder purchaseorder;
-    @NotFound(action=NotFoundAction.IGNORE)
     private Returnedgoods returnedgoods;
-    @NotFound(action=NotFoundAction.IGNORE)
     private Supplier supplier;
-    @NotFound(action=NotFoundAction.IGNORE)
     private List<Instockdetail> instockdetail;
     @Id
     @Basic

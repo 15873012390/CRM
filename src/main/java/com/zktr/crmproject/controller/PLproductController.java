@@ -1,5 +1,6 @@
 package com.zktr.crmproject.controller;
 
+import com.zktr.crmproject.pojos.Orderdetail;
 import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.service.PLproductService;
 import com.zktr.crmproject.utils.ExcelUtils;
@@ -67,7 +68,7 @@ public class PLproductController {
         String uuid= UUID.randomUUID().toString().toUpperCase();//唯一的字符串
         return uuid+ext;
     }
-
+    //此方法作废
     @PostMapping("/uploadImg") //file:///E:/PL/uploadImgFiles/)OES9BODI1M6MJ1VP(%5BB@MF.png
     public String uploadImgs(@RequestBody MultipartFile file, HttpServletRequest request) throws IOException {
         if(file==null || file.isEmpty()){
@@ -157,5 +158,10 @@ public class PLproductController {
     @GetMapping("/findBySpeidInstock")
     public Product findBySpeidInstock(Integer speid){
         return pservice.findBySpeidInstock(speid);
+    }
+
+    @GetMapping("/PLQueryByStock")
+    public List<PLCountPie> PLQueryByStock(){
+        return pservice.PLQueryByStock();
     }
 }

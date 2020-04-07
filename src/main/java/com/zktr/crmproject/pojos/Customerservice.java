@@ -14,7 +14,7 @@ public class Customerservice {
     private String title;
     private String serviceType;
     private String serviceWay;
-    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp startTime;
     private String spendTime;
     private String executor;

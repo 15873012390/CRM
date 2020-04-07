@@ -7,7 +7,7 @@
         <id column="cus_id" property="cusId"></id>
         <result column="cus_name" property="cusName"></result>
         <result column="cus_tel" property="cusTel"></result>
-        <collection property="customerservices" ofType="com.zktr.crmproject.pojos.Customerservice">
+        <collection property="customerservice" ofType="com.zktr.crmproject.pojos.Customerservice">
             <id column="cs_id" property="csId"></id>
             <result column="title" property="title"></result>
             <result column="service_type" property="serviceType"></result>

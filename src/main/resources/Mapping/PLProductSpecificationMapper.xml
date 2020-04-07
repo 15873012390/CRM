@@ -14,6 +14,10 @@
             <id property="proId" column="pro_id"></id>
             <result property="proName" column="pro_name"></result>
             <result property="proDate" column="pro_date"></result>
+            <association property="productclassification" javaType="Productclassification">
+                <id column="cla_id" property="claId"></id>
+                <result column="cla_name" property="claName"></result>
+            </association>
         </association>
     </resultMap>
 
@@ -38,5 +42,15 @@
     <select id="queryBySepId" resultMap="specificationMap">
         select * from productspecification where spe_id=#{speid}
     </select>
-
+    <!--合同 查询分类是服务类-->
+    <select id="queryByClaState" resultMap="specificationMap">
+        SELECT p.pro_id,spe.spe_id,spe.pro_name,spe.spe_specification,cla.cla_name,cla.cla_id
+        FROM product p
+        LEFT JOIN productspecification spe
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        WHERE p.pro_del_state=1
+        AND cla.cla_id_id=13
+    </select>
 </mapper>

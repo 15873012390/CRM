@@ -1,5 +1,6 @@
 package com.zktr.crmproject.controller;
 
+import com.zktr.crmproject.pojos.Outstockdetails;
 import com.zktr.crmproject.pojos.Stock;
 import com.zktr.crmproject.service.HTStockService;
 import com.zktr.crmproject.vo.Pager;
@@ -7,6 +8,9 @@ import com.zktr.crmproject.vo.Result;
 import com.zktr.crmproject.vo.StockAdvancedSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 public class HTStockController {
@@ -39,4 +43,11 @@ public class HTStockController {
     public Integer queryQuantityBySpeId(Integer speId){
         return stockService.queryQuantityBySpeId(speId);
     }
+
+    @PostMapping("/queryIsBigStock")
+    public String queryIsBigStock(@RequestBody List<Outstockdetails> outstockdetails){
+        return stockService.queryIsBigStock(outstockdetails);
+    }
+
+
 }

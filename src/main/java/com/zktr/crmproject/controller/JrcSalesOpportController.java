@@ -10,6 +10,7 @@ import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import com.zktr.crmproject.vo.SalesOpportAdvancedSearch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,12 @@ import java.util.Map;
 public class JrcSalesOpportController {
     @Autowired
     private JrcSalesopportService jrcSalesopportService;
+
+    @GetMapping("/query_all")
+    @ResponseBody
+    public List<Salesopport> queryAll(){
+        return jrcSalesopportService.queryAll();
+    }
 
     @GetMapping("/query_salesopport_by_page")
     @ResponseBody
@@ -99,10 +106,23 @@ public class JrcSalesOpportController {
         return jrcSalesopportService.querySalesOpportByCustomer(customer);
     }
 
+    @GetMapping("/query_salesopport_by_cusid")
+    @ResponseBody
+    public List<Salesopport> querySalesOpportByCusId(Integer cusId){
+        return jrcSalesopportService.querySalesOpportByCusid(cusId);
+    }
+
     @GetMapping("/query_salesopport_by_forecast")
     @ResponseBody
-    public List<Salesopport> querySalesOpportByForecast(Date timeStart,Date timeEnd,String possibity,Integer status){
-        return jrcSalesopportService.querySalesOpportByForecast(timeStart,timeEnd,possibity,status);
+    public Map querySalesOpportByForecast(@DateTimeFormat(pattern = "yyyy-MM-dd")Date timeStart, @DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd, String possibity, Integer status, Integer curpage, Integer pagesize){
+        return jrcSalesopportService.querySalesOpportByForecast(timeStart,timeEnd,possibity,status,curpage,pagesize);
     }
+
+    @GetMapping("/query_finalll_sales_opport_by_forecast")
+    @ResponseBody
+    public Map queryFinalllSalesOpportByForecast(@DateTimeFormat(pattern = "yyyy-MM-dd")Date timeStart,@DateTimeFormat(pattern = "yyyy-MM-dd")Date timeEnd,String possibity,Integer uId,Integer curpage,Integer pagesize){
+        return jrcSalesopportService.queryFinalllSalesOpportByForecast(timeStart,timeEnd,uId,possibity,curpage,pagesize);
+    }
+
 
 }

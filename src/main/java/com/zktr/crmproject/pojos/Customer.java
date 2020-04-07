@@ -50,51 +50,57 @@ public class Customer {
     private String cusGrading;
     @Excel(name="备注")
     private String cusRemarks;
-    private List<Duepay> duepay;
-    private List<Paid> paid;
+    //出库单表
     private List<Outstock> outstock;
-    private List<Repair> repair;
+    //客户关怀表
     @JsonIgnoreProperties("customer")
     private List<Customercare> customercare;
     @ExcelEntity(id = "syz")
     private User user;
+    //客户转移表
     private List<Customertransfer> customertransfer;
-    @JsonIgnoreProperties("customer")
-    private List<Customerupdatelog> customerupdatelog;
+    //联系人表
     @JsonIgnoreProperties("customer")
     private List<Contacts> contacts;
-    @JsonIgnoreProperties("customer")
-    private List<Customerchurnwarning> customerchurnwarning;
+//    @JsonIgnoreProperties("customer")
+//    private List<Customerchurnwarning> customerchurnwarning;
+    //销售机会表
     @JsonIgnoreProperties("customer")
     private List<Salesopport> salesopport;
+    //待办任务表
     @JsonIgnoreProperties("customer")
     private List<Backlogtask> backlogtask;
-    @JsonIgnoreProperties("customer")
-    private List<Actionhistory> actionhistory;
-    @JsonIgnoreProperties("customer")
-    private List<Evectiondetails> evectiondetails;
+    //报价表
     @JsonIgnoreProperties("customer")
     private List<Quote> quote;
+    //订单表
     @JsonIgnoreProperties("customer")
     private List<Orders> orders;
+    //订单明细表
     @JsonIgnoreProperties("customer")
     private List<Orderdetail> orderdetail;
+    //合同表
     @JsonIgnoreProperties("customer")
     private List<Contract> contract;
+    //发货表
     @JsonIgnoreProperties("customer")
     private List<Sendout> sendout;
-    @JsonIgnoreProperties("customer")
-    private List<Address> address;
+    //退货表
     @JsonIgnoreProperties("customer")
     private List<Returnedgoods> returnedgoods;
+    //回款表
     @JsonIgnoreProperties("customer")
     private List<Returnedmoney> returnedmoney;
+    //计划回款表
     @JsonIgnoreProperties("customer")
     private List<Returnedmoneyplan> returnedmoneyplan;
+    //开发票表
     @JsonIgnoreProperties("customer")
     private List<Invoice> invoice;
+    //客户服务表
     @JsonIgnoreProperties("customer")
-    private List<Customerservice> customerservices;
+    private List<Customerservice> customerservice;
+    //投诉管理表
     private List<Complaint> complaint;
 
     @Id
@@ -291,24 +297,6 @@ public class Customer {
 
 
     @OneToMany(mappedBy = "customer")
-    public List<Duepay> getDuepay() {
-        return duepay;
-    }
-
-    public void setDuepay(List<Duepay> duepay) {
-        this.duepay = duepay;
-    }
-
-    @OneToMany(mappedBy = "customer")
-    public List<Paid> getPaid() {
-        return paid;
-    }
-
-    public void setPaid(List<Paid> paid) {
-        this.paid = paid;
-    }
-
-    @OneToMany(mappedBy = "customer")
     public List<Outstock> getOutstock() {
         return outstock;
     }
@@ -317,14 +305,6 @@ public class Customer {
         this.outstock = outstock;
     }
 
-    @OneToMany(mappedBy = "customer")
-    public List<Repair> getRepair() {
-        return repair;
-    }
-
-    public void setRepair(List<Repair> repair) {
-        this.repair = repair;
-    }
 
     @OneToMany(mappedBy = "customer")
     public List<Customercare> getCustomercare() {
@@ -355,15 +335,6 @@ public class Customer {
     }
 
     @OneToMany(mappedBy = "customer")
-    public List<Customerupdatelog> getCustomerupdatelog() {
-        return customerupdatelog;
-    }
-
-    public void setCustomerupdatelog(List<Customerupdatelog> customerupdatelog) {
-        this.customerupdatelog = customerupdatelog;
-    }
-
-    @OneToMany(mappedBy = "customer")
     public List<Contacts> getContacts() {
         return contacts;
     }
@@ -372,14 +343,14 @@ public class Customer {
         this.contacts = contacts;
     }
 
-    @OneToMany(mappedBy = "customer")
-    public List<Customerchurnwarning> getCustomerchurnwarning() {
-        return customerchurnwarning;
-    }
-
-    public void setCustomerchurnwarning(List<Customerchurnwarning> customerchurnwarning) {
-        this.customerchurnwarning = customerchurnwarning;
-    }
+//    @OneToMany(mappedBy = "customer")
+//    public List<Customerchurnwarning> getCustomerchurnwarning() {
+//        return customerchurnwarning;
+//    }
+//
+//    public void setCustomerchurnwarning(List<Customerchurnwarning> customerchurnwarning) {
+//        this.customerchurnwarning = customerchurnwarning;
+//    }
 
     @OneToMany(mappedBy = "customer")
     public List<Salesopport> getSalesopport() {
@@ -399,23 +370,6 @@ public class Customer {
         this.backlogtask = backlogtask;
     }
 
-    @OneToMany(mappedBy = "customer")
-    public List<Actionhistory> getActionhistory() {
-        return actionhistory;
-    }
-
-    public void setActionhistory(List<Actionhistory> actionhistory) {
-        this.actionhistory = actionhistory;
-    }
-
-    @OneToMany(mappedBy = "customer")
-    public List<Evectiondetails> getEvectiondetails() {
-        return evectiondetails;
-    }
-
-    public void setEvectiondetails(List<Evectiondetails> evectiondetails) {
-        this.evectiondetails = evectiondetails;
-    }
 
     @OneToMany(mappedBy = "customer")
     public List<Quote> getQuote() {
@@ -462,14 +416,6 @@ public class Customer {
         this.sendout = sendout;
     }
 
-    @OneToMany(mappedBy = "customer")
-    public List<Address> getAddress() {
-        return address;
-    }
-
-    public void setAddress(List<Address> address) {
-        this.address = address;
-    }
 
     @OneToMany(mappedBy = "customer")
     public List<Returnedgoods> getReturnedgoods() {
@@ -517,11 +463,11 @@ public class Customer {
     }
 
     @OneToMany(mappedBy = "customer")
-    public List<Customerservice> getCustomerservices() {
-        return customerservices;
+    public List<Customerservice> getCustomerservice() {
+        return customerservice;
     }
 
-    public void setCustomerservices(List<Customerservice> customerservices) {
-        this.customerservices = customerservices;
+    public void setCustomerservice(List<Customerservice> customerservices) {
+        this.customerservice = customerservices;
     }
 }

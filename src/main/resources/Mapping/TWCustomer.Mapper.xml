@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zktr.crmproject.dao.mybatis.ICustomerMapperDao">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.TWCustomerMapperDao">
     <resultMap id="customerMap" type="Customer">
         <id property="cusId" column="cus_id"></id>
         <result property="cusName" column="cus_name"></result>
@@ -285,4 +285,143 @@
         WHERE c.cus_id=#{cusId}
         order by c.cus_id desc
     </select>
+
+    <resultMap id="customerMap3" type="Customer">
+        <id property="cusId" column="cus_id"></id>
+        <result property="cusName" column="cus_name"></result>
+<!--        联系人-->
+        <collection property="contacts" ofType="com.zktr.crmproject.pojos.Contacts">
+            <id column="con_id" property="conId"></id>
+            <result column="con_name" property="conName"/>
+            <result column="con_time" property="conTime"/>
+        </collection>
+<!--        出库单表-->
+        <collection property="outstock" ofType="com.zktr.crmproject.pojos.Outstock">
+            <id column="out_id" property="outId"></id>
+            <result column="title" property="title"/>
+            <result column="fill_time" property="fillTime"/>
+        </collection>
+<!--        客户关怀-->
+        <collection property="customercare" ofType="com.zktr.crmproject.pojos.Customercare">
+            <id column="cc_id" property="ccId"></id>
+            <result column="title" property="title"/>
+            <result column="cc_date" property="ccDate"/>
+        </collection>
+<!--        销售机会表-->
+        <collection property="salesopport" ofType="com.zktr.crmproject.pojos.Salesopport">
+            <id column="so_id" property="soId"></id>
+            <result column="so_theme" property="soTheme"/>
+            <result column="dis_time" property="disTime"/>
+        </collection>
+<!--        待办任务表-->
+        <collection property="backlogtask" ofType="com.zktr.crmproject.pojos.Backlogtask">
+            <id column="blt_id" property="bltId"></id>
+            <result column="blt_description" property="bltDescription"/>
+            <result column="creation_time" property="creationTime"/>
+        </collection>
+<!--        订单表-->
+        <collection property="orders" ofType="com.zktr.crmproject.pojos.Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"/>
+            <result column="ord_time" property="ordTime"/>
+        </collection>
+<!--        合同表-->
+        <collection property="contract" ofType="com.zktr.crmproject.pojos.Contract">
+            <id column="ctr_id" property="ctrId"></id>
+            <result column="con_theme" property="conTheme"/>
+            <result column="con_signing_date" property="conSigningDate"/>
+        </collection>
+<!--        客户服务表-->
+        <collection property="customerservice" ofType="com.zktr.crmproject.pojos.Customerservice">
+        <id column="cs_id" property="csId"></id>
+        <result column="title" property="title"/>
+        <result column="start_time" property="startTime"/>
+        </collection>
+
+    </resultMap>
+    <select id="findCustomerDetailsById1" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    b.con_name,b.con_time
+            FROM customer a
+            LEFT JOIN contacts b ON a.cus_id=b.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by b.con_time desc
+    </select>
+    <select id="findCustomerDetailsById2" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    c.title,c.fill_time
+            FROM customer a
+            LEFT JOIN outstock c ON a.cus_id=c.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by c.fill_time desc
+    </select>
+    <select id="findCustomerDetailsById3" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    d.title,d.cc_date
+            FROM customer a
+            LEFT JOIN customercare d ON a.cus_id=d.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by d.cc_date desc
+    </select>
+    <select id="findCustomerDetailsById4" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    e.so_theme,e.dis_time
+            FROM customer a
+            LEFT JOIN salesopport e ON a.cus_id=e.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by e.dis_time desc
+    </select>
+    <select id="findCustomerDetailsById5" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    f.blt_description,f.creation_time
+            FROM customer a
+            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by f.creation_time desc
+    </select>
+    <select id="findCustomerDetailsById6" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    g.ord_theme,g.ord_time
+            FROM customer a
+            LEFT JOIN orders g ON a.cus_id=g.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by g.ord_time desc
+    </select>
+    <select id="findCustomerDetailsById7" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    h.con_theme,h.con_signing_date
+            FROM customer a
+            LEFT JOIN contract h ON a.cus_id=h.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by h.con_signing_date desc
+    </select>
+    <select id="findCustomerDetailsById8" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    i.title,i.start_time
+            FROM customer a
+            LEFT JOIN customerservice i ON a.cus_id=i.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by i.start_time desc
+    </select>
+<!--    <select id="findCustomerDetailsById" resultMap="customerMap3">-->
+<!--            SELECT  a.cus_id,a.cus_name,-->
+<!--                    b.con_name,b.con_time,-->
+<!--                    c.title,c.fill_time,-->
+<!--                    d.title,d.cc_date,-->
+<!--                    e.so_theme,e.dis_time,-->
+<!--                    f.blt_description,f.creation_time,-->
+<!--                    g.ord_theme,g.ord_time,-->
+<!--                    h.con_theme,h.con_signing_date,-->
+<!--                    i.title,i.start_time-->
+<!--            FROM customer a-->
+<!--            LEFT JOIN contacts b ON a.cus_id=b.cus_id-->
+<!--            LEFT JOIN outstock c ON a.cus_id=c.cus_id-->
+<!--            LEFT JOIN customercare d ON a.cus_id=d.cus_id-->
+<!--            LEFT JOIN salesopport e ON a.cus_id=e.cus_id-->
+<!--            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id-->
+<!--            LEFT JOIN orders g ON a.cus_id=g.cus_id-->
+<!--            LEFT JOIN contract h ON a.cus_id=h.cus_id-->
+<!--            LEFT JOIN customerservice i ON a.cus_id=i.cus_id-->
+<!--            WHERE a.cus_id=#{cusId}-->
+<!--    </select>-->
 </mapper>

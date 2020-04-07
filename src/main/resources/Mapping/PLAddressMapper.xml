@@ -29,9 +29,9 @@
     <select id="queryAllAdress" resultMap="addressMap">
         select add_id,add_name from address group by add_id desc
     </select>
-    <insert id="insertAddress" parameterType="com.zktr.crmproject.vo.PLaddressVo" >
+    <insert id="insertAddress"  useGeneratedKeys="true" keyProperty="addId">
         insert into address(cus_id,add_name,add_phone,add_address,add_type,add_postcode,add_province,add_city,add_district)
-               value (#{cusId},#{addName},#{addPhone},#{addAddress},#{addType},#{addPostcode},#{addProvince},#{addCity},#{addDistrict})
+               value (#{customer.cusId},#{addName},#{addPhone},#{addAddress},#{addType},#{addPostcode},#{addProvince},#{addCity},#{addDistrict})
     </insert>
 
     <update id="updateAddress" parameterType="com.zktr.crmproject.vo.PLaddressVo">

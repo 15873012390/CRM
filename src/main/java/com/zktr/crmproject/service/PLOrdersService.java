@@ -8,16 +8,14 @@ import com.zktr.crmproject.dao.mybatis.*;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.utils.UUIDUtils;
 import com.zktr.crmproject.vo.*;
-import jdk.nashorn.internal.ir.LiteralNode;
+import org.apache.poi.util.Internal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -31,13 +29,17 @@ public class PLOrdersService {
     @Autowired
     private JrcQuoteMDao quomdao;
     @Autowired
-    private ICustomerMapperDao customerMapperDao;
+    private TWCustomerMapperDao customerMapperDao;
     @Autowired
     private PLAddressMDao addressMDao;
     @Autowired
     private PLAddressJDao addressJDao;
     @Autowired
     private JrcUserMDao userMDao;
+    @Autowired
+    private PLOdersDetailMDao orderDetailMDao;
+    @Autowired
+    private JrcQuoteDetailsMDao quoteDetailsMDao;
 
     /**
      * 饼状图表 执行状态
@@ -92,7 +94,7 @@ public class PLOrdersService {
      * @param pagesie
      * @return
      */
-    public Pager<Orders> queryAllOrders(int curpage,int pagesie){
+    public Pager<Orders> queryAllOrders(int curpage, int pagesie){
         PageHelper.startPage(curpage,pagesie);
         List<Orders> ordersList=omdao.queryAllOrders();
         PageInfo<Orders> page=new PageInfo<>(ordersList);
@@ -120,6 +122,18 @@ public class PLOrdersService {
      * @return
      */
     public List<Quote> queryAllQuote(){
+        int quoid=0;
+        List<Orders> ordersList=omdao.findAll();
+        List<Quote> quoteList=quomdao.PLqueryAllQuote();
+        //在订单中 如果报价已经存在 则不显示该报价
+        /*for(int i=0;i<ordersList.size();i++){
+            for (int j=0;j<quoteList.size();j++){
+              if(quoteList.get(j).getQuoId().eq){
+
+              }
+            }
+        }*/
+
         return quomdao.PLqueryAllQuote();
     }
 
@@ -146,28 +160,27 @@ public class PLOrdersService {
     public String getId(){
         String id=String.valueOf(omdao.findMaxOrdid());
         try {
-            String s=id.substring(id.length()-4);//截取最大id的后4位
-            String equipmentNo= UUIDUtils.getNewNo("ORDER",s);
+            //String s=id.substring(id.length()-4);//截取最大id的后4位
+            String equipmentNo= UUIDUtils.getNewNo("ORDER",id);
             System.out.println(equipmentNo);
             return equipmentNo;
         }catch (Exception e){
             return "ORDER00001"; //若没有id则返回这个
         }
-
     }
 
     /**
      * mybatis 新增地址
-     * @param pLaddressVo
+     * @param address
      */
-    public void saveAddress(PLaddressVo pLaddressVo){
-
-        if(pLaddressVo.getAddId()==0){
-            addressMDao.insertAddress(pLaddressVo);
+    public Integer saveAddress(Address address) {
+        if(address.getAddId()==0){
+            addressMDao.insertAddress(address);
+            return address.getAddId();
         }else {
-            addressMDao.updateAddress(pLaddressVo);
+            addressMDao.updateAddress(address);
+            return 0;
         }
-
     }
 
     /**
@@ -184,13 +197,12 @@ public class PLOrdersService {
      * @param plOrdersVo
      */
     public void insertOrders(PLOrdersVo plOrdersVo){
-
         List<Address> list=addressMDao.queryAllAdress();
         int ordidif=plOrdersVo.getOrdId();
         if(ordidif==0){
            PLOrdersVo orders=new PLOrdersVo();
            orders.setOrdDelState(plOrdersVo.getOrdDelState());//设置删除状态为1 未删除
-           orders.setAddId(list.get(0).getAddId()); //
+           orders.setAddId(plOrdersVo.getAddId()); //
            orders.setCusId(plOrdersVo.getCusId());
            orders.setuId(plOrdersVo.getuId());
            orders.setQuoId(plOrdersVo.getQuoId());
@@ -208,8 +220,29 @@ public class PLOrdersService {
            orders.setOutStatus("未出库");
            orders.setOrdSendOutState("未发货");
            orders.setOrdRemark(plOrdersVo.getOrdRemark());
-
             omdao.insertOrders(orders);
+          //如果是获取报价的产品 就把报价的产品详情都添加进订单详情
+          if(plOrdersVo.getQuoId()!=0) {
+              int orderid=omdao.findMaxOrdid();
+              //把报价详情中的产品查询出来
+              List<Quotedetails> quotedetails=quoteDetailsMDao.queryByQuoId(plOrdersVo.getQuoId());
+              for(Quotedetails q:quotedetails){
+                  PLOrdersDetailInVo ordersDetailInVo=new PLOrdersDetailInVo();
+                  ordersDetailInVo.setOrdId(orderid);
+                  ordersDetailInVo.setCusId(plOrdersVo.getCusId());
+                  ordersDetailInVo.setuId(plOrdersVo.getuId());
+                  ordersDetailInVo.setSpeId(q.getProductspecification().getSpeId());
+                  ordersDetailInVo.setDetNumber(q.getQuantity());
+                  ordersDetailInVo.setDetTime(new Timestamp(System.currentTimeMillis()));
+                  ordersDetailInVo.setDetRequire("报价产品");
+                  ordersDetailInVo.setDetCondition("报价");
+                  ordersDetailInVo.setDetMoney(q.getMoney());
+                  omdao.insertOrderdetailIn(ordersDetailInVo);
+              }
+              //选择后把报价的Id修改成3表示已经转成订单了
+              quomdao.PLupdateByQutId(plOrdersVo.getQuoId());
+          }
+
 
         }else {
             omdao.updateOrders(plOrdersVo);
@@ -226,12 +259,86 @@ public class PLOrdersService {
     }
 
     /**
-     * 修改作为删除
+     * mybatis 修改作为删除
      * @param ordid
      */
     public void delOrdersById(Integer ordid){
         omdao.delOrdersById(ordid);
     }
 
+    /**
+     * 批量删除
+     * @param ordids
+     */
+    public void BatchOrdids(Integer[] ordids){
+        omdao.BatchOrdids(ordids);
+    }
 
+    /**
+     * 条件模糊查询
+     * @param select
+     * @param value
+     * @param input1
+     * @return
+     */
+    public Pager<Orders> queryByLikeQuery(int curpage, int pagesize, String select, String value, String input1){
+        PageHelper.startPage(curpage,pagesize);
+        String input="%"+input1+"%";
+        List<Orders> list=omdao.queryByLikeQuery(select,input,value);
+        PageInfo<Orders> page=new PageInfo<>(list);
+        return new Pager<>(page.getTotal(),page.getList());
+    }
+
+    /**
+     * 高级查询
+     * @param plOdersAdvancedSearch
+     * @return
+     */
+    public Pager<Orders> OrdersAdvancedSearch(PLOdersAdvancedSearch plOdersAdvancedSearch){
+        String ordTheme="%"+plOdersAdvancedSearch.getOrdTheme().trim()+"%";
+        String ordNumber="%"+plOdersAdvancedSearch.getOrdNumber().trim()+"%";
+        String uIdSingle="%"+plOdersAdvancedSearch.getuIdSingle().trim()+"%";
+        String addCity="%"+plOdersAdvancedSearch.getAddCity().trim()+"%";
+        plOdersAdvancedSearch.setOrdTheme(ordTheme);
+        plOdersAdvancedSearch.setOrdNumber(ordNumber);
+        plOdersAdvancedSearch.setuIdSingle(uIdSingle);
+        plOdersAdvancedSearch.setAddCity(addCity);
+
+        PageHelper.startPage(plOdersAdvancedSearch.getCurpage(),plOdersAdvancedSearch.getPagesize());
+        List<Orders> list=omdao.OrdersAdvancedSearch(plOdersAdvancedSearch);
+        PageInfo<Orders> page=new PageInfo<>(list);
+        return new Pager<Orders>(page.getTotal(),page.getList());
+    }
+
+    /**
+     * 批量添加订单详情
+     * @param pLordersDetailVo
+     */
+    public void addAndEditOrderDdetail(PLordersDetailVo pLordersDetailVo){
+        Orderdetail dea=new Orderdetail();
+        for(Orderdetail detail:pLordersDetailVo.getList()){
+            if(detail.getDetId()==0){
+                omdao.insertOrderdetail(detail);
+            }else {
+                omdao.updateOrderdetail(detail);
+            }
+        }
+        //删除
+        for (Integer detid:pLordersDetailVo.getDel()){
+            if(pLordersDetailVo.getDel().length>0){
+                omdao.deleteBydetId(detid);
+            }else {
+                System.out.println("传入的长度为0");
+            }
+        }
+    }
+
+    /**
+     * 根据订单Id查询订单详情
+     * @param ordid
+     * @return
+     */
+    public List<Orderdetail> queryOrderdetailByOrdid(Integer ordid){
+        return orderDetailMDao.queryOrderdetailByOrdid(ordid);
+    }
 }

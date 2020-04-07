@@ -169,6 +169,24 @@ public class HTCustomerServiceService {
         return iCustomerDao.queryByLike(value);
     }
 
+    /**
+     * 根据分布查询
+     * @param value
+     * @return
+     */
+    public List queryQueryDistribution(String value){
+        return iCustomerServiceDao.queryQueryDistribution(value);
+    }
+
+    /**
+     * 按月统计（条形图)
+     * @param value
+     * @return
+     */
+    public List queryQueryMonth(String value){
+        return iCustomerServiceDao.queryQueryMonth(value);
+    }
+
 
 
 }

@@ -1,6 +1,8 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,8 +14,14 @@ public class Contract {
     private String conClassify;
     private String conPayment;
     private BigDecimal conSendOutMoney;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Timestamp conStartTime;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Timestamp conEndTime;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Timestamp conSigningDate;
     private String conMoneyWay;
     private Integer conDelState;
@@ -22,6 +30,48 @@ public class Contract {
     private Customer customer;
     private Quote quote;
     private Productspecification productspecification;
+    private String conNumber; //合同编号
+    private String ordPurchaseWay; //购买习惯
+    private String ordExecutingState; //执行状态
+    private Integer conQdid;//标识报价详情id
+    @Basic
+    @Column(name = "con_qdid")
+    public Integer getConQdid() {
+        return conQdid;
+    }
+
+    public void setConQdid(Integer conQdid) {
+        this.conQdid = conQdid;
+    }
+
+    @Basic
+    @Column(name = "con_number")
+    public String getConNumber() {
+        return conNumber;
+    }
+
+    public void setConNumber(String conNumber) {
+        this.conNumber = conNumber;
+    }
+
+    @Basic
+    @Column(name = "ord_purchase_way")
+    public String getOrdPurchaseWay() {
+        return ordPurchaseWay;
+    }
+
+    public void setOrdPurchaseWay(String ordPurchaseWay) {
+        this.ordPurchaseWay = ordPurchaseWay;
+    }
+    @Basic
+    @Column(name = "ord_executing_state")
+    public String getOrdExecutingState() {
+        return ordExecutingState;
+    }
+
+    public void setOrdExecutingState(String ordExecutingState) {
+        this.ordExecutingState = ordExecutingState;
+    }
 
     @Id
     @Column(name = "ctr_id")
@@ -30,9 +80,7 @@ public class Contract {
         return ctrId;
     }
 
-    public void setCtrId(Integer ctrId) {
-        this.ctrId = ctrId;
-    }
+
 
     public void setCtrId(int ctrId) {
         this.ctrId = ctrId;

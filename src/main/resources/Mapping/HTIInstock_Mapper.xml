@@ -192,9 +192,6 @@
             and ins.pco_id = #{pcoId}
         </if>
         <if test="proId!=null and proId!=''">
-            and ins.pco_id = #{pcoId}
-        </if>
-        <if test="proId!=null and proId!=''">
             and ppf.pro_id = #{proId}
         </if>
         order by ins.ins_id desc

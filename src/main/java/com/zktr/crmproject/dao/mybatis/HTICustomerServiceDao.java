@@ -20,4 +20,8 @@ public interface HTICustomerServiceDao {
     public List<Customerservice> queryLikeCustomerService(String value,String input,String select);
 
     public List<CustomerServiceAdvancedSearch> queryConditionByPage(CustomerServiceAdvancedSearch csa);
+
+    public List queryQueryDistribution(String selectValue);
+
+    public List queryQueryMonth(String selectValue2);
 }

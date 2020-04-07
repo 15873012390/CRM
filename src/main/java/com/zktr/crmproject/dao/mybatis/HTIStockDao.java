@@ -2,6 +2,7 @@ package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.Purchaseplan;
 import com.zktr.crmproject.pojos.Stock;
+import com.zktr.crmproject.vo.PLCountPie;
 import com.zktr.crmproject.vo.StockAdvancedSearch;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,4 +22,6 @@ public interface HTIStockDao {
     public void updatestockQuantity(Integer stockQuantity,Integer speId);
 
     public Stock queryQuantityBySpeId(Integer speId);
+
+    public List<PLCountPie> PLQueryByStock();
 }

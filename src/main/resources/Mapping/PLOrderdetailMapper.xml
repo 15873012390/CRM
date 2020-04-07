@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLOdersDetailMDao">
+
+    <resultMap id="orderDetailMap" type="Orderdetail">
+        <id column="det_id" property="detId"></id>
+        <result column="det_number"  property="detNumber"></result>
+        <result column="det_time" property="detTime"></result>
+        <result column="det_require" property="detRequire" ></result>
+        <result column="det_condition" property="detCondition"></result>
+        <result column="det_remark" property="detRemark"></result>
+        <result column="det_money" property="detMoney"></result>
+        <!--规格-->
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit" ></result>
+            <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            <association property="product" javaType="Product">
+                <id property="proId" column="pro_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="proMode" column="pro_mode"></result>
+                <result property="proState" column="pro_state"></result>
+                <result property="proPrice" column="pro_price"></result>
+                <result property="proCostprice" column="pro_costprice"></result>
+            </association>
+        </association>
+        <!--员工-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id property="cusId" column="cus_id"></id>
+            <result property="cusName" column="cus_name"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_number"  property="ordNumber"></result>
+            <result column="ord_theme" property="ordTheme"></result>
+            <result column="ord_classify" property="ordClassify" ></result>
+            <result column="ord_payment" property="ordPayment"></result>
+            <result column="ord_total_amount" property="ordTotalAmount"></result>
+            <result column="ord_send_out_money" property="ordSendOutMoney"></result>
+            <result column="ord_margin" property="ordMargin"></result>
+            <result column="ord_time" property="ordTime"></result>
+            <result column="ord_executing_state" property="ordExecutingState"></result>
+            <result column="ord_purchase_way" property="ordPurchaseWay"></result>
+            <result column="ord_habit" property="ordHabit"></result>
+            <result column="ord_send_out_state" property="ordSendOutState"></result>
+            <result column="out_status" property="outStatus"></result>
+            <result column="ord_remark" property="ordRemark"></result>
+            <result column="ord_del_state" property="ordDelState"></result>
+        </association>
+    </resultMap>
+
+    <select id="queryOrderdetailByOrdid" resultMap="orderDetailMap">
+        select * from  orders o
+        left join orderdetail ord  on o.ord_id = ord.ord_id
+        left join productspecification s on s.spe_id=ord.spe_id
+        left join customer c on c.cus_id=ord.cus_id
+        left join product p on p.pro_id=s.pro_id
+        left join user u on o.u_id = u.u_id where ord.ord_id = #{orders.ordId}
+    </select>
+</mapper>

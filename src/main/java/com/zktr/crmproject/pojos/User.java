@@ -68,8 +68,6 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Leaved> leaved;
     @JsonIgnoreProperties("user")
-    private List<Log> log;
-    @JsonIgnoreProperties("user")
     private List<Orders> orders;
     @JsonIgnoreProperties("user")
     private List<Orderdetail> orderdetail;
@@ -343,15 +341,6 @@ public class User {
 
     public void setLeaved(List<Leaved> leaved) {
         this.leaved = leaved;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public List<Log> getLog() {
-        return log;
-    }
-
-    public void setLog(List<Log> log) {
-        this.log = log;
     }
 
     @OneToMany(mappedBy = "user")

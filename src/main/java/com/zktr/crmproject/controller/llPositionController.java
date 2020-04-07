@@ -4,6 +4,7 @@ import com.zktr.crmproject.pojos.Position;
 import com.zktr.crmproject.pojos.PowerManage;
 import com.zktr.crmproject.service.llAuthorityService;
 import com.zktr.crmproject.service.llPositionService;
+import com.zktr.crmproject.vo.MyLog;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import com.zktr.crmproject.vo.UserAndPositionParam;
@@ -22,16 +23,19 @@ public class llPositionController {
     @Autowired
     private llAuthorityService llAuthorityService;
     //获取所有职业信息
+//    @MyLog(value = "分页获取职位信息")
     @GetMapping("/findAllPosition")
     public Pager<Position> findAllPosition(Integer curpage,Integer pagesize){
         return llPositionService.findAllPositons(curpage,pagesize);
     }
     //获取所有职位信息
+//    @MyLog(value = "获取职位信息")
     @GetMapping("/qeryAllPosition")
     public List<Position> qeryAllPosition(){
         return llPositionService.qeryAllPosition();
     }
     //新增职业
+    @MyLog(value = "新增职业")
     @PostMapping("/addPosition")
     public Result addPosition(@RequestBody Position p){
         if(p.getPostId()>0){
@@ -42,16 +46,19 @@ public class llPositionController {
         return Result.SUCCESS;
     }
     //获得所有权限
+//    @MyLog(value = "获得所有权限")
     @GetMapping("/findPowerTree")
     public List<PowerManage> findAllPower(){
         return llAuthorityService.findAllPower();
     }
     //获得当前职位所有权限
+//    @MyLog(value = "获得职业所有权限")
     @GetMapping("/positionPower")
     public Integer[] positionPower(Integer postId){
         return llAuthorityService.positionPower(postId);
     }
     //给职位添加修改权限
+    @MyLog(value = "修改职位权限")
     @PostMapping("/addUpdateRole")
     public Result addUpdateRole(@RequestBody UserAndPositionParam u){
         //这里uid代表职位id，postid代表权限数组

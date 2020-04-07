@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class Returnedmoneyplan {
     private String rmpRmp;
     private String rmpBilling;
     private Integer rmpIssue;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp rmpDate;
     private String rmpRemark;
     @JsonIgnoreProperties("returnedmoneyplan")

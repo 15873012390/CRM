@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class Productclassification {
     private String claName;
     private Integer claIdId;
     private String claState;
-    @JsonIgnoreProperties("productclassification")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp claDatetime;
     @JsonIgnoreProperties("productclassification")
     private List<Product> product;

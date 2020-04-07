@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class Quote {
     private String quoTheme;
     private Integer toOrder;
     private String quoPhone;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp quoDate;
     private BigDecimal totalMoney;
     private BigDecimal grossProfit;
@@ -21,16 +23,27 @@ public class Quote {
     private Integer approver;
     private Integer auditStatus;
     private Integer delStatus;
+    private Integer createdId;
+    private String quotationNo;
+    private BigDecimal amountBefore;
+    @JsonIgnoreProperties("quote")
     private Salesopport salesopport;
+    @JsonIgnoreProperties("quote")
     private Customer customer;
+    @JsonIgnoreProperties("quote")
     private User user;
+    @JsonIgnoreProperties("quote")
     private Audit audit;
+    @JsonIgnoreProperties("quote")
     private List<Quotedetails> quotedetails;
+    @JsonIgnoreProperties("quote")
     private List<Orders> orders;
+    @JsonIgnoreProperties("quote")
     private List<Contract> Contract;
 
     @Id
     @Column(name = "quo_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getQuoId() {
         return quoId;
     }
@@ -151,6 +164,36 @@ public class Quote {
 
     public void setDelStatus(Integer delStatus) {
         this.delStatus = delStatus;
+    }
+
+    @Basic
+    @Column(name = "created_id")
+    public Integer getCreatedId() {
+        return createdId;
+    }
+
+    public void setCreatedId(Integer createdId) {
+        this.createdId = createdId;
+    }
+
+    @Basic
+    @Column(name = "quotation_no")
+    public String getQuotationNo() {
+        return quotationNo;
+    }
+
+    public void setQuotationNo(String quotationNo) {
+        this.quotationNo = quotationNo;
+    }
+
+    @Basic
+    @Column(name = "amount_before")
+    public BigDecimal getAmountBefore() {
+        return amountBefore;
+    }
+
+    public void setAmountBefore(BigDecimal amountBefore) {
+        this.amountBefore = amountBefore;
     }
 
     @ManyToOne

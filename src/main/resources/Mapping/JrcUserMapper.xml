@@ -6,6 +6,7 @@
     <resultMap id="userMap" type="User">
         <id property="uId" column="u_id"/>
         <result property="uName" column="u_name"/>
+        <result property="uImg" column="u_img"/>
     </resultMap>
     
     <select id="queryAll" resultMap="userMap">
@@ -19,4 +20,23 @@
     <select id="queryByUserName" resultMap="userMap">
         select u_id,u_name from user where u_name=#{uName}
     </select>
+
+    <select id="queryUserBySalesOpport" resultMap="userMap">
+            select u.u_id,u.u_name,u.u_img
+            from user u left join salesopport s
+            on u.u_id=s.u_id
+            <trim prefix="where" prefixOverrides="and">
+                <if test="timeStart!=null">
+                    and s.signing_time>=#{timeStart}
+                </if>
+                <if test="timeEnd!=null">
+                    and s.signing_time&lt;=#{timeEnd}
+                </if>
+                <if test="possibity!=null and possibity.length>0">
+                    and s.possibility=#{possibity}
+                </if>
+            </trim>
+            group by u.u_id
+    </select>
+
 </mapper>

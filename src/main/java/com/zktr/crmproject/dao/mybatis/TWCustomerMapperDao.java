@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface ICustomerMapperDao {
+public interface TWCustomerMapperDao {
     //查询所有客户
     public List<Customer> queryAllCustomer();
     //根据id排序（正序）
@@ -44,4 +44,21 @@ public interface ICustomerMapperDao {
     public List<CountPie> countCusGradingPie();
     //根据cusId查询客户详情
     public Customer queryCustomerDetailsById(Integer cusId);
+    //根据cusId查询客户详情（右）1
+    public Customer findCustomerDetailsById1(Integer cusId);
+    //根据cusId查询客户详情（右）2
+    public Customer findCustomerDetailsById2(Integer cusId);
+    //根据cusId查询客户详情（右）3
+    public Customer findCustomerDetailsById3(Integer cusId);
+    //根据cusId查询客户详情（右）4
+    public Customer findCustomerDetailsById4(Integer cusId);
+    //根据cusId查询客户详情（右）5
+    public Customer findCustomerDetailsById5(Integer cusId);
+    //根据cusId查询客户详情（右）6
+    public Customer findCustomerDetailsById6(Integer cusId);
+    //根据cusId查询客户详情（右）7
+    public Customer findCustomerDetailsById7(Integer cusId);
+    //根据cusId查询客户详情（右）8
+    public Customer findCustomerDetailsById8(Integer cusId);
+
 }
