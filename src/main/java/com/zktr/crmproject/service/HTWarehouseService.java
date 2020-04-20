@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -110,10 +111,17 @@ public class HTWarehouseService {
      * @return
      */
     public Pager<Warehouse> queryAllWarehouseByPage(Integer curpage, Integer pagesize){
-        PageHelper.startPage(curpage,pagesize);
         List<Warehouse> list = iwarehouseDao.queryAllByPage();
-        PageInfo<Warehouse> pager = new PageInfo<>(list);
-        return new Pager<Warehouse>(pager.getTotal(),pager.getList());
+        List list2 = new ArrayList();
+        for(int i = 0; i < pagesize; i ++){
+            int index = (curpage - 1) * pagesize + i;
+            if(index<list.size()) {
+                if(list.get(index)!=null) {
+                    list2.add(list.get(index));
+                }
+            }
+        }
+        return new Pager<Warehouse>(list.size(),list2);
     }
 
     /**
@@ -179,4 +187,8 @@ public class HTWarehouseService {
             }
         }
     }
+
+
+
+
 }

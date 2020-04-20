@@ -127,6 +127,17 @@ public class TWCustomerController {
     }
 
     /**
+     * 查看是否重名客户
+     * @param cusName
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/count_customer_name")
+    public boolean countCustomerName(String cusName){
+        return TWCustomerService.countCustomerName(cusName);
+    }
+
+    /**
      * 排序（正序）
      * @param curpage
      * @param pagesize
@@ -183,6 +194,18 @@ public class TWCustomerController {
     public CountBar countBar(Integer num){
         return TWCustomerService.countBar(num);
     }
+
+    /**
+     * 加载客户详情（全）
+     * @param cusId
+     * @return
+     */
+    @GetMapping("/find_customer_by_id")
+    @ResponseBody
+    public Customer findCustomerById(Integer cusId){
+        return TWCustomerService.findCustomerDetailsById(cusId);
+    }
+
 
     /**
      * 加载客户（左）
@@ -250,14 +273,17 @@ public class TWCustomerController {
      */
     @ResponseBody
     @RequestMapping("/imp_customer")
-    public Result impCustomer(MultipartFile file){
+    public String[] impCustomer(MultipartFile file){
         List<Customer> list= ExcelUtils.importData(file,1,Customer.class);
+        String[] strings=new String[list.size()];
+
         if (list!=null){
-            TWCustomerService.InsertAllCustomer(list);
-            return Result.SUCCESS;
-        }else {
-            return Result.FAILURE;
+            strings=TWCustomerService.CustomerExcle(list);
+            if (strings==null){
+                TWCustomerService.InsertAllCustomer(list);
+            }
         }
+        return strings;
     }
 
     /**
@@ -298,6 +324,18 @@ public class TWCustomerController {
     @ResponseBody
     public Result deleteCustomer(Integer cusid){
         TWCustomerService.deleteCustomer(cusid);
+        return Result.SUCCESS;
+    }
+
+    /**
+     * 删除客户连带客户转移日志
+     * @param cusid
+     * @return
+     */
+    @DeleteMapping("/delete_customer2")
+    @ResponseBody
+    public Result deleteCustomer2(Integer cusid){
+        TWCustomerService.deleteCustomer2(cusid);
         return Result.SUCCESS;
     }
 }

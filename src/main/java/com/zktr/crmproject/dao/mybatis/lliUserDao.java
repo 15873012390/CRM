@@ -12,4 +12,6 @@ public interface lliUserDao {
     public List<User> findAllUsers();
     public User findByNameAndPass(@Param("uname") String uname, @Param("upass") String upass);
     public List<User> queryAtUser();
+    public int countDeptUser(@Param("did") Integer did);
+    public List<User> findDeptUser(@Param("dId") Integer dId);
 }

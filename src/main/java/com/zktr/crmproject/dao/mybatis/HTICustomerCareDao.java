@@ -17,4 +17,8 @@ public interface HTICustomerCareDao {
     public List<Customercare> queryLikeCustomerCare(String value,String input,String select);
 
     public List<CustomerCareAdvancedSearch> queryConditionByPage(CustomerCareAdvancedSearch cca);
+
+    public void insertCustomerCare(Customercare customercare);
+
+    public void updateCustomserCare(Customercare customercare);
 }

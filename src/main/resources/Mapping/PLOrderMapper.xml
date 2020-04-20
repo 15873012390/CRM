@@ -20,8 +20,9 @@
         <result column="out_status" property="outStatus"></result>
         <result column="ord_remark" property="ordRemark"></result>
         <result column="ord_del_state" property="ordDelState"></result>
+        <result column="rm_or_rmp" property="rmOrOmp"></result>
         <!--客户-->
-        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+        <association property="customer" javaType="Customer">
             <id column="cus_id" property="cusId"></id>
             <result column="cus_name" property="cusName"></result>
         </association>
@@ -47,6 +48,11 @@
             <result property="addName" column="add_name"></result>
             <result property="addProvince" column="add_province"></result>
             <result property="addCity" column="add_city"></result>
+            <result property="addPhone" column="add_phone"></result>
+            <result property="addAddress" column="add_address"></result>
+            <result property="addType" column="add_type"></result>
+            <result property="addPostcode" column="add_postcode"></result>
+            <result property="addDistrict" column="add_district"></result>
         </association>
         <!--订单详情-->
         <collection property="orderdetail" ofType="Orderdetail">
@@ -102,18 +108,15 @@
     <update id="updateOrdersOutStatus" parameterType="Orders">
         update orders set out_status='已出库' where ord_id = #{ordId}
     </update>
-    <!--有详情就修改出库状态进行出库-->
+    <!--有详情就修改出库状态待出库-->
     <update id="updateOutStatus" parameterType="Orders">
-        update orders set out_status='进行出库' where ord_id = #{ordId}
+        update orders set out_status='待出库' where ord_id = #{ordId}
     </update>
     <!--添加订单详情 -->
     <insert id="insertOrderdetail" parameterType="Orderdetail">
         insert into orderdetail values (#{detId},#{orders.ordId},#{productspecification.speId},#{user.uId},#{customer.cusId},#{detNumber},#{detTime},#{detRequire},#{detCondition},#{detRemark},#{detMoney})
     </insert>
-    <!--添加订单详情 根据报价详情-->
-    <insert id="insertOrderdetailIn" parameterType="com.zktr.crmproject.vo.PLOrdersDetailInVo">
-        insert into orderdetail values (#{detId},#{ordId},#{speId},#{uId},#{cusId},#{detNumber},#{detTime},#{detRequire},#{detCondition},#{detRemark},#{detMoney})
-    </insert>
+
     <!--修改订单详情-->
     <update id="updateOrderdetail" parameterType="Orderdetail">
         update orderdetail set det_id=#{detId},ord_id=#{orders.ordId},spe_id=#{productspecification.speId},u_id=#{user.uId},cus_id=#{customer.cusId},det_number=#{detNumber},det_time=#{detTime},det_require=#{detRequire},
@@ -121,19 +124,68 @@
     </update>
     <!--删除订单详情-->
     <delete id="deleteBydetId" parameterType="Orderdetail">
-        delete from orderdetail  where det_id = #{detId}
+        <if test="detId != null">
+            delete from orderdetail  where det_id in
+            <foreach collection="detId" index="index"  item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
     </delete>
+
     <!--饼状图 根据执行状态统计-->
-    <select id="Countpie" resultType="com.zktr.crmproject.vo.PLCountPie">
+    <!--<select id="Countpie" resultType="com.zktr.crmproject.vo.PLCountPie">
     SELECT ord_executing_state name,COUNT(ord_executing_state) value FROM orders WHERE ord_del_state=1 GROUP BY ord_executing_state
+    </select>-->
+    <select id="Countpie" resultType="com.zktr.crmproject.vo.PLCountPie">
+        SELECT
+        <if test="pieValue==1">
+            ord_executing_state
+        </if>
+        <if test="pieValue==2">
+            ord_purchase_way
+        </if>
+        <if test="pieValue==3">
+            out_status
+        </if>
+        as name,count(*) as value FROM orders WHERE ord_del_state=1
+        GROUP BY
+        <if test="pieValue==1">
+            ord_executing_state
+        </if>
+        <if test="pieValue==2">
+            ord_purchase_way
+        </if>
+        <if test="pieValue==3">
+            out_status
+        </if>
     </select>
     <!--柱状图 根据每月统计订单金额-->
     <select id="CountBar" resultType="com.zktr.crmproject.vo.PLCountPie">
-        select date_format(ord_time, '%Y-%m') name, sum(ord_total_amount) value from orders group by date_format(ord_time, '%Y-%m')
+        select
+        <if test="barValue==1">
+            date_format(ord_time, '%Y')
+        </if>
+        <if test="barValue==2">
+            date_format(ord_time, '%Y-%m')
+        </if>
+        <if test="barValue==3">
+            date_format(ord_time, '%Y-%m-%d')
+        </if>
+        as name, sum(ord_total_amount) as value from orders WHERE ord_del_state=1
+        group by
+        <if test="barValue==1">
+            date_format(ord_time, '%Y')
+        </if>
+        <if test="barValue==2">
+            date_format(ord_time, '%Y-%m')
+        </if>
+        <if test="barValue==3">
+            date_format(ord_time, '%Y-%m-%d')
+        </if>
     </select>
     <!--分页查询全部-->
     <select id="queryAllOrders" resultMap="ordersMap">
-        SELECT o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,o.ord_payment,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
+        SELECT o.out_status,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,o.ord_payment,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
         FROM orders o
         LEFT JOIN quote q
         ON o.quo_id=q.quo_id
@@ -145,6 +197,60 @@
         ON a.add_id=o.add_id
         WHERE o.ord_del_state=1 group by ord_id desc
     </select>
+    <!--回款和计划回款 当o.rm_or_rmp为空时 表示并未被计划回款和回款记录-->
+    <select id="OqueryAllOrdersByRM" resultMap="ordersMap">
+        SELECT o.rm_or_rmp,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,o.ord_payment,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
+        FROM orders o
+        LEFT JOIN quote q
+        ON o.quo_id=q.quo_id
+        LEFT JOIN customer c
+        ON o.cus_id=c.cus_id
+        LEFT JOIN `user` u
+        ON o.u_id=u.u_id
+        LEFT JOIN address a
+        ON a.add_id=o.add_id
+        WHERE o.ord_del_state=1 and o.rm_or_rmp is null group by ord_id desc
+    </select>
+    <!--如果是计划回款 则表示被计划回款已记录 选择订单时不显示 根据订单id修改状态-->
+    <update id="updateRmOrRmp1">
+        update orders set rm_or_rmp=1 where ord_id=#{ordId}
+    </update>
+    <!--如果是回款 则表示被款已记录 选择订单时不显示 根据订单id修改状态-->
+    <update id="updateRmOrRmp2">
+        update orders set rm_or_rmp=2 where ord_id=#{ordId}
+    </update>
+    <select id="OqueryByOrdersidByRM" resultMap="ordersMap">
+        SELECT o.rm_or_rmp,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,o.ord_payment,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
+        FROM orders o
+        LEFT JOIN quote q
+        ON o.quo_id=q.quo_id
+        LEFT JOIN customer c
+        ON o.cus_id=c.cus_id
+        LEFT JOIN `user` u
+        ON o.u_id=u.u_id
+        LEFT JOIN address a
+        ON a.add_id=o.add_id
+        WHERE o.ord_del_state=1 and o.ord_id=#{ordid}
+    </select>
+    <!--根据客户id查找订单-->
+    <select id="findOrdersByCusId" resultMap="ordersMap">
+        SELECT o.ord_id,o.ord_theme,o.ord_total_amount
+        FROM orders o LEFT JOIN customer c ON o.cus_id=c.cus_id
+        WHERE o.ord_del_state=1 and c.cus_id=#{cusid}
+    </select>
+    <!--修改总金额 赋值-->
+    <update id="updateTotalMoney">
+        update orders set ord_total_amount=#{ordTotalAmount} where ord_id=#{ordid}
+    </update>
+    <!--根据订单id统计订单详情的金额之和-->
+    <select id="findByOrdersDetailMonery" resultType="java.lang.Integer">
+        SELECT SUM(od.det_money) as amount
+        FROM orders o
+        LEFT JOIN orderdetail od
+        ON o.ord_id=od.ord_id
+        WHERE ord_del_state=1
+        and o.ord_id=#{ordid}
+    </select>
     <!--表格下方的合计金额-->
     <select id="statisticsByMoney" resultType="java.util.Map">
         SELECT SUM(ord_total_amount) as amount ,SUM(ord_send_out_money) as sendmoney FROM orders WHERE ord_del_state=1
@@ -153,18 +259,24 @@
     <select id="findMaxOrdid" resultType="java.lang.Integer">
         SELECT MAX(ord_id) FROM orders
     </select>
-    <insert id="insertOrders" parameterType="com.zktr.crmproject.vo.PLOrdersVo">
-        insert into orders(ord_number,ord_theme,ord_classify,ord_payment,ord_total_amount,ord_send_out_money,ord_margin,ord_time,ord_executing_state,ord_purchase_way,ord_habit,ord_send_out_state,out_status,ord_remark,add_id,quo_id,u_id,cus_id,ord_del_state)
-                value (#{ordNumber},#{ordTheme},#{ordClassify},#{ordPayment},#{ordTotalAmount},#{ordSendOutMoney},#{ordMargin},#{ordTime},#{ordExecutingState},#{ordPurchaseWay},#{ordHabit},#{ordSendOutState},#{outStatus},#{ordRemark},#{addId},#{quoId},#{uId},#{cusId},#{ordDelState})
+    <!--新增-->
+    <insert id="insertOrders" parameterType="Orders">
+        insert into orders
+        values (#{ordId},#{ordNumber},#{customer.cusId},#{user.uId},#{quote.quoId},#{ordTheme},#{ordClassify},#{ordPayment},#{ordTotalAmount},#{ordSendOutMoney},#{ordMargin},#{ordTime},#{ordExecutingState},#{ordPurchaseWay},#{ordHabit},#{ordSendOutState},#{outStatus},#{ordRemark},#{ordDelState},#{address.addId},#{rmOrOmp})
     </insert>
-    <!--订单号、总金额、执行状态、发货状态、出库状态、地址id新建赋值-->
-    <update id="updateOrders" parameterType="com.zktr.crmproject.vo.PLOrdersVo">
-        update orders set ord_theme=#{ordTheme},ord_classify=#{ordClassify},ord_payment=#{ordPayment},ord_send_out_money=#{ordSendOutMoney},ord_margin=#{ordMargin},ord_time=#{ordTime},ord_purchase_way=#{ordPurchaseWay},ord_habit=#{ordHabit},ord_remark=#{ordRemark},quo_id=#{quoId},u_id=#{uId},cus_id=#{cusId}
+    <!--修改-->
+    <update id="updateOrders" parameterType="Orders">
+        update orders set ord_theme=#{ordTheme},ord_classify=#{ordClassify},ord_payment=#{ordPayment},ord_total_amount=#{ordTotalAmount},ord_send_out_money=#{ordSendOutMoney},ord_margin=#{ordMargin},ord_time=#{ordTime},ord_purchase_way=#{ordPurchaseWay},ord_habit=#{ordHabit},ord_send_out_state=#{ordSendOutState},out_status=#{outStatus},ord_remark=#{ordRemark},add_id=#{address.addId},quo_id=#{quote.quoId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where ord_id=#{ordId}
+    </update>
+    <!--发货后把发货金额和发货状态赋值给订单中的发货金额和发货状态-->
+    <update id="updateSendOut" >
+       update orders set ord_send_out_money=#{ordSendOutMoney},ord_send_out_state=#{ordSendOutState}
         where ord_id=#{ordId}
     </update>
     <!--根据id查询-->
     <select id="findByOrdid" resultMap="ordersMap">
-        SELECT o.ord_margin,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province,a.add_name,a.add_phone,a.add_address,a.add_type,a.add_postcode,a.add_city,a.add_district
+        SELECT o.out_status,o.ord_margin,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province,a.add_name,a.add_phone,a.add_address,a.add_type,a.add_postcode,a.add_city,a.add_district
         FROM orders o
         LEFT JOIN quote q
         ON o.quo_id=q.quo_id
@@ -256,7 +368,7 @@
         ON a.add_id=o.add_id
         <trim prefix="where" prefixOverrides="and">
             AND o.ord_del_state=1
-            <if test="statevalue!=null and statevalue.length and statevalue!='全部数据' ">
+            <if test="statevalue!=null and statevalue.length!=0 and statevalue!='全部数据' ">
                 <choose>
                     <when test="statevalue=='执行中' || statevalue=='意外终止' || statevalue=='结束'  ">
                         and o.ord_executing_state=#{statevalue}
@@ -297,7 +409,7 @@
                 </choose>
             </if>
 
-            <if test="ordNumber!=null and ordNumber!='' and ordNumber.length!=0 ">
+            <if test="ordNumber!=null and ordNumber!=''">
                 <choose>
                     <when test="ordNumberSelect !=null and ordNumberSelect!='' and ordNumberSelect.length!=0 and ordNumberSelect=='包含' ">
                         and  Lower(o.ord_number) like lower (#{ordNumber})
@@ -345,7 +457,7 @@
             </if>
 
             <if test="ordSendOutState.size() > 0">
-              and ordSendOutState in
+              and o.ord_send_out_state in
               <foreach collection="ordSendOutState" index="index" item="sostate"
                        open="(" separator="," close=")">
                     #{sostate}
@@ -396,7 +508,12 @@
         </trim>
         group by o.ord_id desc
     </select>
+
     <select id="findAll" resultMap="ordersMap">
         select * from orders
     </select>
+    <!--HT 取消订单-->
+    <update id = "cancelOrders" >
+        update orders set ord_executing_state ="意外终止" where ord_id = #{ordId}
+    </update>
 </mapper>

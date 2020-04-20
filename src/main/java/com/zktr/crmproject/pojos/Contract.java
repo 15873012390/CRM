@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 public class Contract {
@@ -25,6 +26,7 @@ public class Contract {
     private Timestamp conSigningDate;
     private String conMoneyWay;
     private Integer conDelState;
+    private int rmOrRmp; //标识合同是计划回款还是回款
     private String conTheme;
     private User user;
     private Customer customer;
@@ -34,6 +36,28 @@ public class Contract {
     private String ordPurchaseWay; //购买习惯
     private String ordExecutingState; //执行状态
     private Integer conQdid;//标识报价详情id
+    @JsonIgnoreProperties("contract")
+    private List<Returnedmoneyplan> returnedmoneyplan;
+    @JsonIgnoreProperties("contract")
+    private List<Returnedmoney> returnedmonie;
+    @OneToMany(mappedBy = "contract")
+    public List<Returnedmoney> getReturnedmonie() {
+        return returnedmonie;
+    }
+
+    public void setReturnedmonie(List<Returnedmoney> returnedmonie) {
+        this.returnedmonie = returnedmonie;
+    }
+
+    @OneToMany(mappedBy = "contract")
+    public List<Returnedmoneyplan> getReturnedmoneyplan() {
+        return returnedmoneyplan;
+    }
+
+    public void setReturnedmoneyplan(List<Returnedmoneyplan> returnedmoneyplan) {
+        this.returnedmoneyplan = returnedmoneyplan;
+    }
+
     @Basic
     @Column(name = "con_qdid")
     public Integer getConQdid() {
@@ -42,6 +66,15 @@ public class Contract {
 
     public void setConQdid(Integer conQdid) {
         this.conQdid = conQdid;
+    }
+    @Basic
+    @Column(name = "rm_or_rmp")
+    public int getRmOrRmp() {
+        return rmOrRmp;
+    }
+
+    public void setRmOrRmp(int rmOrRmp) {
+        this.rmOrRmp = rmOrRmp;
     }
 
     @Basic

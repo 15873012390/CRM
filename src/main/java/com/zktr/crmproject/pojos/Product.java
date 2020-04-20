@@ -35,6 +35,7 @@ public class Product {
     private List<Productspecification> productspecification;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pro_id")
     public int getProId() {
         return proId;

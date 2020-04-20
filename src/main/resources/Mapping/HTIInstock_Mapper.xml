@@ -41,6 +41,13 @@
             <result column="sex" property="sex"></result>
             <result column="phone" property="phone"></result>
         </association>
+        <association property="warehouseallocation" javaType="Warehouseallocation">
+            <id column="wa_id" property="waId"></id>
+            <result column="title" property="title"></result>
+            <result column="wa_date" property="waDate"></result>
+            <result column="wa_status" property="waStatus"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
         <collection property="instockdetail" ofType="Instockdetail">
             <id column="insd_id" property="insdId"></id>
             <result column="insd_quantity" property="insdQuantity"></result>
@@ -57,6 +64,16 @@
                     <result property="proName" column="pro_name"></result>
                     <result property="proDate" column="pro_date"></result>
                 </association>
+            </association>
+            <association property="instock" javaType="Instock">
+                <id column="ins_id" property="insId"></id>
+                <result column="title" property="title"></result>
+                <result column="fill_time" property="fillTime"></result>
+                <result column="status" property="status"></result>
+                <result column="filler" property="filler"></result>
+                <result column="keeper" property="keeper"></result>
+                <result column="execution_time" property="executionTime"></result>
+                <result column="remarks" property="remarks"></result>
             </association>
         </collection>
     </resultMap>
@@ -101,13 +118,13 @@
         LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
         LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
         LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id
-		LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id order by ins.ins_id desc
+		LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id where wa_id is null or wa_id = 0 order by ins.ins_id desc
     </select>
 
-    <select id="insertInstock" resultMap="instockMap" parameterType="Instock">
+    <insert id="insertInstock" parameterType="Instock" useGeneratedKeys="true" keyProperty="insId">
         insert into instock values(#{insId},#{title},#{warehouse.warehouseId},#{fillTime},#{status},#{filler},#{keeper}
-        ,#{executionTime},#{purchaseorder.pcoId},#{returnedgoods.regId},#{supplier.supplierId},#{remarks})
-    </select>
+        ,#{executionTime},#{purchaseorder.pcoId},#{returnedgoods.regId},#{supplier.supplierId},#{warehouseallocation.waId},#{remarks})
+    </insert>
 
     <select id="queryByInsId" resultMap="instockMap">
        select * from instock ins
@@ -115,12 +132,13 @@
        LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
        LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
 	   LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+	   left join productspecification pro on insd.spe_id = pro.spe_id
        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id where ins.ins_id = #{insId} order by ins.ins_id desc
     </select>
 
     <update id="updateInstock" parameterType="Instock">
         update instock set ins_id = #{insId},title =#{title},warehouse_id=#{warehouse.warehouseId},fill_time=#{fillTime},status=#{status},filler=#{filler},keeper=#{keeper}
-        ,execution_time=#{executionTime},pco_id=#{purchaseorder.pcoId},reg_id=#{returnedgoods.regId},supplier_id=#{supplier.supplierId},remarks=#{remarks} where ins_id =#{insId}
+        ,execution_time=#{executionTime},pco_id=#{purchaseorder.pcoId},reg_id=#{returnedgoods.regId},supplier_id=#{supplier.supplierId},remarks=#{remarks},wa_id=#{warehouseallocation.waId} where ins_id =#{insId}
     </update>
 
 
@@ -132,6 +150,15 @@
     <delete id="deleteInstockDetailById">
         delete from instockdetail where ins_id = #{insId}
     </delete>
+
+    <delete id="deleteInstockDetailBySpeIdAndInsId">
+        delete form instockdetail where spe_id=#{speId} and ins_id = #{insId}
+    </delete>
+
+    <select id="queryInsdByInsIdAndSpeId" resultMap="instockdetailMap">
+        select * from instockdetail where ins_id = #{insId} and spe_id = #{speId}
+    </select>
+
 
     <select id="querySelectAndInputByPage" resultMap="instockMap">
          select * from instock where 1=1

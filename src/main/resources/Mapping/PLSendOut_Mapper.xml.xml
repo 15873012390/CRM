@@ -11,7 +11,8 @@
         <result column="sen_way" property="senWay"></result>
         <result column="sen_remark" property="senRemark"></result>
         <result column="sen_del_state" property="senDelState"></result>
-        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+        <result column="if_returnedgoods" property="ifReturnedgoods"></result>
+        <association property="customer" javaType="Customer">
             <id column="cus_id" property="cusId"></id>
             <result column="cus_name" property="cusName"></result>
         </association>
@@ -26,38 +27,115 @@
             <result column="sod_date" property="sodDate"></result>
             <result column="sod_money" property="sodMoney"></result>
             <result column="sod_remark" property="sodRemark"></result>
-            <association property="sendout" javaType="Sendout">
-                <id column="sen_id" property="senId"></id>
-                <result column="sen_receiving" property="senReceiving"></result>
-                <result column="sen_date" property="senDate"></result>
-                <result column="sen_freight" property="senFreight"></result>
-                <result column="sen_state" property="senState"></result>
-                <result column="sen_way" property="senWay"></result>
-                <result column="sen_remark" property="senRemark"></result>
-                <result column="sen_del_state" property="senDelState"></result>
-                <association property="productspecification" javaType="Productspecification">
-                    <id property="speId" column="spe_id"></id>
+            <association property="productspecification" javaType="Productspecification">
+                <id property="speId" column="spe_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="speUnit" column="spe_unit" ></result>
+                <result property="speUnitConversion" column="spe_unit_conversion"></result>
+                <association property="product" javaType="Product">
+                    <id property="proId" column="pro_id"></id>
                     <result property="proName" column="pro_name"></result>
-                    <result property="speSpecification" column="spe_specification"></result>
-                    <result property="speUnit" column="spe_unit" ></result>
-                    <result property="speUnitConversion" column="spe_unit_conversion"></result>
-                    <association property="product" javaType="Product">
-                        <id property="proId" column="pro_id"></id>
-                        <result property="proName" column="pro_name"></result>
-                        <result property="proDate" column="pro_date"></result>
-                    </association>
+                    <result property="proDate" column="pro_date"></result>
                 </association>
-            </association>
+             </association>
         </collection>
+    </resultMap>
+    <!--发货详情Map-->
+    <resultMap id="sendOutDetialMap" type="Sendoutdetial">
+        <id column="sod_id" property="sodId"></id>
+        <result column="sod_number" property="sodNumber"></result>
+        <result column="sod_date" property="sodDate"></result>
+        <result column="sod_money" property="sodMoney"></result>
+        <result column="sod_remark" property="sodRemark"></result>
+        <!--发货单-->
+        <association property="sendout" javaType="Sendout">
+            <id column="sen_id" property="senId"></id>
+            <result column="sen_receiving" property="senReceiving"></result>
+            <result column="sen_date" property="senDate"></result>
+            <result column="sen_freight" property="senFreight"></result>
+            <result column="sen_state" property="senState"></result>
+            <result column="sen_way" property="senWay"></result>
+            <result column="sen_remark" property="senRemark"></result>
+            <result column="sen_del_state" property="senDelState"></result>
+        </association>
+        <!--规格-->
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit" ></result>
+            <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            <!--产品-->
+            <association property="product" javaType="Product">
+                <id property="proId" column="pro_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="proDate" column="pro_date"></result>
+                <result property="proMode" column="pro_mode"></result>
+            </association>
+        </association>
     </resultMap>
 
     <insert id="insertSendOut" parameterType="Sendout" useGeneratedKeys="true" keyProperty="senId">
-        insert into sendout values(#{senId},#{customer.cusId},#{orders.ordId},#{senReceiving},#{senDate},#{senFreight},#{senState},#{senWay},#{senRemark},#{senDelState})
+        insert into sendout values(#{senId},#{customer.cusId},#{orders.ordId},#{senReceiving},#{senDate},#{senFreight},#{senState},#{senWay},#{senRemark},#{senDelState},#{ifReturnedgoods})
     </insert>
 
     <insert id="insertSendOutDetail" parameterType="Sendoutdetial">
         insert into sendoutdetial values(#{sodId},#{sendout.senId},#{productspecification.speId},#{sodNumber},#{sodDate},#{sodMoney},#{sodRemark})
     </insert>
+    <!--更新发货单-->
+    <update id="updateBySendOutBySenId" parameterType="Sendout">
+        update sendout set sen_receiving=#{senReceiving},sen_date=#{senDate},sen_freight=#{senFreight},sen_state=#{senState},sen_way=#{senWay},sen_del_state=#{senDelState},sen_remark=#{senRemark},if_returnedgoods=#{ifReturnedgoods}
+        where sen_id=#{senId}
+    </update>
+    <!--修改发货单的日期、收货人、备注-->
+    <update id="updateSendOut" parameterType="Sendout">
+        update sendout set sen_receiving=#{senReceiving},sen_date=#{senDate},sen_remark=#{senRemark} where sen_id=#{senId}
+    </update>
+    <!--修改发货状态-->
+    <update id="updateSendOutState">
+        update sendout set sen_state='未发货' where sen_id=#{senId}
+    </update>
+    <!--设置状态为已被退货-->
+    <update id="updateIfReturnedgoods">
+        update sendout set if_returnedgoods='已被退货' where sen_id=#{senId}
+    </update>
+    <!--根据订单id查找发货单-->
+    <select id="findSendOutByOrdid" resultMap="sendOutMap">
+        select so.sen_id,so.cus_id,so.ord_id,so.sen_receiving,so.sen_date,so.sen_freight,so.sen_state,so.sen_way,so.sen_remark,c.cus_name,o.ord_theme
+        FROM sendout so
+        LEFT JOIN customer c
+        ON so.cus_id=c.cus_id
+        LEFT JOIN orders o
+        ON so.ord_id=o.ord_id
+        WHERE so.ord_id=#{ordid}
+    </select>
+    <!--根据发货单id查询发货详情-->
+    <select id="findAllBySendOutDetailBySenId" resultMap="sendOutDetialMap">
+        SELECT s.sen_id,s.sen_receiving,spe.spe_id,p.pro_id,p.pro_name,p.pro_mode,spe.spe_specification,spe.spe_unit,spe.spe_unit_conversion,s.sen_date,s.sen_state,sd.sod_id,sd.sod_number,sd.sod_money,sd.sod_remark
+        FROM sendout s
+        LEFT JOIN sendoutdetial sd
+        ON s.sen_id=sd.sen_id
+        LEFT JOIN productspecification spe
+        ON sd.spe_id=spe.spe_id
+        LEFT JOIN product p
+        ON p.pro_id=spe.pro_id
+        WHERE s.sen_id=#{senId}
+    </select>
+    <!--根据发货单id查找-->
+    <select id="findBySenId" resultMap="sendOutMap">
+        select sen_id,cus_id,ord_id,sen_receiving,sen_date,sen_freight,sen_state,sen_way,sen_remark
+        from sendout
+        where sen_id=#{senId}
+    </select>
+    <!--根据统计发货单详情的总金额 赋值给退货单的应退金额-->
+    <select id="statisticsMoney" resultType="java.util.Map">
+        select SUM(sod_money) as money from sendoutdetial sod
+        left join sendout so
+        on so.sen_id=sod.sen_id
+        where so.sen_id=#{senId}
+    </select>
+
 
 
 

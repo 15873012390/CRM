@@ -18,9 +18,9 @@ public class Address {
     private String addCity;
     private String addDistrict;
 
-    @JsonIgnoreProperties("address")
+
     private Customer customer;
-    @JsonIgnoreProperties("address")
+
     private List<Orders> orders;
 
     @OneToMany(mappedBy = "address")

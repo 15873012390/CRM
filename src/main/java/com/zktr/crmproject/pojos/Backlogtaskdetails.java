@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 @Entity
 public class Backlogtaskdetails {
     private int btdId;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp finishTime;
     private int status;
     @JsonIgnoreProperties("backlogtaskdetails")

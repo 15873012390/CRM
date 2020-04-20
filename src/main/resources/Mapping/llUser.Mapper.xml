@@ -31,4 +31,10 @@
     <select id="queryAtUser" resultMap="lluserMap">
         select u.u_id,u_name from user u where u.u_status=1 and u.d_id is null
     </select>
+    <select id="countDeptUser" resultType="java.lang.Integer">
+        select count(*) from user u where u.d_id=#{did}
+    </select>
+    <select id="findDeptUser" resultMap="lluserMap">
+        select u.u_id,u.u_name from user u where u.u_status=1 and u.d_id=#{dId}
+    </select>
 </mapper>

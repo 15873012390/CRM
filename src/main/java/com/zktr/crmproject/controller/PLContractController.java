@@ -71,6 +71,7 @@ public class PLContractController {
     }
     @PostMapping("/ContractAdvancedSearch")
     public Pager<Contract> ContractAdvancedSearch(@RequestBody PLContractAdvancedSearch contractAdvancedSearch){
+        //System.out.println("bbbbbb"+contractAdvancedSearch.getConThemeSelect());
         return contractService.ContractAdvancedSearch(contractAdvancedSearch);
     }
 }

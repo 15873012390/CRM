@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 public interface PLOrderdetailsDao extends CrudRepository<Orderdetail,Integer> {
 
     @Modifying
-    @Query(value = "delete from Orderdetail o where o.productspecification.speId = :speId")
-    public void deleteBySpeId(@Param("speId") Integer speId);
+    @Query(value = "delete from Orderdetail o where o.productspecification.speId = :speId and o.orders.ordId = :ordId")
+    public void deleteBySpeId(@Param("speId") Integer speId,@Param("ordId") Integer ordId);
 }

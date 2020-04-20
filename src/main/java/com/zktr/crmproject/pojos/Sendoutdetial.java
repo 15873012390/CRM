@@ -15,7 +15,7 @@ public class Sendoutdetial {
     private Timestamp sodDate;
     private BigDecimal sodMoney;
     private String sodRemark;
-    @JsonIgnoreProperties("sendoutdetial")
+
     private Sendout sendout;
     private Productspecification productspecification;
 

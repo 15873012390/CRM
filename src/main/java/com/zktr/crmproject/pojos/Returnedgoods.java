@@ -24,6 +24,24 @@ public class Returnedgoods {
     private User user;
     private List<Returnedgoodsdetial> returnedgoodsdetial;
 
+    @Override
+    public String toString() {
+        return "Returnedgoods{" +
+                "regId=" + regId +
+                ", regDate=" + regDate +
+                ", refundableMoney=" + refundableMoney +
+                ", retiredMoney=" + retiredMoney +
+                ", regState='" + regState + '\'' +
+                ", regDelState=" + regDelState +
+                ", instock=" + instock +
+                ", orders=" + orders +
+                ", warehouse=" + warehouse +
+                ", customer=" + customer +
+                ", user=" + user +
+                ", returnedgoodsdetial=" + returnedgoodsdetial +
+                '}';
+    }
+
     @Id
     @Column(name = "reg_id")
     public int getRegId() {

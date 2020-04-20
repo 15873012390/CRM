@@ -1,6 +1,7 @@
 package com.zktr.crmproject.pojos;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -13,10 +14,11 @@ public class Audit {
     private int audId;
     private String audTheme;
     private Integer audType;
-    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Timestamp audTime;
     private int audStatus;
     private int delStatus;
+    private User user;
     @JsonIgnoreProperties("audit")
     private List<Purchaseplan> purchaseplan;
     @JsonIgnoreProperties("audit")
@@ -109,6 +111,16 @@ public class Audit {
         return Objects.hash(audId, audTheme, audType, audTime, audStatus, delStatus);
     }
 
+    @ManyToOne
+    @JoinColumn(name="u_id",referencedColumnName = "u_id")
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @OneToMany(mappedBy = "audit")
     public List<Purchaseplan> getPurchaseplan() {
         return purchaseplan;
@@ -118,7 +130,7 @@ public class Audit {
         this.purchaseplan = purchaseplan;
     }
 
-    @OneToMany(mappedBy = "audit",cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "audit" )
     public List<Purchaseorder> getPurchaseorder() {
         return purchaseorder;
     }
@@ -127,7 +139,7 @@ public class Audit {
         this.purchaseorder = purchaseorder;
     }
 
-    @OneToMany(mappedBy = "audit",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "audit")
     public List<Purchaseenter> getPurchaseenter() {
         return purchaseenter;
     }

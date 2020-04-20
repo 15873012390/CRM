@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -33,6 +35,116 @@ public class TWCustomerService {
     private com.zktr.crmproject.dao.mybatis.lliUserDao lliUserDao;
     @Autowired(required = false)
     private TWCustomerTransfer2MapperDao twCustomerTransfer2MapperDao;
+
+    /**
+     * 导入验证
+     * @param list
+     * @return
+     */
+    public String[] CustomerExcle(List<Customer> list){
+        String[] strings= new String[list.size()];
+        String str="";
+        int num=0;
+        for (Customer customer:list){
+            str="";
+            //客户名称重复
+            if (!this.countCustomerName(customer.getCusName())){
+                str+="客户名称重复<br/>";
+            }
+            //客户等级是否错误
+            if (!customer.getCusLevel().equals("潜在客户") &&
+                    !customer.getCusLevel().equals("普通客户") &&
+                    !customer.getCusLevel().equals("重点客户") &&
+                    !customer.getCusLevel().equals("大客户") &&
+                    !customer.getCusLevel().equals("") &&
+                    customer.getCusLevel()!=null){
+                str+="客户等级错误<br/>";
+            }
+            //电话号码是否正确
+            if (!customer.getCusTel().equals("") &&
+                    customer.getCusTel()!=null &&
+                    !this.phoneYanZheng(customer.getCusTel())){
+                str+="电话号码错误<br/>";
+            }
+            //客户来源是否错误
+            if (!customer.getCusSource().equals("电话来访") &&
+                    !customer.getCusSource().equals("客户介绍") &&
+                    !customer.getCusSource().equals("媒体宣传") &&
+                    !customer.getCusSource().equals("网站填表") &&
+                    !customer.getCusSource().equals("其他") &&
+                    !customer.getCusSource().equals("") &&
+                    customer.getCusSource()!=null){
+                str+="客户来源错误<br/>";
+            }
+            //信用等级是否错误
+            if (!customer.getCusCredit().equals("高") &&
+                    !customer.getCusCredit().equals("较高") &&
+                    !customer.getCusCredit().equals("中") &&
+                    !customer.getCusCredit().equals("较低") &&
+                    !customer.getCusCredit().equals("低") &&
+                    !customer.getCusCredit().equals("") &&
+                    customer.getCusCredit()!=null){
+                str+="信用等级错误<br/>";
+            }
+            //生命周期是否错误
+            if (!customer.getCusLifeCycle().equals("一次性") &&
+                    !customer.getCusLifeCycle().equals("重复购买") &&
+                    !customer.getCusLifeCycle().equals("长期合作") &&
+                    !customer.getCusLifeCycle().equals("") &&
+                    customer.getCusLifeCycle()!=null){
+                str+="生命周期错误<br/>";
+            }
+            //客户状态是否错误
+            if (!customer.getCusState().equals("正常") &&
+                    !customer.getCusState().equals("预警") &&
+                    !customer.getCusState().equals("流失") &&
+                    !customer.getCusState().equals("") &&
+                    customer.getCusState()!=null){
+                str+="客户状态错误<br/>";
+            }
+            //定级是否错误
+            if (!customer.getCusState().equals("特级") &&
+                    !customer.getCusState().equals("大单") &&
+                    !customer.getCusState().equals("正常") &&
+                    !customer.getCusState().equals("小单") &&
+                    !customer.getCusState().equals("") &&
+                    customer.getCusState()!=null){
+                str+="定级错误<br/>";
+            }
+            if (!str.equals("")){
+                strings[num]=str;
+            }
+            num++;
+        }
+        return strings;
+    }
+
+    /**
+     * 验证电话号码
+     * @param phone
+     * @return
+     */
+    public boolean phoneYanZheng(String phone){
+        String regex = "0\\d{2,3}[-]?\\d{7,8}|0\\d{2,3}\\s?\\d{7,8}|13[0-9]\\d{8}|15[1089]\\d{8}";
+        Pattern pattern = Pattern.compile(regex);    // 编译正则表达式
+        Matcher matcher = pattern.matcher(phone);    // 创建给定输入模式的匹配器
+        boolean bool = matcher.matches();
+        return bool;
+    }
+
+    /**
+     * 查看是否有重名客户
+     * @param cusName
+     * @return
+     */
+    public boolean countCustomerName(String cusName){
+        int num=TWCustomerMapperDao.countCustomerByName(cusName);
+        if (num>0){
+            return false;
+        }else {
+            return true;
+        }
+    }
 
     /**
      * 根据用户id查询客户转移日志
@@ -156,6 +268,13 @@ public class TWCustomerService {
     }
 
     /**
+     * 删除客户连带客户转移日志
+     * @param cusid
+     */
+    public void deleteCustomer2(Integer cusid){
+        TWCustomerMapperDao.deleteCustomer(cusid);
+    }
+    /**
      * 加载客户
      * @param cusid
      * @return
@@ -189,6 +308,14 @@ public class TWCustomerService {
      */
     public Customer queryCustomerDetailsById(Integer cusId){
         return TWCustomerMapperDao.queryCustomerDetailsById(cusId);
+    }
+    /**
+     * 根据id查询客户详情（全）
+     * @param cusId
+     * @return
+     */
+    public Customer findCustomerDetailsById(Integer cusId){
+        return TWCustomerMapperDao.findCustomerDetailsById(cusId);
     }
 
     /**

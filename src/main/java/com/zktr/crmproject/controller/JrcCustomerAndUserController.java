@@ -2,6 +2,7 @@ package com.zktr.crmproject.controller;
 
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.Department;
+import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.service.JrcCustomerAndUserService;
 import jdk.nashorn.internal.objects.annotations.Getter;
@@ -9,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class JrcCustomerAndUserController {
     @Autowired
     private JrcCustomerAndUserService customerAndUserService;
@@ -22,7 +24,6 @@ public class JrcCustomerAndUserController {
      * @return
      */
     @GetMapping("/jrc_query_all_customer")
-    @ResponseBody
     public List<Customer> queryAllCustomer(){
        return customerAndUserService.queryAllCustomer();
     }
@@ -33,7 +34,6 @@ public class JrcCustomerAndUserController {
      * @return
      */
     @GetMapping("/jrc_query_contact_by_cusId")
-    @ResponseBody
     public Customer queryContactByCusId(Integer cusid){
         return customerAndUserService.queryContactByCusId(cusid);
     }
@@ -43,7 +43,6 @@ public class JrcCustomerAndUserController {
      * @return
      */
     @GetMapping("/jrc_query_all_user")
-    @ResponseBody
     public List<User> queryAllUser(){
         return customerAndUserService.queryAllUser();
     }
@@ -53,10 +52,18 @@ public class JrcCustomerAndUserController {
      * @return
      */
     @GetMapping("/jrc_query_dept_all_user")
-    @ResponseBody
     public List<Department> queryDeptAllUser(){
         return customerAndUserService.queryDeptAllUser();
     }
 
 
+    /**
+     * 查找所有产品名称
+     *
+     * @return
+     */
+    @GetMapping("/query_all_product")
+    public List<Product> queryAllProduct(){
+        return customerAndUserService.queryAllProduct();
+    }
 }

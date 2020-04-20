@@ -6,11 +6,14 @@ import com.zktr.crmproject.dao.mybatis.lliDeptDao;
 import com.zktr.crmproject.dao.mybatis.lliUserDao;
 import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
+import com.zktr.crmproject.vo.CountBar;
+import com.zktr.crmproject.vo.CountPie;
 import com.zktr.crmproject.vo.DepartmentMes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,5 +92,40 @@ public class llDeptService {
         for (Integer u:uid){
             llUserDao.findById(u).get().setDepartment(d);
         }
+    }
+    //获得部门的饼状信息
+    public List<CountPie> queryDeptPie(){
+        List<DepartmentMes> list=lliDeptDao.findAllDepartment();
+        List<CountPie> list1=new ArrayList<>();
+        for (DepartmentMes d:list){
+            int i=lliUserDao.countDeptUser(d.getdId());
+            CountPie cp=new CountPie(d.getdName(),i);
+            list1.add(cp);
+        }
+        return list1;
+    }
+    //获得部门的柱状信息
+    public CountBar queryDeptBar(){
+        List<DepartmentMes> list=lliDeptDao.findAllDepartment();
+        int[] value=new int[list.size()];
+        String[] name=new String[list.size()];
+        int k=0;
+        for(DepartmentMes d:list) {
+            int i = lliUserDao.countDeptUser((d.getdId()));
+            value[k] = i;
+            name[k] = d.getdName();
+            k++;
+        }
+        CountBar cb=new CountBar(name,value);
+        return cb;
+    }
+    //获取部门内所有在在职员工
+    public List<User> findDeptUser(Integer dId){
+        return lliUserDao.findDeptUser(dId);
+    }
+    //修改部门主管
+    public void setDeptManager(Integer uId,Integer dId){
+        Department d=llDeptDao.findById(dId).get();
+        d.setdBoss(uId);
     }
 }

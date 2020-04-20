@@ -27,7 +27,10 @@
             <result column="u_name" property="uName"/>
         </association>
     </resultMap>
-
+    <select id="countCustomerByName" resultType="java.lang.Integer">
+        select count(*) from customer
+        where cus_name=#{cusName}
+    </select>
     <select id="queryAllCustomer" resultMap="customerMap">
         select * from customer c
         left join user u on c.u_id=u.u_id
@@ -263,8 +266,14 @@
             <result column="con_mobile" property="conMobile"/>
             <result column="con_sex" property="conSex"/>
             <result column="con_position" property="conPosition"/>
+            <result column="con_img" property="conImg"/>
         </collection>
     </resultMap>
+    <delete id="deleteCustomer" parameterType="java.lang.Integer">
+            DELETE a,b FROM customer a
+            LEFT JOIN customertransfer b ON a.cus_id=b.cus_id
+            WHERE a.cus_id=#{cusId}
+    </delete>
     <select id="queryCustomerDetailsById" resultMap="customerMap2">
         select c.cus_id,c.cus_name,
             c.cus_level,c.cus_addr,
@@ -278,7 +287,8 @@
             c.cus_remarks,u.u_id,
             u.u_name,n.con_name,
             n.con_tel,n.con_mobile,
-            n.con_sex,n.con_position
+            n.con_sex,n.con_position,
+            n.con_img
         from customer c
         left join user u on c.u_id=u.u_id
         LEFT JOIN contacts n on c.cus_id=n.cus_id
@@ -337,8 +347,37 @@
         <result column="title" property="title"/>
         <result column="start_time" property="startTime"/>
         </collection>
+<!--        发货表-->
+        <collection property="sendout" ofType="com.zktr.crmproject.pojos.Sendout">
+            <id column="sen_id" property="senId"></id>
+        </collection>
+<!--        报价表-->
+        <collection property="quote" ofType="com.zktr.crmproject.pojos.Quote">
+            <id column="quo_id" property="quoId"></id>
+        </collection>
+<!--        退货表-->
+        <collection property="returnedgoods" ofType="com.zktr.crmproject.pojos.Returnedgoods">
+            <id column="reg_id" property="regId"></id>
+        </collection>
+<!--        回款表-->
+        <collection property="returnedmoney" ofType="com.zktr.crmproject.pojos.Returnedmoney">
+            <id column="rem_id" property="remId"></id>
+        </collection>
+<!--        计划回款表-->
+        <collection property="returnedmoneyplan" ofType="com.zktr.crmproject.pojos.Returnedmoneyplan">
+            <id column="rmp_id" property="rmpId"></id>
+        </collection>
+<!--        开发票表-->
+        <collection property="invoice" ofType="com.zktr.crmproject.pojos.Invoice">
+            <id column="inv_id" property="invId"></id>
+        </collection>
+<!--        投诉管理表-->
+        <collection property="complaint" ofType="com.zktr.crmproject.pojos.Complaint">
+            <id column="com_id" property="comId"></id>
+        </collection>
 
     </resultMap>
+
     <select id="findCustomerDetailsById1" resultMap="customerMap3">
             SELECT  a.cus_id,a.cus_name,
                     b.con_name,b.con_time
@@ -403,25 +442,27 @@
             WHERE a.cus_id=#{cusId}
             order by i.start_time desc
     </select>
-<!--    <select id="findCustomerDetailsById" resultMap="customerMap3">-->
-<!--            SELECT  a.cus_id,a.cus_name,-->
-<!--                    b.con_name,b.con_time,-->
-<!--                    c.title,c.fill_time,-->
-<!--                    d.title,d.cc_date,-->
-<!--                    e.so_theme,e.dis_time,-->
-<!--                    f.blt_description,f.creation_time,-->
-<!--                    g.ord_theme,g.ord_time,-->
-<!--                    h.con_theme,h.con_signing_date,-->
-<!--                    i.title,i.start_time-->
-<!--            FROM customer a-->
-<!--            LEFT JOIN contacts b ON a.cus_id=b.cus_id-->
-<!--            LEFT JOIN outstock c ON a.cus_id=c.cus_id-->
-<!--            LEFT JOIN customercare d ON a.cus_id=d.cus_id-->
-<!--            LEFT JOIN salesopport e ON a.cus_id=e.cus_id-->
-<!--            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id-->
-<!--            LEFT JOIN orders g ON a.cus_id=g.cus_id-->
-<!--            LEFT JOIN contract h ON a.cus_id=h.cus_id-->
-<!--            LEFT JOIN customerservice i ON a.cus_id=i.cus_id-->
-<!--            WHERE a.cus_id=#{cusId}-->
-<!--    </select>-->
+    <select id="findCustomerDetailsById" resultMap="customerMap3">
+            SELECT  a.cus_id,b.con_id,c.out_id,
+				    d.cc_id,e.so_id,f.blt_id,g.ord_id,
+				    h.ctr_id,i.cs_id,j.sen_id,k.quo_id,
+					l.reg_id,m.rem_id,n.rmp_id
+            FROM customer a
+            LEFT JOIN contacts b ON a.cus_id=b.cus_id
+            LEFT JOIN outstock c ON a.cus_id=c.cus_id
+            LEFT JOIN customercare d ON a.cus_id=d.cus_id
+            LEFT JOIN salesopport e ON a.cus_id=e.cus_id
+            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id
+            LEFT JOIN orders g ON a.cus_id=g.cus_id
+            LEFT JOIN contract h ON a.cus_id=h.cus_id
+            LEFT JOIN customerservice i ON a.cus_id=i.cus_id
+            LEFT JOIN sendout j ON j.cus_id=c.cus_id
+            LEFT JOIN quote k ON k.cus_id=d.cus_id
+            LEFT JOIN returnedgoods l ON l.cus_id=e.cus_id
+            LEFT JOIN returnedmoney m ON m.cus_id=f.cus_id
+            LEFT JOIN returnedmoneyplan n ON n.cus_id=g.cus_id
+            LEFT JOIN invoice o ON o.cus_id=h.cus_id
+            LEFT JOIN complaint p ON p.cus_id=i.cus_id
+            WHERE a.cus_id=#{cusId}
+    </select>
 </mapper>

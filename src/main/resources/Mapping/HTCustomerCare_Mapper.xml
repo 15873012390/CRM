@@ -68,5 +68,14 @@
         order by customercare.cc_id desc
     </select>
 
+    <insert id="insertCustomerCare" parameterType="Customercare" useGeneratedKeys="true" keyProperty="ccId">
+        insert into customercare values(#{ccId},#{title},#{customer.cusId},#{contacts},#{ccDate},#{executor},#{type},#{ccContent},#{cusFeedback},#{remarks})
+    </insert>
+
+    <update id="updateCustomserCare" parameterType="Customercare">
+        update customercare set cc_id=#{ccId} ,title=#{title} ,cus_id=#{customer.cusId} , contacts=#{contacts} ,cc_date=#{ccDate} ,executor=#{executor} ,type=#{type} ,cc_content=#{ccContent} ,cus_feedback=#{cusFeedback} ,remarks=#{remarks}
+        where cc_id = #{ccId}
+    </update>
+
 
 </mapper>

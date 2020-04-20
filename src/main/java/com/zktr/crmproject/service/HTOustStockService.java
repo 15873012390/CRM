@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -87,62 +85,39 @@ public class HTOustStockService {
      *
      * @param outstock
      */
-    public void editAndUpdateOutStock(Outstock outstock) {
+    public Integer editAndUpdateOutStock(Outstock outstock) {
         if (outstock.getOutId() == 0) {
             outstock.setStatus("未出库");
             outstock.setOutNumber(UUIDUtils.getId());
             iOutstockDao.insertOutstock(outstock);
-            System.out.println(outstock.getOutId());
             if (outstock.getOrders() != null && outstock.getOrders().getOrdId() != 0) {
                 Orders order = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
+                Outstock outstock1 = iOutstockDao.queryOutstockByOutId(outstock.getOutId());
+                outstock1.setCustomer(order.getCustomer());
+                outstock1.setOrdNumber(order.getOrdNumber());
+                Date date = new Date();
+                //设置要获取到什么样的时间
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                //获取String类型的时间
+                String createdate = sdf.format(date);
+                outstock1.setRemarks(createdate+"加入订单");
+                iOutstockDao.updateOutStock(outstock1);
                 Outstockdetails od = new Outstockdetails();
                 //循环遍历订单详情放入出库详情
                 for (Orderdetail o : order.getOrderdetail()) {
                     od.setProductspecification(o.getProductspecification());
                     od.setOsdNumber(o.getDetNumber());
-                    Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
-                    istockDao.updatestockQuantity((num - o.getDetNumber()), o.getProductspecification().getSpeId());
-                    od.setStatus("已出库");
+                    od.setStatus("未出库");
                     od.setOutstock(outstock);
                     iOutstockDao.insertOutStockDetails(od);
                 }
-                //修改出库单
-                Outstock outstock1 = iOutstockDao.queryOutstockByOutId(outstock.getOutId());
-                outstock1.setStatus("已出库");
-                outstock1.setPassTime(new Timestamp(System.currentTimeMillis()));
-                iOutstockDao.updateOutStock(outstock1);
-                //修改订单状态
-                iOrdersDao.updateOrdersOutStatus(order.getOrdId());
-                //若出库表的订单ID不为空，则添加发货表及发货详情表
-                if (outstock.getOrders() != null) {
-                    //添加发货表
-                    Sendout sendout = new Sendout();
-                    //查询订单
-                    Orders orders = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
-                    //根据订单查询地址
-                    Address address = addressDao.findByAddid(orders.getAddress().getAddId());
-                    sendout.setCustomer(orders.getCustomer());//客户
-                    sendout.setOrders(outstock.getOrders());//订单
-                    sendout.setSenReceiving(address.getAddName());//收货人
-                    sendout.setSenState("未发货");//发货状态
-                    sendout.setSenDelState(2);//是否被删除
-                    sendOutDao.insertSendOut(sendout);
-                    //添加发货明细表
-                    Sendoutdetial sendoutdetial = new Sendoutdetial();
-                    for (Orderdetail o : order.getOrderdetail()) {
-                        sendoutdetial.setSendout(sendout);//发货ID
-                        sendoutdetial.setProductspecification(o.getProductspecification());//规格
-                        sendoutdetial.setSodNumber(o.getDetNumber());//数量
-                        //根据订单ID和规格ID查询详情得出金额
-                        Orderdetail orderdetail = iOrdersDao.queryByOrdIdAndSpeId(outstock.getOrders().getOrdId(), o.getProductspecification().getSpeId());
-                        sendoutdetial.setSodMoney(orderdetail.getDetMoney());//金额
-                        sendOutDao.insertSendOutDetail(sendoutdetial);
-                    }
-
-                }
+                order.setOutStatus("进行出库");
+                iOrdersDao.updateOrders(order);
             }
+            return outstock.getOutId();
         } else {
             iOutstockDao.updateOutStock(outstock);
+            return outstock.getOutId();
         }
     }
 
@@ -185,7 +160,7 @@ public class HTOustStockService {
                 //库存为空则增加,否则修改
                 if (stock != null) {
                     Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
-                    istockDao.updatestockQuantity((num + o.getOsdNumber()), o.getProductspecification().getSpeId());
+                    istockDao.updatestockQuantity((num + o.getOsdNumber()), o.getProductspecification().getSpeId(),stock.getWarehouse().getWarehouseId());
                 } else {
                     Stock stock1 = new Stock();
                     stock1.setProductspecification(o.getProductspecification());
@@ -193,25 +168,29 @@ public class HTOustStockService {
                     stock1.setStockQuantity(o.getOsdNumber());
                     stockDao.save(stock);
                 }
-
             }
         } else {
             outstock.setStatus("已出库");
+            outstock.setPassTime(new Timestamp(System.currentTimeMillis()));
             iOutstockDao.updateOutStock(outstock);
             List<Outstockdetails> outstockdetailsList = iOutstockDao.queryAllOutdetailById(outId);
             for (Outstockdetails o : outstockdetailsList) {
                 o.setStatus("已出库");
                 iOutstockDao.updateOutDeatails(o);
-                Integer num = istockDao.queryQuantityBySpeId(o.getProductspecification().getSpeId()).getStockQuantity();
-                istockDao.updatestockQuantity((num - o.getOsdNumber()), o.getProductspecification().getSpeId());
-
+                Stock stock = istockDao.queryStockByWarehouseAndSpeId(o.getProductspecification().getSpeId(), outstock.getWarehouse().getWarehouseId());
+                Integer num = stock.getStockQuantity();
+                istockDao.updatestockQuantity((num - o.getOsdNumber()), o.getProductspecification().getSpeId(),stock.getWarehouse().getWarehouseId());
+            }
+            Orders orders = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
+            if(orders!=null){
+                orders.setOutStatus("已出库");
+                iOrdersDao.updateOrders(orders);
             }
             //若出库表的订单ID不为空，则添加发货表及发货详情表
             if (outstock.getOrders() != null&&outstock.getOrders().getOrdId()!=0) {
                 //添加发货表
                 Sendout sendout = new Sendout();
                 //查询订单
-                Orders orders = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
                 //根据订单查询地址
                 Address address = addressDao.findByAddid(orders.getAddress().getAddId());
                 sendout.setCustomer(orders.getCustomer());//客户
@@ -246,10 +225,12 @@ public class HTOustStockService {
      */
     public void addorEditOutDetails(OutstockDetailVo outstockDetailVo) {
         Orderdetail orderdetail = new Orderdetail();
+        Outstock outstock = null;
+        Orders orders = null;
         for (Outstockdetails o : outstockDetailVo.getList()) {
             //订单详情赋值
-            Outstock outstock = iOutstockDao.queryOutstockByOutId(o.getOutstock().getOutId());
-            Orders orders = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
+            outstock = iOutstockDao.queryOutstockByOutId(o.getOutstock().getOutId());
+            orders = iOrdersDao.queryOrderdetailByOrdId(outstock.getOrders().getOrdId());
             if (orders != null) {
                 orderdetail.setOrders(outstock.getOrders());
                 orderdetail.setProductspecification(o.getProductspecification());
@@ -275,9 +256,12 @@ public class HTOustStockService {
                 }
             }
         }
-        for (Integer speId : outstockDetailVo.getDelList()) {
-            outStockDetailsDao.deleteBySpeId(speId);
-            orderdetailsDao.deleteBySpeId(speId);
+        for (Integer id : outstockDetailVo.getDelList()) {
+            if(outstock.getOrders()!=null&&outstock.getOrders().getOrdId()!=0){
+                orderdetailsDao.deleteBySpeId(id,orders.getOrdId());
+            }
+            iOutstockDao.deleteOutstockDetailByOutIdAndSpeId(outstock.getOutId(),id);
+
         }
     }
 
@@ -316,6 +300,16 @@ public class HTOustStockService {
         List<Outstock> list = iOutstockDao.queryoutStockByAdvancedSearch(oas);
         PageInfo<Outstock> pager = new PageInfo<>(list);
         return new Pager<Outstock>(list2.size(), pager.getList());
+    }
+
+    /**
+     * 发货修改状态
+     * @param outId
+     */
+    public void updateOutStatus(Integer outId){
+        Outstock outstock = iOutstockDao.queryOutstockByOutId(outId);
+        outstock.setStatus("已发货");
+        iOutstockDao.updateOutStock(outstock);
     }
 
 }

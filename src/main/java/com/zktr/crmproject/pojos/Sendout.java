@@ -18,11 +18,11 @@ public class Sendout {
     private String senWay;
     private String senRemark;
     private Integer senDelState;
-    @JsonIgnoreProperties("sendout")
+    private String ifReturnedgoods;
     private Customer customer;
-    @JsonIgnoreProperties("sendout")
+
     private Orders orders;
-    @JsonIgnoreProperties("sendout")
+
     private List<Sendoutdetial> sendoutdetial;
 
     @Id
@@ -43,6 +43,15 @@ public class Sendout {
 
     public void setSenReceiving(String senReceiving) {
         this.senReceiving = senReceiving;
+    }
+    @Basic
+    @Column(name = "if_returnedgoods")
+    public String getIfReturnedgoods() {
+        return ifReturnedgoods;
+    }
+
+    public void setIfReturnedgoods(String ifReturnedgoods) {
+        this.ifReturnedgoods = ifReturnedgoods;
     }
 
     @Basic

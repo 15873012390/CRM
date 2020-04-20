@@ -25,7 +25,8 @@ public class Warehouse {
     private List<Stock> stock;
     private List<Instock> instock;
     private List<Returnedgoods> returnedgoods;
-
+    private List<Warehouseallocation> inwarehouseallocations;
+    private List<Warehouseallocation> outwarehouseallocations;
 
     @Id
     @Column(name = "warehouse_id")
@@ -140,7 +141,6 @@ public class Warehouse {
         this.returnedgoods = returnedgoods;
     }
 
-
     @Override
     public String toString() {
         return "Warehouse{" +
@@ -155,5 +155,23 @@ public class Warehouse {
                 ", instock=" + instock +
                 ", returnedgoods=" + returnedgoods +
                 '}';
+    }
+
+    @OneToMany(mappedBy = "inwarehouse")
+    public List<Warehouseallocation> getInwarehouseallocations() {
+        return inwarehouseallocations;
+    }
+
+    public void setInwarehouseallocations(List<Warehouseallocation> inwarehouseallocations) {
+        this.inwarehouseallocations = inwarehouseallocations;
+    }
+
+    @OneToMany(mappedBy = "outwarehouse")
+    public List<Warehouseallocation> getOutwarehouseallocations() {
+        return outwarehouseallocations;
+    }
+
+    public void setOutwarehouseallocations(List<Warehouseallocation> outwarehouseallocations) {
+        this.outwarehouseallocations = outwarehouseallocations;
     }
 }

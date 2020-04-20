@@ -2,22 +2,22 @@ package com.zktr.crmproject.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.zktr.crmproject.dao.jpa.HTInstockDao;
 import com.zktr.crmproject.dao.jpa.HTInstockDetailDao;
 import com.zktr.crmproject.dao.jpa.HTStockDao;
 import com.zktr.crmproject.dao.mybatis.HTIInstockDao;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
-import com.zktr.crmproject.dao.mybatis.HTIWarehouseDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.vo.InstockAdvancedSearch;
 import com.zktr.crmproject.vo.InstockDetailVo;
 import com.zktr.crmproject.vo.Pager;
+import com.zktr.crmproject.vo.ProductDemandVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,11 +26,11 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class HTInstockService {
 
-    @Autowired
+    @Autowired(required=false)
     private HTIInstockDao iIstockDao;
-    @Autowired
+    @Autowired(required=false)
     private PLproductMDao iproductMDao;
-    @Autowired
+    @Autowired(required=false)
     private HTIStockDao istockDao;
     @Autowired
     private HTStockDao stockDao;
@@ -65,6 +65,14 @@ public class HTInstockService {
      * @param instock
      */
     public void insertInstock(Instock instock){
+        if(instock.getTitle()==null||instock.getTitle()==""){
+            Date date = new Date();
+            //设置要获取到什么样的时间
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            //获取String类型的时间
+            String createdate = sdf.format(date);
+            instock.setTitle(createdate+"库存入库需求");
+        }
         instock.setStatus("未入库");
         iIstockDao.insertInstock(instock);
     }
@@ -90,7 +98,7 @@ public class HTInstockService {
      * 修改入库状态
      * @param insId
      */
-    public void updateInstockStatus(Integer insId,Integer type){
+    public void updateInstockStatus(Integer insId,Integer type,String uName){
         Instock instock = iIstockDao.queryByInsId(insId);
         ////如type=1，则辙销入库
         if(type==1){
@@ -100,21 +108,23 @@ public class HTInstockService {
             for(Instockdetail ins : instockdetails){
                 ins.setStatus("未入库");
                 iIstockDao.updateInstockDetail(ins);
-                Integer num = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId()).getStockQuantity();
-                istockDao.updatestockQuantity((num - ins.getInsdQuantity()), ins.getProductspecification().getSpeId());
+                Stock stock = istockDao.queryStockByWarehouseAndSpeId(ins.getProductspecification().getSpeId(), instock.getWarehouse().getWarehouseId());
+                Integer num = stock.getStockQuantity();
+                istockDao.updatestockQuantity((num + ins.getInsdQuantity()), ins.getProductspecification().getSpeId(),stock.getWarehouse().getWarehouseId());
             }
         }else{
             instock.setStatus("已入库");
+            instock.setKeeper(uName);
             instock.setExecutionTime(new Timestamp(System.currentTimeMillis()));
             iIstockDao.updateInstock(instock);
             List<Instockdetail> instockdetails = iIstockDao.queryInstockDetailByInsId(insId);
             for(Instockdetail ins : instockdetails){
                 ins.setStatus("已入库");
                 iIstockDao.updateInstockDetail(ins);
-                Stock s1 = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId());
+                Stock s1 = istockDao.queryStockByWarehouseAndSpeId(ins.getProductspecification().getSpeId(),instock.getWarehouse().getWarehouseId());
                 if(s1!=null){
-                    Integer num = istockDao.queryQuantityBySpeId(ins.getProductspecification().getSpeId()).getStockQuantity();
-                    istockDao.updatestockQuantity((num + ins.getInsdQuantity()), ins.getProductspecification().getSpeId());
+                    Integer num = istockDao.queryStockByWarehouseAndSpeId(ins.getProductspecification().getSpeId(),instock.getWarehouse().getWarehouseId()).getStockQuantity();
+                    istockDao.updatestockQuantity((num + ins.getInsdQuantity()), ins.getProductspecification().getSpeId(),s1.getWarehouse().getWarehouseId());
                 }else{
                     Stock stock = new Stock();
                     stock.setProductspecification(ins.getProductspecification());
@@ -168,7 +178,7 @@ public class HTInstockService {
         PageHelper.startPage(ias.getCurPage(),ias.getPageSize());
         if(ias.getFillTime()!=null && ias.getFillTime().length!=0){
             ias.setS1(ias.getFillTime()[0]);
-            ias.setS1(ias.getFillTime()[0]);
+            ias.setS1(ias.getFillTime()[1]);
         }
        if(ias.getExecutionTime()!=null && ias.getExecutionTime().length!=0){
            ias.setS3(ias.getExecutionTime()[0]);
@@ -189,7 +199,7 @@ public class HTInstockService {
     }
 
     /**
-     * 编辑或编辑入库详情单
+     * 增加或编辑入库详情单
      * @param
      */
     public void addorEditInstockdetails(InstockDetailVo instockDetailVo){
@@ -201,7 +211,35 @@ public class HTInstockService {
             }
         }
         for(Integer speId:instockDetailVo.getDelList()){
-            instockDetailDao.deleteBySpeId(speId);
+            iIstockDao.deleteInstockDetailBySpeIdAndInsId(speId,instockDetailVo.getList().get(0).getInstock().getInsId());
+        }
+    }
+
+    /**
+     * 根据订单需求提交入库单
+     * @param productDemandVos
+     */
+    public void addInstockDemand(List<ProductDemandVo> productDemandVos){
+        Instock instock = new Instock();
+        Date date = new Date();
+        //设置要获取到什么样的时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        //获取String类型的时间
+        String createdate = sdf.format(date);
+        instock.setTitle(createdate+"订单入库需求");
+        instock.setWarehouse(productDemandVos.get(0).getInwarehouseId());
+        instock.setFillTime(new Timestamp(System.currentTimeMillis()));
+        instock.setStatus("未入库");
+        instock.setFiller(productDemandVos.get(0).getuName());
+        iIstockDao.insertInstock(instock);
+        Instockdetail instockdetail = new Instockdetail();
+        for(ProductDemandVo p:productDemandVos){
+            instockdetail.setProductspecification(p.getSpeId());
+            instockdetail.setInsdQuantity(p.getNumber());
+            instockdetail.setStatus("未入库");
+            instockdetail.setInstock(instock);
+            instockdetail.setRemarks(createdate+"订单入库需求");
+            iIstockDao.insertInstockDetail(instockdetail);
         }
     }
 

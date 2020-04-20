@@ -53,52 +53,38 @@ public class Customer {
     //出库单表
     private List<Outstock> outstock;
     //客户关怀表
-    @JsonIgnoreProperties("customer")
     private List<Customercare> customercare;
     @ExcelEntity(id = "syz")
     private User user;
     //客户转移表
     private List<Customertransfer> customertransfer;
     //联系人表
-    @JsonIgnoreProperties("customer")
     private List<Contacts> contacts;
 //    @JsonIgnoreProperties("customer")
 //    private List<Customerchurnwarning> customerchurnwarning;
     //销售机会表
-    @JsonIgnoreProperties("customer")
     private List<Salesopport> salesopport;
     //待办任务表
-    @JsonIgnoreProperties("customer")
     private List<Backlogtask> backlogtask;
     //报价表
-    @JsonIgnoreProperties("customer")
     private List<Quote> quote;
     //订单表
-    @JsonIgnoreProperties("customer")
     private List<Orders> orders;
     //订单明细表
-    @JsonIgnoreProperties("customer")
     private List<Orderdetail> orderdetail;
     //合同表
-    @JsonIgnoreProperties("customer")
     private List<Contract> contract;
     //发货表
-    @JsonIgnoreProperties("customer")
     private List<Sendout> sendout;
     //退货表
-    @JsonIgnoreProperties("customer")
     private List<Returnedgoods> returnedgoods;
     //回款表
-    @JsonIgnoreProperties("customer")
     private List<Returnedmoney> returnedmoney;
     //计划回款表
-    @JsonIgnoreProperties("customer")
     private List<Returnedmoneyplan> returnedmoneyplan;
     //开发票表
-    @JsonIgnoreProperties("customer")
     private List<Invoice> invoice;
     //客户服务表
-    @JsonIgnoreProperties("customer")
     private List<Customerservice> customerservice;
     //投诉管理表
     private List<Complaint> complaint;

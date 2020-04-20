@@ -19,4 +19,6 @@ public interface PLProductSpecificationMDao {
     public Productspecification queryBySepId(@Param("speid") Integer speid);
     //合同 查询分类是服务的产品
     public List<Productspecification> queryByClaState();
+
+    public void insertSpeProduct(Productspecification productspecification);
 }

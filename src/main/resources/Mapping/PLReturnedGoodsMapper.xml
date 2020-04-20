@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLReturnedGoodsMDao">
+
+    <resultMap id="ReturnedgoodsMap" type="Returnedgoods">
+        <id column="reg_id" property="regId"></id>
+        <result column="reg_date" property="regDate"></result>
+        <result column="refundable_money" property="refundableMoney"></result>
+        <result column="retired_money" property="retiredMoney"></result>
+        <result column="reg_state" property="regState"></result>
+        <result column="reg_delState" property="regDelState"></result>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <!--签约人-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+        <!--仓库id-->
+        <association property="warehouse" javaType="Warehouse">
+            <id column="warehouseId" property="warehouseId"></id>
+            <result column="warehouseName" property="warehouseName"></result>
+            <result column="stockType" property="stockType"></result>
+            <result column="stockValue" property="stockValue"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
+    </resultMap>
+    <!--退货详情-->
+   <resultMap id="ReturnedgoodsdetialMap" type="Returnedgoodsdetial">
+       <id column="rgd_id" property="rgdId"></id>
+       <result column="rgd_cause" property="rgdCause"></result>
+       <result column="rgd_amount" property="rgdAmount"></result>
+       <result column="rgd_money" property="rgdMoney"></result>
+       <result column="rgd_remark" property="rgdRemark"></result>
+       <!--退货单-->
+       <association property="returnedgoods" javaType="Returnedgoods">
+           <id column="reg_id" property="regId"></id>
+           <result column="reg_date" property="regDate"></result>
+           <result column="refundable_money" property="refundableMoney"></result>
+           <result column="retired_money" property="retiredMoney"></result>
+           <result column="reg_state" property="regState"></result>
+           <result column="reg_delState" property="regDelState"></result>
+       </association>
+       <!--规格-->
+       <association property="productspecification" javaType="Productspecification">
+           <id property="speId" column="spe_id"></id>
+           <result property="proName" column="pro_name"></result>
+           <result property="speSpecification" column="spe_specification"></result>
+           <result property="speUnit" column="spe_unit" ></result>
+           <result property="speUnitConversion" column="spe_unit_conversion"></result>
+           <association property="product" javaType="Product">
+               <id property="proId" column="pro_id"></id>
+               <result property="proName" column="pro_name"></result>
+               <result property="proMode" column="pro_mode"></result>
+               <result property="proState" column="pro_state"></result>
+               <result property="proPrice" column="pro_price"></result>
+               <result property="proCostprice" column="pro_costprice"></result>
+           </association>
+       </association>
+   </resultMap>
+    <!--新增退货-->
+    <insert id="insertRG" parameterType="Returnedgoods" useGeneratedKeys="true" keyProperty="regId">
+        insert into returnedgoods values (#{regId},#{orders.ordId},#{user.uId},#{regDate},#{refundableMoney},#{retiredMoney},#{regState},#{regDelState},#{customer.cusId},#{warehouse.warehouseId})
+    </insert>
+    <!--新增退货详情-->
+    <insert id="insertRGD" parameterType="Returnedgoodsdetial">
+        insert into returnedgoodsdetial values (#{rgdId},#{returnedgoods.regId},#{productspecification.speId},#{rgdCause},#{rgdAmount},#{rgdMoney},#{rgdRemark})
+    </insert>
+    <!--查询退货-->
+    <select id="findAllRG" resultMap="ReturnedgoodsMap">
+        select rg.reg_id,rg.ord_id,rg.u_id,rg.cus_id,rg.reg_date,rg.refundable_money,rg.retired_money,reg_state,rg.reg_del_state,o.ord_theme,u.u_name,c.cus_name from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+    </select>
+    <!--根据退货id查询退货详情-->
+    <select id="findAllByRGDRegId" resultMap="ReturnedgoodsdetialMap">
+        select rgd.rgd_id,rgd.spe_id,rgd.reg_id,rgd.rgd_cause,rgd.rgd_amount,rgd.rgd_remark,rg.ord_id,rg.u_id,rg.cus_id,o.ord_theme,c2.cus_name,u.u_name,p.pro_name from returnedgoodsdetial rgd
+        left join returnedgoods rg on rgd.reg_id=rg.reg_id
+        left join productspecification p on rgd.spe_id = p.spe_id
+        left join customer c2 on rg.cus_id = c2.cus_id
+        left join orders o on rg.ord_id=o.ord_id
+        left join `user` u on rg.u_id=u.u_id
+        where rg.reg_id=#{regId}
+    </select>
+
+</mapper>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLReturnedMoneyMDao">
+
+    <resultMap id="ReturnedmoneyMap" type="Returnedmoney">
+        <id column="rem_id" property="remId"></id>
+        <result column="rem_money" property="remMoney"></result>
+        <result column="rem_rem" property="remRem"></result>
+        <result column="reg_time" property="regTime"></result>
+        <result column="rem_billing" property="remBilling"></result>
+        <result column="rem_classify" property="remClassify"></result>
+        <result column="rem_date" property="remDate"></result>
+        <result column="rem_remark" property="remRemark"></result>
+        <!--合同对象-->
+        <association property="contract" javaType="Contract">
+            <id column="ctr_id" property="ctrId"></id>
+            <result column="con_theme" property="conTheme"></result>
+        </association>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <!--签约人-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+
+    </resultMap>
+
+    <!--新增 回款订单-->
+    <insert id="insertRMPByOrders">
+        insert into returnedmoney(rem_money,rem_rem,rem_billing,rem_classify,rem_date,rem_remark,ord_id,u_id,cus_id)
+        value (#{remMoney},#{remRem},#{remBilling},#{remClassify},#{remDate},#{remRemark},#{orders.ordId},#{user.uId},#{customer.cusId})
+    </insert>
+    <!--修改 回款订单-->
+    <update id="updateRMByOrders">
+        update returnedmoney set
+        rem_money=#{remMoney},rem_rem=#{remRem},rem_billing=#{remBilling},rem_classify=#{remClassify},rem_date=#{remDate},rem_remark=#{remRemark},ord_id=#{orders.ordId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where rem_id=#{remId}
+    </update>
+    <!--查找全部-->
+    <select id="findAllByRM" resultMap="ReturnedmoneyMap">
+        select rem.rem_id,rem.ord_id,rem.cus_id,rem.u_id,rem.rem_money,rem.rem_rem,rem.rem_billing,rem.rem_classify,rem.rem_date,rem.rem_remark,o.ord_theme,c.cus_name,u.u_name
+        from returnedmoney rem
+        LEFT JOIN orders o
+        ON rem.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rem.cus_id
+        LEFT JOIN `user` u
+        ON rem.u_id=u.u_id
+        WHERE rem.ord_id is not null
+        GROUP BY rem.rem_id DESC
+    </select>
+    <!--根据id查找-->
+    <select id="findAllByRMId" resultMap="ReturnedmoneyMap">
+        select rem.rem_id,rem.ord_id,rem.cus_id,rem.u_id,rem.rem_money,rem.rem_rem,rem.rem_billing,rem.rem_classify,rem.rem_date,rem.rem_remark,o.ord_theme,c.cus_name,u.u_name
+        from returnedmoney rem
+        LEFT JOIN orders o
+        ON rem.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rem.cus_id
+        LEFT JOIN `user` u
+        ON rem.u_id=u.u_id
+        WHERE rem.ord_id is not null and rem.rem_id=#{remId}
+    </select>
+    <!--删除-->
+    <delete id="deleteByremId">
+        delete from returnedmoney where rem_id=#{remId}
+    </delete>
+    <!--批量删除-->
+    <delete id="batchByremId" parameterType="Returnedmoney">
+        <if test="remId!=null">
+            delete from returnedmoney where rem_id in
+            <foreach collection="remId" index="index" item="ids" open="(" separator="," close=")">
+                #{ids}
+            </foreach>
+        </if>
+    </delete>
+    <!--统计每期金额-->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(rem_money) as amount FROM returnedmoney
+    </select>
+    <!--模糊条件查询-->
+    <select id="queryByLikeQuery" resultMap="ReturnedmoneyMap">
+        select rem.rem_id,rem.ord_id,rem.cus_id,rem.u_id,rem.rem_money,rem.rem_rem,rem.rem_billing,rem.rem_classify,rem.rem_date,rem.rem_remark,o.ord_theme,c.cus_name,u.u_name
+        from returnedmoney rem
+        LEFT JOIN orders o
+        ON rem.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rem.cus_id
+        LEFT JOIN `user` u
+        ON rem.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+           and rem.ord_id is not null
+            <if test="statevalue !=null || statevalue.length!=0 and statevalue!='全部数据'">
+                <choose>
+                    <when test="statevalue=='已回' || statevalue=='未回'">
+                        and rem.rem_rem=#{statevalue}
+                    </when>
+                    <when test="statevalue=='已开发票' || statevalue=='未开发票' || statevalue=='无需开票'">
+                        and rem.rem_billing=#{statevalue}
+                    </when>
+                    <when test="statevalue=='新客户付款' || statevalue=='老客户付款' || statevalue=='贷款' || statevalue=='服务费' ">
+                        and rem.rem_classify=#{statevalue}
+                    </when>
+                </choose>
+            </if>
+            <if test="input!=null and input.length!=0">
+                   and date_format(rem.rem_date,'%Y-%m-%d') like #{input}
+            </if>
+        </trim>
+        GROUP BY rem.rem_id DESC
+    </select>
+    <!--高级查询-->
+    <select id="REMAdvancedSearch" resultMap="ReturnedmoneyMap" parameterType="com.zktr.crmproject.vo.PLRemAdvancedSearch">
+        select rem.rem_id,rem.ord_id,rem.cus_id,rem.u_id,rem.rem_money,rem.rem_rem,rem.rem_billing,rem.rem_classify,rem.rem_date,rem.rem_remark,o.ord_theme,c.cus_name,u.u_name
+        from returnedmoney rem
+        LEFT JOIN orders o
+        ON rem.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rem.cus_id
+        LEFT JOIN `user` u
+        ON rem.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+        and rem.ord_id is not null
+        <if test="signingTimeStart!=null and signingTimeStart!=''">
+            and rem.rem_date &gt;#{signingTimeStart}
+        </if>
+            <if test="signingTimeEnd!=null and signingTimeEnd!=''">
+                and rem.rem_date &lt;#{signingTimeEnd}
+            </if>
+        <if test="remMoney!=null">
+            <choose>
+                <when test="remMoneySelect!=null and remMoneySelect.length!=0 and remMoneySelect=='大于'">
+                    and rem.rem_money&gt;#{remMoney}
+                </when>
+                <when test="remMoneySelect!=null and remMoneySelect.length!=0 and remMoneySelect=='小于'">
+                    and rem.rem_money&lt;#{remMoney}
+                </when>
+                <when test="remMoneySelect!=null and remMoneySelect.length!=0 and remMoneySelect=='等于'">
+                    and rem.rem_money&gt;#{remMoney} and &lt;#{remMoney}
+                </when>
+            </choose>
+        </if>
+        <if test="uname!=null and uname!='' and uname.length!=0">
+            <choose>
+                <when test="unameSelect!=null and unameSelect.length!=0 and unameSelect=='包含'">
+                    and u.u_name like #{uname}
+                </when>
+                <when test="unameSelect!=null and unameSelect.length!=0 and unameSelect=='不包含'">
+                    and u.u_name not like #{uname}
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        </if>
+        <if test="cusId!=null">
+            and c.cus_id=#{cusId}
+        </if>
+        <if test="remClassify.size() > 0">
+            and rem.rem_classify in
+            <foreach collection="remClassify" index="index" item="class" open="(" separator="," close=")">
+                #{class}
+            </foreach>
+        </if>
+        <if test="remRem.size() > 0">
+            and rem.rem_rem in
+            <foreach collection="remRem" index="index" item="rem" open="(" separator="," close=")">
+                #{rem}
+            </foreach>
+        </if>
+        <if test="remRemark!=null and remRemark!=''">
+            <choose>
+                <when test="remRemarkSelect!=null and remRemarkSelect!='' and remRemarkSelect.length!=0 and remRemarkSelect=='包含'">
+                    and rem.rem_remark like #{remRemark}
+                </when>
+                <when test="remRemarkSelect!=null and remRemarkSelect!='' and remRemarkSelect.length!=0 and remRemarkSelect=='不包含'">
+                    and rem.rem_remark not like #{remRemark}
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        </if>
+        </trim>
+        GROUP BY rem.rem_id DESC
+    </select>
+</mapper>

@@ -2,6 +2,7 @@ package com.zktr.crmproject.controller;
 
 import com.zktr.crmproject.pojos.Orderdetail;
 import com.zktr.crmproject.pojos.Product;
+import com.zktr.crmproject.pojos.Productclassification;
 import com.zktr.crmproject.service.PLproductService;
 import com.zktr.crmproject.utils.ExcelUtils;
 import com.zktr.crmproject.vo.*;
@@ -41,6 +42,7 @@ public class PLproductController {
 
     @PostMapping("/add_update_product")
     public Result addUpdateProduct(@RequestBody Product product){
+        System.out.println(product.getProId());
         pservice.addAndUpdateProduct(product);
         return Result.SUCCESS;
     }
@@ -144,6 +146,14 @@ public class PLproductController {
     @GetMapping("/findAllBySpe")
     public List<Product> findAllBySpe(){
         return pservice.findAllBySepcification();
+    }
+    @GetMapping("/findAllByClaStock")
+    public List<Productclassification> findAllByClaStock(){
+        return pservice.findAllByClaStock();
+    }
+    @GetMapping("/findAllCla")
+    public List<Productclassification> findAllCla(){
+        return pservice.findAllCla();
     }
     @GetMapping("/findBySpeid")
     public Product findBySpeid(Integer speid){

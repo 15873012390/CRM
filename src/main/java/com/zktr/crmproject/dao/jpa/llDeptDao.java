@@ -12,4 +12,6 @@ public interface llDeptDao extends CrudRepository<Department,Integer> {
     public Department findByName(String name);
     @Query("from Department d where d.parentId=?1")
     public List<Department> findDeleteDept(Integer id);
+//    @Query("from Department d")
+//    public List<Department> findAllDept();
 }

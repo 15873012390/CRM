@@ -4,10 +4,7 @@ import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.service.llDeptService;
 
-import com.zktr.crmproject.vo.DepartmentMes;
-import com.zktr.crmproject.vo.MyLog;
-import com.zktr.crmproject.vo.Result;
-import com.zktr.crmproject.vo.UserAndPositionParam;
+import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +51,28 @@ public class llDeptController {
     public Result deleteMore(@RequestBody UserAndPositionParam params){
         //postid是用户数组，uid是部门ID
         llDeptService.MoveUser(params.getPostId(),params.getuId());
+        return Result.SUCCESS;
+    }
+    //获取部门饼状信息
+    @PostMapping("/queryDeptPie")
+    public List<CountPie> queryDeptPie(){
+        return llDeptService.queryDeptPie();
+    }
+    //获取部门柱状信息
+    @PostMapping("/queryDeptBar")
+    public CountBar queryDeptBar(){
+        return llDeptService.queryDeptBar();
+    }
+    //获得部门员工
+    @GetMapping("/findDeptUser")
+    public List<User> findDeptUser(Integer dId){
+        System.out.println(dId);
+        return llDeptService.findDeptUser(dId);
+    }
+    //修改部门主管
+    @GetMapping("/setDeptManager")
+    public Result setDeptManager(Integer uId,Integer dId){
+        llDeptService.setDeptManager(uId, dId);
         return Result.SUCCESS;
     }
 }

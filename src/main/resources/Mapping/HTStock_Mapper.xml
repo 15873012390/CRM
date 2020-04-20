@@ -44,7 +44,7 @@
         select * from stock sto
         left join productspecification pros on sto.spe_id = pros.spe_id
         left join warehouse w on sto.warehouse_id = w.warehouse_id
-        left join alarmdetail a on sto.stock_id = a.stock_id order by sto.stock_id desc
+        left join alarmdetail a on sto.stock_id = a.stock_id where stock_status is null order by sto.stock_id desc
     </select>
 
     <update id="removeStockisZero">
@@ -94,7 +94,7 @@
     </select>
 
     <update id="updatestockQuantity" >
-        update stock set stock_quantity = #{stockQuantity} where spe_id = #{speId}
+        update stock set stock_quantity = #{stockQuantity} where spe_id = #{speId} and warehouse_id =#{warehouseId}
     </update>
 
     <select id="queryQuantityBySpeId" resultMap="stockMap">
@@ -104,6 +104,17 @@
     <!--统计每个仓库有多少库存-->
     <select id="PLQueryByStock" resultType="com.zktr.crmproject.vo.PLCountPie">
     SELECT w.warehouse_name as name,sum(s.stock_quantity) as value FROM stock s LEFT JOIN warehouse w ON s.warehouse_id=w.warehouse_id GROUP BY w.warehouse_name
+    </select>
+
+    <select id="queryStockByWarehouseAndSpeId" resultMap="stockMap">
+        select * from stock s
+        LEFT JOIN productspecification p on s.spe_id = p.spe_id
+        LEFT JOIN warehouse w on s.warehouse_id = w.warehouse_id
+        where p.spe_id =#{speId} and w.warehouse_id =#{warehouseId}
+    </select>
+
+    <select id="queryStockBySpeIdAndWarehouseId" resultMap="stockMap">
+        Select * from stock where spe_id = #{speId} and warehouse_id =#{warehouseId}
     </select>
 
 

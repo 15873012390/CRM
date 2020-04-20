@@ -9,6 +9,23 @@
         <result property="claIdId" column="cla_id_id"></result>
         <result property="claState" column="cla_state" ></result>
         <result property="claDatetime" column="cla_datetime"></result>
+        <!--产品集合-->
+        <collection property="product" ofType="Product">
+            <id property="proId" column="pro_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <!--规格集合-->
+            <collection property="productspecification" ofType="Productspecification">
+                <id property="speId" column="spe_id"></id>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="proName" column="pro_name"></result>
+
+                <!-- 库存对象 -->
+                <collection property="stocks" ofType="Stock">
+                    <id property="stockId" column="stock_id"></id>
+                    <result property="stockQuantity" column="stock_quantity"></result>
+                </collection>
+            </collection>
+        </collection>
     </resultMap>
 
     <select id="queryAllProductClassification" resultMap="ProductClassificationMap">
@@ -18,4 +35,29 @@
     <select id="findByClaId" resultMap="ProductClassificationMap">
         SELECT * FROM productclassification WHERE cla_id=#{claid}
     </select>
+    <!--连接库存的且不显示服务类的产品选择-->
+    <select id="findAllByStock" resultMap="ProductClassificationMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,s.spe_id,s.pro_name,st.stock_id,st.stock_quantity,cla.cla_id,cla.cla_id_id,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        LEFT JOIN stock st
+        ON s.spe_id=st.spe_id
+        WHERE p.pro_del_state=1 AND st.stock_id!=0 and  cla.cla_id_id!=13 and st.stock_quantity!=0
+        ORDER BY p.pro_id DESC
+    </select>
+    <!--不连接库存的不显示服务类的产品选择-->
+    <select id="findAll" resultMap="ProductClassificationMap">
+        SELECT p.pro_id,p.pro_name,pro_date,p.pro_mode,p.pro_unit,p.pro_group,p.pro_image,p.pro_price,p.pro_costprice,p.pro_state,p.pro_remark,p.pro_group,s.spe_specification,s.spe_id,s.pro_name,cla.cla_id,cla.cla_id_id,cla.cla_name
+        FROM product p
+        LEFT JOIN productspecification s
+        ON p.pro_id=s.pro_id
+        LEFT JOIN productclassification cla
+        ON p.cla_id=cla.cla_id
+        WHERE p.pro_del_state=1 and  cla.cla_id_id!=13
+        ORDER BY p.pro_id DESC
+    </select>
+
 </mapper>

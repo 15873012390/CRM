@@ -4,10 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.PLContractJDao;
-import com.zktr.crmproject.dao.mybatis.JrcQuoteDetailsMDao;
-import com.zktr.crmproject.dao.mybatis.PLContractMDao;
-import com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao;
-import com.zktr.crmproject.dao.mybatis.PLproductMDao;
+import com.zktr.crmproject.dao.mybatis.*;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.utils.UUIDUtils;
 import com.zktr.crmproject.vo.PLContractAdvancedSearch;
@@ -15,6 +12,7 @@ import com.zktr.crmproject.vo.Pager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sound.midi.Soundbank;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,8 @@ public class PLContractService {
     private PLProductSpecificationMDao specificationMDao;
     @Autowired
     private JrcQuoteDetailsMDao quoteDetailsMDao;
+    @Autowired
+    private JrcQuoteMDao quoteMDao;
 
     /**
      * 分页查询全部合同
@@ -83,8 +83,9 @@ public class PLContractService {
         c.setUser(contract.getUser());
         c.setProductspecification(contract.getProductspecification());
         c.setQuote(contract.getQuote());
-
         contractJDao.save(c);
+        //报价状态为转订单 修改为3
+        quoteMDao.PLupdateByQutId(c.getQuote().getQuoId());
     }
 
     /**
@@ -112,6 +113,8 @@ public class PLContractService {
             c.setQuote(contract.getQuote());
             c.setConQdid(contract.getConQdid());
             contractMDao.insertContract(c);
+            System.out.println("ccc"+c.getConSigningDate());
+
         }else {
            contractMDao.updateContract(contract);
         }
@@ -166,6 +169,7 @@ public class PLContractService {
         contractAdvancedSearch.setConTheme(ConTheme);
         contractAdvancedSearch.setConNumber(ConNumber);
         contractAdvancedSearch.setuId(uId);
+        //System.out.println("aaaa"+contractAdvancedSearch.getConThemeSelect());
         PageHelper.startPage(contractAdvancedSearch.getCurpage(),contractAdvancedSearch.getPagesize());
         List<Contract> list=contractMDao.ContractAdvancedSearch(contractAdvancedSearch);
         PageInfo<Contract> page=new PageInfo<>(list);

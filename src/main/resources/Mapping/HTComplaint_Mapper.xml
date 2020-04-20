@@ -68,7 +68,7 @@
             </foreach>
         </if>
         <if test="dealResult!=null and dealResult.length!=0">
-            and cp.dealResult in
+            and cp.deal_result in
             <foreach collection="dealResult" index="index" item="dr"
                      open="(" separator="," close=")">
                 #{dr}
@@ -81,13 +81,13 @@
         select * from complaint cp,customer ct where cp.cus_id = ct.cus_id
         <if test="value!=null and value.length!=0 and value!='全部数据'">
             <choose>
-                <when test="value=='未处理' || value=='处理中' || value=='处理完成'">
+                <when test="value=='未处理'.toString() || value=='处理中'.toString() || value=='处理完成'.toString()">
                     and cp.deal_result=#{value}
                 </when>
-                 <when test="value=='非常紧急' || value=='急' || value=='普通'">
+                 <when test="value=='非常紧急'.toString() || value=='急'.toString() || value=='普通'.toString()">
                 and cp.emergency_level=#{value}
                 </when>
-                <when test="value=='产品投诉' || value=='服务投诉' || value=='客户意见' || value=='其他'">
+                <when test="value=='产品投诉'.toString() || value=='服务投诉'.toString() || value=='客户意见'.toString() || value=='其他'.toString()">
                     and cp.classify=#{value}
                 </when>
             </choose>
@@ -99,6 +99,50 @@
         </choose>
         order by cp.com_id desc
     </select>
+
+    <select id="pieChartQuery" resultType="Map">
+        select
+        <if test="selectValue==1">
+            spent_time
+        </if>
+        <if test="selectValue==2">
+            classify
+        </if>
+        as name,count(*) as value from complaint
+        group by
+        <if test="selectValue==1">
+            spent_time
+        </if>
+        <if test="selectValue==2">
+            classify
+        </if>
+    </select>
+
+    <select id="queryByMonth" resultType="Map">
+         select m.id name, IFNULL(b,0) value from
+(
+  select 1 as id union select 2 union select 3 union select 4 union select 5 union select 6
+  union select 7 union select 8 union select 9 union select 10 union select 11 union select 12
+) m
+left join
+(select month(com_date) a,count(title) b from complaint GROUP BY month(com_date)) n
+on m.id = n.a
+    </select>
+
+    <select id="queryByCustomer" resultType="Map">
+        select cus.cus_name name,count(*) value
+        from complaint c,customer cus where c.cus_id=cus.cus_id GROUP BY c.cus_id limit 10
+    </select>
+
+    <insert id="insertComplaint" parameterType="Complaint" useGeneratedKeys="true" keyProperty="comId">
+        insert into complaint values(#{comId},#{customer.cusId},#{title},#{receptionPerson},#{classify},#{describes},#{comDate},#{complainant},#{emergencyLevel},
+        #{treatmentProcess},#{dealResult},#{spentTime},#{cusFeedback},#{returnConfirmation},#{remarks})
+    </insert>
+
+    <update id="updateComplaint" parameterType="Complaint">
+        update complaint set com_id =#{comId},cus_id=#{customer.cusId},title=#{title},reception_person=#{receptionPerson},classify=#{classify},describes=#{describes},com_date=#{comDate},complainant=#{complainant},emergency_level=#{emergencyLevel},treatment_process=#{treatmentProcess},
+        deal_result=#{dealResult},spent_time=#{spentTime},cus_feedback=#{cusFeedback},return_confirmation=#{returnConfirmation},remarks=#{remarks} where com_id = #{comId}
+    </update>
 
 
 

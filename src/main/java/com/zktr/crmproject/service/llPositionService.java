@@ -3,9 +3,11 @@ package com.zktr.crmproject.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.llPositionDao;
+import com.zktr.crmproject.dao.mybatis.llUserAndPositionDao;
 import com.zktr.crmproject.dao.mybatis.lliPositionDao;
 import com.zktr.crmproject.pojos.Position;
 import com.zktr.crmproject.vo.Pager;
+import com.zktr.crmproject.vo.UserAndPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ public class llPositionService {
     private llPositionDao llPositionDao;
     @Autowired
     private lliPositionDao lliPositionDao;
+    @Autowired
+    private llUserAndPositionDao llUserAndPositionDao;
     public Pager<Position> findAllPositons(Integer curpage,Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
         List<Position> list=lliPositionDao.findAllPosition();
@@ -40,5 +44,9 @@ public class llPositionService {
         Position po=llPositionDao.findById(p.getPostId()).get();
         po.setPostName(p.getPostName());
         po.setPostMes(p.getPostMes());
+    }
+    //获得该职位所有用户
+    public List<UserAndPosition> positionUser(Integer postId){
+        return llUserAndPositionDao.positionUser(postId);
     }
 }

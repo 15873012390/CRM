@@ -14,15 +14,27 @@ public class Returnedmoney {
     private String remRem;
     private String remBilling;
     private String remClassify;
+
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp remDate;
     private String remRemark;
-    @JsonIgnoreProperties("returnedmoney")
+
     private Customer customer;
-    @JsonIgnoreProperties("returnedmoney")
+
     private Orders orders;
-    @JsonIgnoreProperties("returnedmoney")
+
     private User user;
+
+    private Contract contract;//合同对象 新增
+    @ManyToOne
+    @JoinColumn(name="ctr_id",referencedColumnName = "ctr_id")
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
 
     @Id
     @Column(name = "rem_id")

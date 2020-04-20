@@ -19,4 +19,14 @@ public interface HTIComplaintDao {
 
     public List<Complaint> queryComplaintByPage(ComplaintAdvancedSearch cas);
 
+    public List pieChartQuery(String selectValue);
+
+    public List queryByMonth();
+
+    public List queryByCustomer();
+
+    public void insertComplaint(Complaint complaint);
+
+    public void updateComplaint(Complaint complaint);
+
 }

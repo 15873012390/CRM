@@ -24,6 +24,8 @@ public interface HTIInstockDao {
 
     public void deleteInstockDetailById(Integer insId);
 
+    public void deleteInstockDetailBySpeIdAndInsId(Integer speId,Integer insId);
+
     public List<Instock> querySelectAndInputByPage(String value, String input, String select);
 
     public List<Instock> queryInstockByAdvancedSearch(InstockAdvancedSearch iad);
@@ -33,4 +35,6 @@ public interface HTIInstockDao {
     public void insertInstockDetail(Instockdetail insd);
 
     public void updateInstockDetail(Instockdetail insd);
+
+    public Instockdetail queryInsdByInsIdAndSpeId(Integer insId,Integer speId);
 }

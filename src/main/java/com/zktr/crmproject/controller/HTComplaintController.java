@@ -9,6 +9,8 @@ import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class HTComplaintController {
     @Autowired
@@ -49,6 +51,17 @@ public class HTComplaintController {
     @GetMapping("/queryComplaintByComId")
     public Complaint queryComplaintByComId(Integer comId){
         return complaintService.queryComplaintByComId(comId);
+    }
+
+    @GetMapping("/pieChartComplaintQuery")
+    public List pieChartComplaintQuery(String selectValue){
+        return complaintService.pieChartQuery(selectValue);
+    }
+
+    @GetMapping("/linediagramComplaintQuery")
+    public List linediagramQuery(Integer selectValue2){
+        System.out.println(selectValue2+"6546456");
+        return complaintService.linediagramQuery(selectValue2);
     }
 
 }

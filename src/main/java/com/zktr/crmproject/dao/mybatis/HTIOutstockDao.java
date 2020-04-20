@@ -26,9 +26,15 @@ public interface HTIOutstockDao {
 
     public void deleteOutstockDetailByOutId(Integer outId);
 
+    public void deleteOutstockDetailByOutIdAndSpeId(Integer outId,Integer speId);
+
     public void updateOutDeatails(Outstockdetails outstockdetails);
 
     public List<Outstock> queryOutStockSelectAndInputByPage(String value,String input,String select);
 
     public List<Outstock> queryoutStockByAdvancedSearch(OutStockAdvancedSearch oas);
+
+    public Outstock queryOutstockByOrdId(Integer ordId);
+
+    public Outstockdetails queryOsdByOutIdAndSpeId(Integer outId,Integer speId);
 }

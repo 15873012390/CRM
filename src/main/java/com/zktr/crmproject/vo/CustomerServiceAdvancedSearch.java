@@ -5,12 +5,12 @@ import java.util.Date;
 public class CustomerServiceAdvancedSearch{
     private int csId;
     private String title;
-    private String serviceType;
-    private String serviceWay;
+    private String serviceType[];
+    private String serviceWay[];
     private Date startTime[];
     private String spendTime;
     private String executor;
-    private String status;
+    private String status[];
     private Integer cusId;
     private Integer cusName;
     private Integer curPage;
@@ -34,20 +34,28 @@ public class CustomerServiceAdvancedSearch{
         this.title = title;
     }
 
-    public String getServiceType() {
+    public String[] getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(String serviceType) {
+    public void setServiceType(String[] serviceType) {
         this.serviceType = serviceType;
     }
 
-    public String getServiceWay() {
+    public String[] getServiceWay() {
         return serviceWay;
     }
 
-    public void setServiceWay(String serviceWay) {
+    public void setServiceWay(String[] serviceWay) {
         this.serviceWay = serviceWay;
+    }
+
+    public String[] getStatus() {
+        return status;
+    }
+
+    public void setStatus(String[] status) {
+        this.status = status;
     }
 
     public Date[] getStartTime() {
@@ -73,15 +81,6 @@ public class CustomerServiceAdvancedSearch{
     public void setExecutor(String executor) {
         this.executor = executor;
     }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
 
     public Integer getCusId() {
         return cusId;

@@ -28,28 +28,36 @@ public class Orders {
     private String outStatus;
     private String ordRemark;
     private Integer ordDelState;
-    @JsonIgnoreProperties("orders")
+    private int rmOrOmp; //标识是计划回款还是回款
+
+
     private List<Outstock> outstock;
-    @JsonIgnoreProperties("orders")
     private Customer customer;
-    @JsonIgnoreProperties("orders")
     private User user;
-    @JsonIgnoreProperties("orders")
     private Quote quote;
-    @JsonIgnoreProperties("orders")
+
     private List<Orderdetail> orderdetail;
-    @JsonIgnoreProperties("orders")
+
     private List<Sendout> sendout;
-    @JsonIgnoreProperties("orders")
+
     private List<Returnedgoods> returnedgoods;
-    @JsonIgnoreProperties("orders")
+
     private List<Returnedmoney> returnedmoney;
-    @JsonIgnoreProperties("orders")
+
     private List<Returnedmoneyplan> returnedmoneyplan;
-    @JsonIgnoreProperties("orders")
+
     private List<Invoice> invoice;
-    @JsonIgnoreProperties("orders")
+
     private Address address;
+    @Basic
+    @Column(name = "rm_or_rmp")
+    public int getRmOrOmp() {
+        return rmOrOmp;
+    }
+
+    public void setRmOrOmp(int rmOrOmp) {
+        this.rmOrOmp = rmOrOmp;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -17,12 +17,16 @@ public class Returnedmoneyplan {
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp rmpDate;
     private String rmpRemark;
-    @JsonIgnoreProperties("returnedmoneyplan")
+
+    private Contract contract; //合同对象 后增加新字段
+
     private Customer customer;
-    @JsonIgnoreProperties("returnedmoneyplan")
+
     private Orders orders;
-    @JsonIgnoreProperties("returnedmoneyplan")
+
     private User user;
+
+
 
     @Id
     @Column(name = "rmp_id")
@@ -123,5 +127,14 @@ public class Returnedmoneyplan {
 
     public void setUser(User user) {
         this.user = user;
+    }
+    @ManyToOne
+    @JoinColumn(name="ctr_id",referencedColumnName = "ctr_id")
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 }

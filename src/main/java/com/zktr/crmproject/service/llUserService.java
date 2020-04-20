@@ -2,18 +2,17 @@ package com.zktr.crmproject.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zktr.crmproject.dao.jpa.llDeptDao;
 import com.zktr.crmproject.dao.mybatis.llUserAndPositionDao;
 import com.zktr.crmproject.dao.mybatis.lliUserDao;
 import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
-import com.zktr.crmproject.vo.Pager;
-import com.zktr.crmproject.vo.PowerAndDept;
-import com.zktr.crmproject.vo.UserAndPosition;
-import com.zktr.crmproject.vo.UserMes;
+import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -132,5 +131,12 @@ public class llUserService {
         user.setuSex(userMes.getuSex());
         user.setuName(userMes.getuName());
         user.setuImg(userMes.getuImg());
+    }
+    //筛选信息
+    public Pager<PowerAndDept> screenUser(String value){
+        PageHelper.startPage(1,5);
+        List<PowerAndDept> user=llUserAndPositionDao.screenUser(value);
+        PageInfo<PowerAndDept> pager=new PageInfo<>(user);
+        return new Pager<PowerAndDept>(pager.getTotal(),pager.getList());
     }
 }

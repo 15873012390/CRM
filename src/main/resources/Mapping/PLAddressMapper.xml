@@ -18,7 +18,10 @@
            <id property="cusId" column="cus_id"></id>
             <result property="cusName" column="cus_name"></result>
         </association>
-
+        <collection property="orders" ofType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_number"  property="ordNumber"></result>
+        </collection>
     </resultMap>
     <!--根据id查找-->
     <select id="findByAddid" resultMap="addressMap">
@@ -34,8 +37,15 @@
                value (#{customer.cusId},#{addName},#{addPhone},#{addAddress},#{addType},#{addPostcode},#{addProvince},#{addCity},#{addDistrict})
     </insert>
 
-    <update id="updateAddress" parameterType="com.zktr.crmproject.vo.PLaddressVo">
-        update address set cus_id=#{cusId},add_name=#{addName},add_phone=#{addPhone},add_address=#{addAddress},add_type=#{addType},add_postcode=#{addPostcode},add_province=#{addProvince},add_city=#{addCity},add_district=#{addDistrict}   where add_id=#{addId} ;
+    <update id="updateAddress">
+        update address set cus_id=#{customer.cusId},add_name=#{addName},add_phone=#{addPhone},add_address=#{addAddress},add_type=#{addType},add_postcode=#{addPostcode},add_province=#{addProvince},add_city=#{addCity},add_district=#{addDistrict}   where add_id=#{addId} ;
     </update>
-
+    <!--查找地址 订单中的地址-->
+    <select id="findByAddidByOrders" resultMap="addressMap">
+        SELECT ad.add_id,ad.add_name,ad.add_phone,ad.add_address,ad.add_type,ad.add_postcode,ad.add_province,ad.add_city,ad.add_district
+        FROM address ad
+        LEFT JOIN orders o
+        ON ad.add_id=o.add_id
+        WHERE ad.add_id=#{addid}
+    </select>
 </mapper>

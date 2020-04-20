@@ -17,13 +17,9 @@ public class Orderdetail {
     private String detCondition;
     private String detRemark;
     private BigDecimal detMoney;
-    @JsonIgnoreProperties("orderdetail")
     private Orders orders;
-    @JsonIgnoreProperties("orderdetail")
     private Productspecification productspecification;
-    @JsonIgnoreProperties("orderdetail")
     private User user;
-    @JsonIgnoreProperties("orderdetail")
     private Customer customer;
 
     @Id

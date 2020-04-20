@@ -73,8 +73,12 @@ public class HTComplaintService {
      * @param complaint
      */
     public Integer addAndEditComplaint(Complaint complaint){
-        Complaint save = complaintDao.save(complaint);
-        return save.getComId();
+        if(complaint.getComId()==0){
+            icomplaintDao.insertComplaint(complaint);
+        }else{
+            icomplaintDao.updateComplaint(complaint);
+        }
+        return complaint.getComId();
     }
 
     /**
@@ -103,6 +107,29 @@ public class HTComplaintService {
     public Complaint queryComplaintByComId(Integer comId){
         return icomplaintDao.queryById(comId);
     }
+
+    /**
+     * 投诉界面饼图
+     * @param selectValue
+     * @return
+     */
+    public List pieChartQuery(String selectValue){
+        return icomplaintDao.pieChartQuery(selectValue);
+    }
+
+    /**
+     * 折线图
+     * @param selectValue2
+     * @return
+     */
+    public List linediagramQuery(Integer selectValue2){
+        if(selectValue2 == 1){
+            return icomplaintDao.queryByMonth();
+        }else{
+            return icomplaintDao.queryByCustomer();
+        }
+    }
+
 
 
 

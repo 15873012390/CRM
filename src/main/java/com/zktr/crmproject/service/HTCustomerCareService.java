@@ -72,8 +72,12 @@ public class HTCustomerCareService {
      * @param customercare
      */
     public Integer addAndEditCustomerCare(Customercare customercare){
-        Customercare save = customerCareDao.save(customercare);
-        return save.getCcId();
+        if(customercare.getCcId()==0){
+            icustomerCareDao.insertCustomerCare(customercare);
+        }else {
+            icustomerCareDao.updateCustomserCare(customercare);
+        }
+        return customercare.getCcId();
     }
 
     /**

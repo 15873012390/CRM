@@ -17,7 +17,7 @@ public class Instock {
     private Timestamp fillTime;
     private String status;
     private String filler;
-    private Integer keeper;
+    private String keeper;
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp executionTime;
     private String remarks;
@@ -26,6 +26,7 @@ public class Instock {
     private Returnedgoods returnedgoods;
     private Supplier supplier;
     private List<Instockdetail> instockdetail;
+    private Warehouseallocation warehouseallocation;
     @Id
     @Basic
     @Column(name = "ins_id")
@@ -79,13 +80,14 @@ public class Instock {
         this.filler = filler;
     }
 
+
     @Basic
     @Column(name = "keeper")
-    public Integer getKeeper() {
+    public String getKeeper() {
         return keeper;
     }
 
-    public void setKeeper(Integer keeper) {
+    public void setKeeper(String keeper) {
         this.keeper = keeper;
     }
 
@@ -150,6 +152,16 @@ public class Instock {
         this.supplier = supplier;
     }
 
+    @ManyToOne
+    @JoinColumn(name="wa_id",referencedColumnName = "wa_id")
+    public Warehouseallocation getWarehouseallocation() {
+        return warehouseallocation;
+    }
+
+    public void setWarehouseallocation(Warehouseallocation warehouseallocation) {
+        this.warehouseallocation = warehouseallocation;
+    }
+
     @OneToMany(mappedBy = "instock",cascade = CascadeType.ALL)
     public List<Instockdetail> getInstockdetail() {
         return instockdetail;
@@ -157,5 +169,24 @@ public class Instock {
 
     public void setInstockdetail(List<Instockdetail> instockdetail) {
         this.instockdetail = instockdetail;
+    }
+
+    @Override
+    public String toString() {
+        return "Instock{" +
+                "insId=" + insId +
+                ", title='" + title + '\'' +
+                ", fillTime=" + fillTime +
+                ", status='" + status + '\'' +
+                ", filler='" + filler + '\'' +
+                ", keeper='" + keeper + '\'' +
+                ", executionTime=" + executionTime +
+                ", remarks='" + remarks + '\'' +
+                ", warehouse=" + warehouse +
+                ", purchaseorder=" + purchaseorder +
+                ", returnedgoods=" + returnedgoods +
+                ", supplier=" + supplier +
+                ", instockdetail=" + instockdetail +
+                '}';
     }
 }

@@ -137,4 +137,12 @@ public class llUserAndMessageController {
         llUserService.editMes(userMes);
         return Result.SUCCESS;
     }
+    //筛选信息
+    @GetMapping("/screenUser")
+    public Pager<PowerAndDept> screenUser(String value){
+        System.out.println(value);
+//        Pager<PowerAndDept> p=llUserService.screenUser(value);
+//        System.out.println(p.getList().toString());
+        return llUserService.screenUser(value);
+    }
 }

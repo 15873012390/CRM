@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class llLogController {
     @Autowired
@@ -18,5 +20,11 @@ public class llLogController {
     public Pager<Log> findAllLog(Integer curpage, Integer pagesize){
         System.out.println(curpage+pagesize);
         return llLogService.findAllLogs(curpage, pagesize);
+    }
+    //根据用户名获得日志信息
+    @GetMapping("/findLogByName")
+    public Pager<Log> findLogByName(Integer curpage, Integer pagesize,String uname){
+        System.out.println(uname);
+        return llLogService.findLogsByName(curpage,pagesize,uname);
     }
 }

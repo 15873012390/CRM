@@ -11,7 +11,6 @@ public class Instockdetail {
     private String status;
     private String remarks;
     private Productspecification productspecification;
-    @JsonIgnoreProperties("instockdetail")
     private Instock instock;
 
     @Id

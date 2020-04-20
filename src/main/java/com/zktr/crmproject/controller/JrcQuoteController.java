@@ -1,15 +1,14 @@
 package com.zktr.crmproject.controller;
 
+import com.github.pagehelper.Page;
 import com.zktr.crmproject.pojos.Quote;
 import com.zktr.crmproject.service.JrcQuoteService;
+import com.zktr.crmproject.vo.JrcQuoteAdvancedQuery;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class JrcQuoteController {
@@ -28,6 +27,41 @@ public class JrcQuoteController {
         return quoteService.queryAllByPage(curpage,pagesize);
     }
 
+    @GetMapping("/query_all_by_like_page")
+    @ResponseBody
+    public Pager queryAllByLikePage(Integer curpage,Integer pagesize,String value,String input){
+        return quoteService.queryAllByLikePage(curpage,pagesize,value,input);
+    }
+
+    @DeleteMapping("/delete_by_quoId")
+    @ResponseBody
+    public Result deleteByQuoId(Integer quoId){
+        return quoteService.deleteByQuoId(quoId);
+    }
+
+    @PostMapping("/delete_by_quoIds")
+    @ResponseBody
+    public Result deleteByQuoIds(@RequestBody Integer[] quoIds){
+        return quoteService.deleteByQuoIds(quoIds);
+    }
+
+    @GetMapping("/query_by_quoId")
+    @ResponseBody
+    public Quote queryByQuoId(Integer quoId){
+        return quoteService.queryByQuoId(quoId);
+    }
+
+    @PostMapping("/query_quote_by_advanced_search")
+    @ResponseBody
+    public Pager queryQuoteByAdvancedSearch(@RequestBody JrcQuoteAdvancedQuery quoteAdvancedQuery){
+        return quoteService.queryQuoteByAdvancedSearch(quoteAdvancedQuery);
+    }
+
+    @GetMapping("/save_copy_quote")
+    @ResponseBody
+    public Result saveCopyQuote(String quotationNo,Integer uId,Integer cusId){
+        return quoteService.saveCopyQuote(quotationNo,uId,cusId);
+    }
 
 
 }

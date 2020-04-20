@@ -1,7 +1,6 @@
 package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.Address;
-import com.zktr.crmproject.vo.PLaddressVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +16,6 @@ public interface PLAddressMDao {
     public void insertAddress(Address address);
     //根据id修改
     public void updateAddress(Address address);
+    //查询订单中的地址
+    public Address findByAddidByOrders(Integer addid);
 }

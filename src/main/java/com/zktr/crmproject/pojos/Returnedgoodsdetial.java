@@ -12,7 +12,6 @@ public class Returnedgoodsdetial {
     private Integer rgdAmount;
     private BigDecimal rgdMoney;
     private String rgdRemark;
-    @JsonIgnoreProperties("returnedgoodsdetial")
     private Returnedgoods returnedgoods;
     private Productspecification productspecification;
 

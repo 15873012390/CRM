@@ -18,6 +18,8 @@ public interface PLproductMDao {
     public List<Product> test();
     public List<Product> likeByInput(@Param("input") String input);
     public List<Product> selectByValue(@Param("value") String value);
+    public void insertProduct(Product product);
+    public void updateProduct(Product product);
     //查询产品页面
     public List<Product> findAll();
     public Product findBySpeid(@Param("speid") Integer speid);
@@ -26,6 +28,7 @@ public interface PLproductMDao {
     //HT
     public List<Product> queryAllProductInstock();
     public Product findBySpeidInstock(@Param("speid") Integer speid);
+
 
 
 }

@@ -5,10 +5,7 @@ import com.zktr.crmproject.pojos.Instock;
 import com.zktr.crmproject.pojos.Instockdetail;
 import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.service.HTInstockService;
-import com.zktr.crmproject.vo.InstockAdvancedSearch;
-import com.zktr.crmproject.vo.InstockDetailVo;
-import com.zktr.crmproject.vo.Pager;
-import com.zktr.crmproject.vo.Result;
+import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +42,8 @@ public class HTInstockController {
     }
 
     @GetMapping("/updateInstockStatus")
-    public Result updateInstockStatus(Integer insId,Integer type){
-        instockService.updateInstockStatus(insId,type);
+    public Result updateInstockStatus(Integer insId,Integer type,String uName){
+        instockService.updateInstockStatus(insId,type,uName);
         return Result.SUCCESS;
     }
 
@@ -79,6 +76,13 @@ public class HTInstockController {
     public void addorEditInstockdetails(@RequestBody InstockDetailVo instockDetailVo){
         instockService.addorEditInstockdetails(instockDetailVo);
     }
+
+    @PostMapping("/addInstockDemand")
+    public Result addInstockDemand(@RequestBody List<ProductDemandVo> productDemandVos){
+        instockService.addInstockDemand(productDemandVos);
+        return Result.SUCCESS;
+    }
+
 
 
 }

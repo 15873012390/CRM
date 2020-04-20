@@ -21,10 +21,10 @@ public class User {
     private Integer uStatus;
     @Excel(name = "性别")
     private String uSex;
-//    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uBirth;
-//    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    //    @DateTimeFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
     @Excel(name = "加入日期")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uJoindate;
@@ -55,32 +55,25 @@ public class User {
     private List<Evectionsummarize> eventionsummarize;
     @JsonIgnoreProperties("user")
     private List<Quote> quote;
+    /*   @JsonIgnoreProperties("user")*/
+    private List<Audit> audit;
     @JsonIgnoreProperties("user")
     private List<Auditdetails> auditdetails;
     @JsonIgnoreProperties("user")
     private List<Costaudit> costaudit;
-    @JsonIgnoreProperties("user")
     private List<Costauditdetails> coatauditdetails;
-    @JsonIgnoreProperties("user")
     private List<Position> position;
-    @JsonIgnoreProperties("user")
     private Department department;
-    @JsonIgnoreProperties("user")
     private List<Leaved> leaved;
-    @JsonIgnoreProperties("user")
     private List<Orders> orders;
-    @JsonIgnoreProperties("user")
     private List<Orderdetail> orderdetail;
-    @JsonIgnoreProperties("user")
     private List<Contract> contract;
-    @JsonIgnoreProperties("user")
     private List<Returnedgoods> returnedgoods;
-    @JsonIgnoreProperties("user")
     private List<Returnedmoney> returnedmoney;
-    @JsonIgnoreProperties("user")
     private List<Returnedmoneyplan> returnedmoneyplan;
-    @JsonIgnoreProperties("user")
     private List<Invoice> invoice;
+    private List<Warehouseallocation> inConfirms;
+    private List<Warehouseallocation> outConfirms;
 
     @Id
     @Column(name = "u_id", nullable = false)
@@ -120,6 +113,7 @@ public class User {
     public void setuSex(String uSex) {
         this.uSex = uSex;
     }
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     public Timestamp getuBirth() {
         return uBirth;
@@ -128,6 +122,7 @@ public class User {
     public void setuBirth(Timestamp uBirth) {
         this.uBirth = uBirth;
     }
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     public Timestamp getuJoindate() {
         return uJoindate;
@@ -289,6 +284,15 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user")
+    public List<Audit> getAudit() {
+        return audit;
+    }
+
+    public void setAudit(List<Audit> audit) {
+        this.audit = audit;
+    }
+
+    @OneToMany(mappedBy = "user")
     public List<Auditdetails> getAuditdetails() {
         return auditdetails;
     }
@@ -418,5 +422,23 @@ public class User {
                 ", uJoindate=" + uJoindate +
                 ", uImg='" + uImg + '\'' +
                 '}';
+    }
+
+    @OneToMany(mappedBy = "inUser")
+    public List<Warehouseallocation> getInConfirms() {
+        return inConfirms;
+    }
+
+    public void setInConfirms(List<Warehouseallocation> inConfirms) {
+        this.inConfirms = inConfirms;
+    }
+
+    @OneToMany(mappedBy = "outUser")
+    public List<Warehouseallocation> getOutConfirms() {
+        return outConfirms;
+    }
+
+    public void setOutConfirms(List<Warehouseallocation> outConfirms) {
+        this.outConfirms = outConfirms;
     }
 }

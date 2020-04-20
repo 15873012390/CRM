@@ -76,4 +76,9 @@ public class HTWareHouseController {
         return warehouseService.queryAllWarehouse();
     }
 
+
+
+
+
+
  }

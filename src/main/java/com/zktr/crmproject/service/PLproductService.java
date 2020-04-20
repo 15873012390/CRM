@@ -4,13 +4,16 @@ package com.zktr.crmproject.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sun.org.apache.regexp.internal.RE;
 import com.zktr.crmproject.dao.jpa.PLProductJDao;
 import com.zktr.crmproject.dao.jpa.PLProductSpecificationJDao;
 import com.zktr.crmproject.dao.mybatis.HTIStockDao;
+import com.zktr.crmproject.dao.mybatis.PLProductClassificationMDao;
 import com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
 import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.pojos.Productclassification;
+import com.zktr.crmproject.pojos.Productspecification;
 import com.zktr.crmproject.pojos.Salesopport;
 import com.zktr.crmproject.vo.PLCountPie;
 import com.zktr.crmproject.vo.Pager;
@@ -40,6 +43,8 @@ public class PLproductService {
     private PLProductSpecificationJDao psjdao;
     @Autowired
     private HTIStockDao stockDao;
+    @Autowired
+    private PLProductClassificationMDao productClassificationMDao;
 
     /**
      * 分页查询全部产品
@@ -61,22 +66,33 @@ public class PLproductService {
      * @param product
      */
     public Integer addAndUpdateProduct(Product product){
-       product.setProDelState(1);
-       //保存
-       pjpdao.save(product);
-        ProductSpecificationVo productSpecificationVo=new ProductSpecificationVo();
-        //找到最大的id添加进去
-        //Integer proid=pmpdao.findMaxProid();
-        List<Product> list=pmpdao.queryAllProduct();
-        productSpecificationVo.setProId(list.get(0).getProId());
-        productSpecificationVo.setProName(product.getProName());
-        productSpecificationVo.setSpeSpecification("基准");
-        productSpecificationVo.setSpeUnit("个");
-        productSpecificationVo.setSpeUnitConversion(1);
-        psmdao.insertSpe(productSpecificationVo);
-       return product.getProId();
-
+        if(product.getProId()==0){
+            product.setProDelState(1);
+            //保存
+            Product product1 = pjpdao.save(product);
+            Productspecification productspecification=new Productspecification();
+            productspecification.setProduct(product1);
+            productspecification.setProName(product1.getProName());
+            productspecification.setSpeSpecification("基准");
+            productspecification.setSpeUnit("个");
+            productspecification.setSpeUnitConversion(1);
+            psmdao.insertSpeProduct(productspecification);
+            return product.getProId();
+        }else {
+            return 0;
+        }
     }
+    public void addspe(){
+        List<Product> list=pmpdao.queryAllProduct();
+        Productspecification productspecification=new Productspecification();
+        productspecification.setProduct(list.get(0));
+        productspecification.setProName(list.get(0).getProName());
+        productspecification.setSpeSpecification("基准");
+        productspecification.setSpeUnit("个");
+        productspecification.setSpeUnitConversion(1);
+        psmdao.insertSpeProduct(productspecification);
+    }
+
 
     public void addSpe(){
 
@@ -139,14 +155,14 @@ public class PLproductService {
         String proMode="%"+productAdvancedSearch.getProMode().trim()+"%";
         productAdvancedSearch.setProName(proName);
         productAdvancedSearch.setProMode(proMode);
-        if(productAdvancedSearch.getProPrice()==0.0 || productAdvancedSearch.getProCostprice()==0.0){
+        /*if(productAdvancedSearch.getProPrice()==0 || productAdvancedSearch.getProCostprice()==0){
             productAdvancedSearch.setProPrice(null);
             productAdvancedSearch.setProCostprice(null);
-        }
+        }*/
         PageHelper.startPage(productAdvancedSearch.getCurpage(),productAdvancedSearch.getSizepage());
         List<Product> productList=pmpdao.ProductAdvancedSearch(productAdvancedSearch);
         PageInfo<Product> page=new PageInfo<>(productList);
-        System.out.println(productAdvancedSearch.getProState()+"\t"+productAdvancedSearch.getProPrice()+"\t"+productAdvancedSearch.getProCostprice());
+        //System.out.println(productAdvancedSearch.getProState()+"\t"+productAdvancedSearch.getProPrice()+"\t"+productAdvancedSearch.getProCostprice());
         return new Pager<Product>(page.getTotal(),page.getList());
     }
 
@@ -197,12 +213,40 @@ public class PLproductService {
         List<Product> select=pmpdao.selectByValue(value.trim());
         return select;
     }
+
+    /**
+     * 选择产品页面
+     * @return
+     */
     public List<Product> findAllBySepcification(){
         return pmpdao.findAll();
     }
+
+    /**
+     * 选择产品页面
+     * @param speid
+     * @return
+     */
     public Product findBySpeid(Integer speid){
         return pmpdao.findBySpeid(speid);
     }
+
+    /**
+     * 选择产品页面
+     * @return
+     */
+    public List<Productclassification> findAllByClaStock(){
+        return productClassificationMDao.findAllByStock();
+    }
+
+    /**
+     * 选择产品页面
+     * @return
+     */
+    public List<Productclassification> findAllCla(){
+        return productClassificationMDao.findAll();
+    }
+
 
     /** HT
      * 入库所需的产品

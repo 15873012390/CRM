@@ -21,7 +21,11 @@
         <result property="postName" column="post_name"></result>
 
     </resultMap>
-
+    <select id="positionUser" resultMap="lluserMap">
+        select u.u_id,u_name from user_position a
+        left join user u on a.u_id = u.u_id
+        where post_id=#{postId}
+    </select>
     <select id="findAllUsers" resultMap="lluserMap">
         SELECT u.u_id,u_name,u_sex,u_birth,u_joindate,u_img,d.d_id,d_name,group_concat(b.post_id) post_id,group_concat(b.post_name) post_name FROM user_position a
         left join position b ON a.post_id = b.post_id
@@ -36,6 +40,14 @@
         left join user u on a.u_id = u.u_id
         left join department d on u.d_id = d.d_id
         where u.u_status=1 and u.u_name like CONCAT('%',#{uname},'%')
+        group by u.u_id asc
+    </select>
+    <select id="screenUser" resultMap="lluserMap">
+        SELECT u.u_id,u_name,u_sex,u_birth,u_joindate,u_img,d.d_id,d_name,group_concat(b.post_id) post_id,group_concat(b.post_name) post_name FROM user_position a
+        left join position b ON a.post_id = b.post_id
+        left join user u on a.u_id = u.u_id
+        left join department d on u.d_id = d.d_id
+ 				where u.u_status=1 and concat(u.u_sex, d.d_name,b.post_name) LIKE CONCAT('%',#{value},'%')
         group by u.u_id asc
     </select>
 </mapper>

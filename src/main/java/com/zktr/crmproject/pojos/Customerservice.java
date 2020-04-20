@@ -22,7 +22,6 @@ public class Customerservice {
     private String serviceContent;
     private String customerFeedback;
     private String remarks;
-    @JsonIgnoreProperties("customerservices")
     private Customer customer;
 
     @Id

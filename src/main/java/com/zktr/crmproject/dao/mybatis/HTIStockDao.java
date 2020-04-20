@@ -19,9 +19,11 @@ public interface HTIStockDao {
 
     public Stock queryStockByStockId(Integer stockId);
 
-    public void updatestockQuantity(Integer stockQuantity,Integer speId);
+    public void updatestockQuantity(Integer stockQuantity,Integer speId,Integer warehouseId);
 
     public Stock queryQuantityBySpeId(Integer speId);
 
     public List<PLCountPie> PLQueryByStock();
+
+    public Stock queryStockByWarehouseAndSpeId(Integer speId,Integer warehouseId);
 }

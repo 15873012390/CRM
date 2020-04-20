@@ -2,10 +2,13 @@ package com.zktr.crmproject.service;
 
 import com.zktr.crmproject.dao.mybatis.JrcCustomerMDao;
 import com.zktr.crmproject.dao.mybatis.JrcDeptMDao;
+import com.zktr.crmproject.dao.mybatis.JrcProductMDao;
 import com.zktr.crmproject.dao.mybatis.JrcUserMDao;
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.Department;
+import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.pojos.User;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,8 @@ public class JrcCustomerAndUserService {
     private JrcUserMDao userMDao;
     @Autowired
     private JrcDeptMDao deptMDao;
+    @Autowired
+    private JrcProductMDao productMDao;
     /**
      * 查看所有的客户
      * @return
@@ -78,6 +83,14 @@ public class JrcCustomerAndUserService {
      */
     public List<Department> queryDeptAllUser(){
        return deptMDao.queryAllDeptBelow();
+    }
+
+    /**
+     * 查找所有产品名称
+     * @return
+     */
+    public List<Product> queryAllProduct(){
+        return productMDao.queryAllProduct();
     }
 
 }

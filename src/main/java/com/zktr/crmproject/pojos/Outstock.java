@@ -25,6 +25,7 @@ public class Outstock {
     private Warehouse warehouse;
     private Orders orders;
     private List<Outstockdetails> outstockdetail;
+    private Warehouseallocation warehouseallocation;
 
     @Id
     @Column(name = "out_id")
@@ -141,6 +142,16 @@ public class Outstock {
     }
 
     @ManyToOne
+    @JoinColumn(name="wa_id",referencedColumnName = "wa_id")
+    public Warehouseallocation getWarehouseallocation() {
+        return warehouseallocation;
+    }
+
+    public void setWarehouseallocation(Warehouseallocation warehouseallocation) {
+        this.warehouseallocation = warehouseallocation;
+    }
+
+    @ManyToOne
     @JoinColumn(name="warehouse_id",referencedColumnName = "warehouse_id")
     public Warehouse getWarehouse() {
         return warehouse;
@@ -167,5 +178,25 @@ public class Outstock {
 
     public void setOutstockdetail(List<Outstockdetails> outstockdetail) {
         this.outstockdetail = outstockdetail;
+    }
+
+    @Override
+    public String toString() {
+        return "Outstock{" +
+                "outId=" + outId +
+                ", outNumber='" + outNumber + '\'' +
+                ", ordNumber='" + ordNumber + '\'' +
+                ", title='" + title + '\'' +
+                ", status='" + status + '\'' +
+                ", fillTime=" + fillTime +
+                ", passPerson='" + passPerson + '\'' +
+                ", passTime=" + passTime +
+                ", remarks='" + remarks + '\'' +
+                ", customer=" + customer +
+                ", purchasereturn=" + purchasereturn +
+                ", warehouse=" + warehouse +
+                ", orders=" + orders +
+                ", outstockdetail=" + outstockdetail +
+                '}';
     }
 }

@@ -28,4 +28,10 @@ public class llLogService {
         PageInfo<Log> pager = new PageInfo<>(list);
         return new Pager<Log>(pager.getTotal(),pager.getList());
     }
+    public Pager<Log> findLogsByName(Integer curpage, Integer pagesize,String uname){
+        PageHelper.startPage(curpage,pagesize);
+        List<Log> list=lliLogDao.qeryLogByName(uname);
+        PageInfo<Log> pager = new PageInfo<>(list);
+        return new Pager<Log>(pager.getTotal(),pager.getList());
+    }
 }

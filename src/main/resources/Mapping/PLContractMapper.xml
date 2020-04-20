@@ -16,6 +16,9 @@
         <result column="ord_executing_state" property="ordExecutingState"></result>
         <result column="con_number" property="conNumber"></result>
         <result column="con_qdid" property="conQdid"></result>
+        <result column="rm_or_rmp" property="rmOrRmp"></result>
+        <result column="con_money_way" property="conMoneyWay"></result>
+        <result column="con_payment"  property="conPayment"></result>
         <!--员工-->
         <association property="user" javaType="User">
             <id column="u_id" property="uId"></id>
@@ -39,7 +42,7 @@
     </resultMap>
     <!--查询全部合同-->
     <select id="queryAllContract" resultMap="contractMap">
-        select c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_number,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_money_way,
+        select c.con_number,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
         cus.cus_name,u.u_name,q.quo_theme
         from contract c
         LEFT JOIN customer cus
@@ -54,7 +57,7 @@
     </select>
     <!--根据合同id查询-->
     <select id="queryByCtrId" resultMap="contractMap">
-        select c.con_number,c.con_qdid,c.quo_id,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
+        select c.con_number,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
         cus.cus_name,u.u_name,q.quo_theme
         from contract c
         LEFT JOIN customer cus
@@ -69,7 +72,30 @@
         on spe.spe_id=c.spe_id
         WHERE c.con_del_state=1 AND c.ctr_id=#{ctrId}
     </select>
-    <!--查询最大id-->
+    <!--回款和计划回款 当o.rm_or_rmp为空时 表示并未被计划回款和回款记录-->
+    <select id="CqueryAllOrdersByRM" resultMap="contractMap">
+        select c.rm_or_rmp,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_number,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        WHERE c.con_del_state=1 and c.rm_or_rmp is null group by ctr_id desc
+    </select>
+    <!--如果是计划回款 则表示被计划回款已记录 选择合同时不显示 根据合同id修改状态-->
+    <update id="updateRmOrRmp1">
+        update contract set rm_or_rmp=1 where ctr_id=#{ctrId}
+    </update>
+    <!--如果是回款 则表示被款已记录 选择合同时不显示 根据合同id修改状态-->
+    <update id="updateRmOrRmp2">
+        update contract set rm_or_rmp=2 where ctr_id=#{ctrId}
+    </update>
+    <!--查询最大id 自动编号-->
     <select id="findMaxByCtrId" resultType="java.lang.Integer">
         select max(ctr_id) from contract
     </select>
@@ -146,10 +172,10 @@
         <if test="input1!=null and input1.length!=0" >
             <choose>
                 <when test="select=='合同编号' ">
-                    and c.con_number like #{input1}
+                    and lower (c.con_number) like lower (#{input1})
                 </when>
                 <when test="select=='主题' ">
-                    and c.con_theme like #{input1}
+                    and lower (c.con_theme) like lower (#{input1})
                 </when>
                 <otherwise></otherwise>
             </choose>
@@ -172,10 +198,10 @@
             <if test="conNumber!=null and conNumber!='' ">
                 <choose>
                     <when test="conNumberSelect !=null and conNumberSelect!=''  and conNumberSelect=='包含' ">
-                        and  c.con_number like #{conNumber}
+                        and lower (c.con_number) like lower (#{conNumber})
                     </when>
                     <when test="conNumberSelect !=null and conNumberSelect!='' and conNumberSelect=='不包含' ">
-                        and c.con_number not like #{conNumber}
+                        and lower (c.con_number) not like lower (#{conNumber})
                     </when>
                     <otherwise></otherwise>
                 </choose>

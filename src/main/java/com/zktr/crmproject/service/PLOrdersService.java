@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sound.midi.Soundbank;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -40,40 +42,35 @@ public class PLOrdersService {
     private PLOdersDetailMDao orderDetailMDao;
     @Autowired
     private JrcQuoteDetailsMDao quoteDetailsMDao;
+    @Autowired
+    private HTIOutstockDao outstockDao;
 
     /**
      * 饼状图表 执行状态
      * @return
      */
-    public List<PLCountPie> countPies(Integer n){
-        List<PLCountPie> list=null;
-        if(n==1){
-            list=omdao.Countpie();
-        }
-        return list;
+    public List<PLCountPie> countPies(String pieValue){
+        //List<PLCountPie> list=
+        return omdao.Countpie(pieValue);
     }
 
     /**
-     *  柱状图 根据每月统计订单的总金额
-     * @param n
+     *  折线图 根据每天、每月、每年统计订单的总金额
+     * @param
      * @return
      */
-    public List<PLCountPie> countBars(Integer n){
-        List<PLCountPie> list=null;
-        if(n==1){
-            list=omdao.CountBar();//每月统计sql
-        }
-        return list;
+    public List<PLCountPie> countBars(String barValue){
+        return  omdao.CountBar(barValue);
     }
     /**
-     *  柱状图 用数组形式返回
-     * @param n
+     *  折线图 用数组形式返回
+     * @param
      * @return
      */
-    public PLCountBar countBar(Integer n){
+    public PLCountBar countBar(String barValue){
         PLCountBar countBar=new PLCountBar();
-        if(n==1){
-            List<PLCountPie> list=this.countBars(n);
+
+            List<PLCountPie> list=this.countBars(barValue);
             String[] name=new String[list.size()];
             int[] value=new int[list.size()];
             int count=0;
@@ -81,7 +78,6 @@ public class PLOrdersService {
                 name[count]=p.getName();
                 value[count]=p.getValue();
                 count++;
-            }
             countBar.setName(name);
             countBar.setValue(value);
         }
@@ -159,29 +155,28 @@ public class PLOrdersService {
      */
     public String getId(){
         String id=String.valueOf(omdao.findMaxOrdid());
-        try {
+        if(id==null&&id=="") {
             //String s=id.substring(id.length()-4);//截取最大id的后4位
-            String equipmentNo= UUIDUtils.getNewNo("ORDER",id);
+            String equipmentNo = UUIDUtils.getNewNo("ORDER", id);
             System.out.println(equipmentNo);
             return equipmentNo;
-        }catch (Exception e){
+        }else{
             return "ORDER00001"; //若没有id则返回这个
         }
     }
-
     /**
-     * mybatis 新增地址
-     * @param address
+     * 自动生成订单编号
+     * @return
      */
-    public Integer saveAddress(Address address) {
-        if(address.getAddId()==0){
-            addressMDao.insertAddress(address);
-            return address.getAddId();
-        }else {
-            addressMDao.updateAddress(address);
-            return 0;
-        }
+    public String getIds(){
+        String id=String.valueOf(omdao.findMaxOrdid());
+        //System.out.println("aaa"+id);
+        String equipmentNo= JrcUUID.getNewNo(id);
+        return equipmentNo;
     }
+
+
+
 
     /**
      * mybatis 地址编辑查找一个对象
@@ -191,61 +186,79 @@ public class PLOrdersService {
     public Address findByAddid(Integer addid){
         return addressMDao.findByAddid(addid);
     }
-
+    /**
+     * mybatis 新增地址
+     * @param address
+     */
+    public Address saveAddress(Address address) {
+        if(address.getAddId()==0){
+            addressMDao.insertAddress(address);
+            return address;
+        }else {
+            addressMDao.updateAddress(address);
+            return address;
+        }
+    }
     /**
      * mybatis 新增订单
-     * @param plOrdersVo
+     * @param orders
      */
-    public void insertOrders(PLOrdersVo plOrdersVo){
-        List<Address> list=addressMDao.queryAllAdress();
-        int ordidif=plOrdersVo.getOrdId();
-        if(ordidif==0){
-           PLOrdersVo orders=new PLOrdersVo();
-           orders.setOrdDelState(plOrdersVo.getOrdDelState());//设置删除状态为1 未删除
-           orders.setAddId(plOrdersVo.getAddId()); //
-           orders.setCusId(plOrdersVo.getCusId());
-           orders.setuId(plOrdersVo.getuId());
-           orders.setQuoId(plOrdersVo.getQuoId());
-           orders.setOrdTheme(plOrdersVo.getOrdTheme());
-           orders.setOrdNumber(this.getId()); //订单自动编号
-           orders.setOrdClassify(plOrdersVo.getOrdClassify());
-           orders.setOrdPayment(plOrdersVo.getOrdPayment());
-           orders.setOrdTotalAmount(plOrdersVo.getOrdTotalAmount());
-           orders.setOrdSendOutMoney(plOrdersVo.getOrdSendOutMoney());
-           orders.setOrdMargin(plOrdersVo.getOrdMargin());
-           orders.setOrdTime(plOrdersVo.getOrdTime());
-           orders.setOrdExecutingState(plOrdersVo.getOrdExecutingState());
-           orders.setOrdPurchaseWay(plOrdersVo.getOrdPurchaseWay());
-           orders.setOrdHabit(plOrdersVo.getOrdHabit());
-           orders.setOutStatus("未出库");
-           orders.setOrdSendOutState("未发货");
-           orders.setOrdRemark(plOrdersVo.getOrdRemark());
-            omdao.insertOrders(orders);
-          //如果是获取报价的产品 就把报价的产品详情都添加进订单详情
-          if(plOrdersVo.getQuoId()!=0) {
-              int orderid=omdao.findMaxOrdid();
-              //把报价详情中的产品查询出来
-              List<Quotedetails> quotedetails=quoteDetailsMDao.queryByQuoId(plOrdersVo.getQuoId());
-              for(Quotedetails q:quotedetails){
-                  PLOrdersDetailInVo ordersDetailInVo=new PLOrdersDetailInVo();
-                  ordersDetailInVo.setOrdId(orderid);
-                  ordersDetailInVo.setCusId(plOrdersVo.getCusId());
-                  ordersDetailInVo.setuId(plOrdersVo.getuId());
-                  ordersDetailInVo.setSpeId(q.getProductspecification().getSpeId());
-                  ordersDetailInVo.setDetNumber(q.getQuantity());
-                  ordersDetailInVo.setDetTime(new Timestamp(System.currentTimeMillis()));
-                  ordersDetailInVo.setDetRequire("报价产品");
-                  ordersDetailInVo.setDetCondition("报价");
-                  ordersDetailInVo.setDetMoney(q.getMoney());
-                  omdao.insertOrderdetailIn(ordersDetailInVo);
-              }
-              //选择后把报价的Id修改成3表示已经转成订单了
-              quomdao.PLupdateByQutId(plOrdersVo.getQuoId());
-          }
+    public void insertOrders(Orders orders){
 
-
+        if(orders.getOrdId()==0){
+            //PLOrdersVo orders=new PLOrdersVo();
+            Orders orders1=new Orders();
+            orders1.setOrdDelState(orders.getOrdDelState());//设置删除状态为1 未删除
+            orders1.setAddress(orders.getAddress()); //
+            orders1.setCustomer(orders.getCustomer());
+            orders1.setUser(orders.getUser());
+            orders1.setQuote(orders.getQuote());
+            orders1.setOrdTheme(orders.getOrdTheme());
+            orders1.setOrdNumber(this.getIds()); //订单自动编号
+            //System.out.println("sss"+this.getId());
+            orders1.setOrdClassify(orders.getOrdClassify());
+            orders1.setOrdPayment(orders.getOrdPayment());
+            orders1.setOrdTotalAmount(orders.getOrdTotalAmount());
+            orders1.setOrdSendOutMoney(orders.getOrdSendOutMoney());
+            orders1.setOrdMargin(orders.getOrdMargin());
+            orders1.setOrdTime(orders.getOrdTime());
+            orders1.setOrdExecutingState(orders.getOrdExecutingState());
+            orders1.setOrdPurchaseWay(orders.getOrdPurchaseWay());
+            orders1.setOrdHabit(orders.getOrdHabit());
+            orders1.setOutStatus("未出库");
+            orders1.setOrdSendOutState("未发货");
+            orders1.setOrdRemark(orders.getOrdRemark());
+            omdao.insertOrders(orders1);
+            //如果是获取报价的产品 就把报价的产品详情都添加进订单详情
+            if(orders.getQuote().getQuoId()!=0) {
+                //把报价详情中的产品查询出来
+                List<Quotedetails> quotedetails=quoteDetailsMDao.queryByQuoId(orders.getQuote().getQuoId());
+                for(Quotedetails q:quotedetails){
+                    Orderdetail orderdetail=new Orderdetail();
+                    orderdetail.setOrders(orders);
+                    orderdetail.setCustomer(orders.getCustomer());
+                    orderdetail.setUser(orders.getUser());
+                    orderdetail.setProductspecification(q.getProductspecification());
+                    orderdetail.setDetNumber(q.getQuantity());
+                    orderdetail.setDetTime(new Timestamp(System.currentTimeMillis()));
+                    orderdetail.setDetRequire("报价产品");
+                    orderdetail.setDetCondition("报价");
+                    orderdetail.setDetMoney(q.getMoney());
+                    //添加报价中的产品进订单详情
+                    omdao.insertOrderdetail(orderdetail);
+                }
+                //根据订单id 把订单详情中的详情金额统计出来
+                Integer m=omdao.findByOrdersDetailMonery(orders.getOrdId());
+                //把订单的总金额重新修改赋值
+                omdao.updateTotalMoney(m,orders.getOrdId());
+                //改为待出库
+                omdao.updateOutStatus(orders1.getOrdId());
+                //选择后把报价的Id修改成3表示已经转成订单了
+                quomdao.PLupdateByQutId(orders.getQuote().getQuoId());
+            }
         }else {
-            omdao.updateOrders(plOrdersVo);
+            //修改
+            omdao.updateOrders(orders);
         }
     }
 
@@ -312,25 +325,32 @@ public class PLOrdersService {
 
     /**
      * 批量添加订单详情
-     * @param pLordersDetailVo
+     * @param
      */
-    public void addAndEditOrderDdetail(PLordersDetailVo pLordersDetailVo){
-        Orderdetail dea=new Orderdetail();
-        for(Orderdetail detail:pLordersDetailVo.getList()){
-            if(detail.getDetId()==0){
-                omdao.insertOrderdetail(detail);
+    public void addAndEditOrderDdetail(List<Orderdetail> orderdetail){
+        for (Orderdetail orderdetail1:orderdetail){
+            if (orderdetail1.getDetId()==0){
+                omdao.insertOrderdetail(orderdetail1);
             }else {
-                omdao.updateOrderdetail(detail);
+                omdao.updateOrderdetail(orderdetail1);
             }
         }
-        //删除
-        for (Integer detid:pLordersDetailVo.getDel()){
-            if(pLordersDetailVo.getDel().length>0){
-                omdao.deleteBydetId(detid);
-            }else {
-                System.out.println("传入的长度为0");
-            }
+        //根据订单id 把订单详情中的详情金额统计出来
+        Integer m=omdao.findByOrdersDetailMonery(orderdetail.get(0).getOrders().getOrdId());
+        //把订单的总金额重新修改赋值
+        omdao.updateTotalMoney(m,orderdetail.get(0).getOrders().getOrdId());
+        //有详情就修改出库状态 待出库
+        omdao.updateOutStatus(orderdetail.get(0).getOrders().getOrdId());
+
+    }
+    //批量删除订单详情
+    public void deleteBydetId(Integer[] detIds){
+        if(detIds.length>0){
+            omdao.deleteBydetId(detIds);
+        }else {
+            System.out.println("传入长度为0");
         }
+
     }
 
     /**
@@ -341,4 +361,15 @@ public class PLOrdersService {
     public List<Orderdetail> queryOrderdetailByOrdid(Integer ordid){
         return orderDetailMDao.queryOrderdetailByOrdid(ordid);
     }
+    /**
+     * 取消订单 HT
+     * @param ordId
+     */
+    public void cancelOrder(Integer ordId){
+        omdao.cancelOrders(ordId);
+        Outstock outstock = outstockDao.queryOutstockByOrdId(ordId);
+        outstock.setStatus("订单终止");
+        outstockDao.updateOutStock(outstock);
+    }
+
 }

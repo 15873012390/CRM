@@ -51,32 +51,35 @@
             <id column="ins_id" property="insId"></id>
             <result column="title" property="title"></result>
         </collection>
-        <collection property="returnedgoods" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Returnedgoods" select="selectReturnedGoodsList">
-            <id column="reg_id" property="regId"></id>
-            <result column="in_time" property="inTime"></result>
-            <result column="reg_date" property="regDate"></result>
-        </collection>
+<!--        <collection property="returnedgoods" column="warehouseId" javaType="ArrayList" ofType="com.zktr.crmproject.pojos.Returnedgoods" select="selectReturnedGoodsList">-->
+<!--            <id column="reg_id" property="regId"></id>-->
+<!--            <result column="in_time" property="inTime"></result>-->
+<!--            <result column="reg_date" property="regDate"></result>-->
+<!--        </collection>-->
     </resultMap>
-    <select id="selectPurchaseplanList" resultMap="warehouseMap">
+    <select id="selectPurchaseplanList" resultType="Purchaseplan">
         select * from purchaseplan where warehouse_id=#{warehouseId}
     </select>
-    <select id="selectOutStockList" resultMap="warehouseMap">
+    <select id="selectOutStockList" resultType="Stock">
         select * from outstock where warehouse_id=#{warehouseId}
     </select>
-    <select id="selectStockList" resultMap="warehouseMap">
-        select * from stock where warehouse_id=#{warehouseId}
+    <select id="selectStockList" resultMap="com.zktr.crmproject.dao.mybatis.HTIStockDao.stockMap">
+        select * from stock sto
+        left join productspecification pros on sto.spe_id = pros.spe_id
+        where sto.warehouse_id=#{warehouseId}
     </select>
-    <select id="selectInstockList" resultMap="warehouseMap">
+    <select id="selectInstockList" resultType="Instock">
         select * from instock where warehouse_id=#{warehouseId}
     </select>
-    <select id="selectReturnedGoodsList" resultMap="warehouseMap">
-        select * from returnedgoods where warehouse_id=#{warehouseId}
-    </select>
+<!--    <select id="selectReturnedGoodsList" resultType="Returnedgoods">-->
+<!--        select * from returnedgoods where warehouse_id=#{warehouseId}-->
+<!--    </select>-->
 
     <select id="queryAllByPage" resultMap="warehouseMap">
         select
         <include refid="warehouseColumns" />
-         from warehouse w order by w.warehouse_id desc
+        from warehouse w
+        order by w.warehouse_id desc
     </select>
 
     <select id="queryByWarehouseId" resultMap="warehouseMap">

@@ -15,4 +15,6 @@ public interface llUserAndPositionDao {
 //    public User findByNameAndPass(@Param("uname") String uname, @Param("upass") String upass);
     public List<UserAndPosition> findAllUsers();
     public List<PowerAndDept> queryLikeName(@Param("uname") String name);
+    public List<PowerAndDept> screenUser(@Param("value") String value);
+    public List<UserAndPosition> positionUser(@Param("postId") Integer postId);
 }

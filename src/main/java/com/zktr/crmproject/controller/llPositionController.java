@@ -4,10 +4,7 @@ import com.zktr.crmproject.pojos.Position;
 import com.zktr.crmproject.pojos.PowerManage;
 import com.zktr.crmproject.service.llAuthorityService;
 import com.zktr.crmproject.service.llPositionService;
-import com.zktr.crmproject.vo.MyLog;
-import com.zktr.crmproject.vo.Pager;
-import com.zktr.crmproject.vo.Result;
-import com.zktr.crmproject.vo.UserAndPositionParam;
+import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +60,18 @@ public class llPositionController {
     public Result addUpdateRole(@RequestBody UserAndPositionParam u){
         //这里uid代表职位id，postid代表权限数组
         llAuthorityService.addUpdateRole(u);
+        return Result.SUCCESS;
+    }
+    //获得该职位所有用户
+    @GetMapping("/positionUser")
+    public List<UserAndPosition> positionUser(Integer postId){
+        return llPositionService.positionUser(postId);
+    }
+    //删除用户某个职位
+    @GetMapping("/removeUserP")
+    public Result removeUserP(Integer uId,Integer postId){
+        System.out.println(uId+"--"+postId);
+        llAuthorityService.removeUserP(uId, postId);
         return Result.SUCCESS;
     }
 }

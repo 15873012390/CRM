@@ -51,8 +51,11 @@
     <select id="queryAll" resultMap="salesopportMap">
         select
         s.so_id,s.so_theme,s.update_date,s.status,s.con_name,s.con_phone,s.architecture,s.cus_source,s.priority,
-        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status
+        s.stage,s.dis_time,s.provider,s.cus_demand,s.signing_time,s.possibility,s.amount,s.star_target,s.del_status,
+        c.cus_id,c.cus_name,u.u_id,u.u_name
         from salesopport s
+        left join customer c on s.cus_id = c.cus_id
+        left join user u on u.u_id=s.u_id
         where s.del_status=1
         order by s.so_id desc
     </select>

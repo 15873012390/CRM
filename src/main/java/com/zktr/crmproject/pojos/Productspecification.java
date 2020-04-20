@@ -212,4 +212,6 @@ public class Productspecification {
     public void setContracts(List<Contract> contracts) {
         this.contracts = contracts;
     }
+
+
 }

@@ -26,15 +26,12 @@ public class Quote {
     private Integer createdId;
     private String quotationNo;
     private BigDecimal amountBefore;
-    @JsonIgnoreProperties("quote")
     private Salesopport salesopport;
-    @JsonIgnoreProperties("quote")
     private Customer customer;
-    @JsonIgnoreProperties("quote")
     private User user;
     @JsonIgnoreProperties("quote")
     private Audit audit;
-    @JsonIgnoreProperties("quote")
+//    @JsonIgnoreProperties("quote")
     private List<Quotedetails> quotedetails;
     @JsonIgnoreProperties("quote")
     private List<Orders> orders;
@@ -197,7 +194,7 @@ public class Quote {
     }
 
     @ManyToOne
-    @JoinColumn(name="so_id",referencedColumnName = "so_id", nullable = false)
+    @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;
     }

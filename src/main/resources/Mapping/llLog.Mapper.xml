@@ -14,4 +14,8 @@
     <select id="qeryAllLog" resultMap="llLogMap">
         select * from log l
     </select>
+    <select id="qeryLogByName" resultMap="llLogMap">
+        select * from log l where u_name=#{uname}
+        order by log_id desc
+    </select>
 </mapper>

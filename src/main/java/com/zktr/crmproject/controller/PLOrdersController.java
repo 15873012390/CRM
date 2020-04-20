@@ -15,12 +15,12 @@ public class PLOrdersController {
     @Autowired
     private PLOrdersService oservice;
     @GetMapping("/ordersCountPies")
-    public List<PLCountPie> countPies(Integer n){
-        return oservice.countPies(n);
+    public List<PLCountPie> countPies(String pieValue){
+        return oservice.countPies(pieValue);
     }
     @GetMapping("/ordersCountBar")
-    public PLCountBar countBars(Integer n){
-        return oservice.countBar(n);
+    public PLCountBar countBars(String barValue){
+        return oservice.countBar(barValue);
     }
     @GetMapping("/queryAllOrders")
     public Pager<Orders> queryAllOrders(int curpage, int pagesize){
@@ -47,13 +47,13 @@ public class PLOrdersController {
         return oservice.queryAllUser();
     }
     @PostMapping("/insertOrders")
-    public Result insertOrders(@RequestBody PLOrdersVo plOrdersVo){
-        oservice.insertOrders(plOrdersVo);
+    public Result insertOrders(@RequestBody Orders orders){
+        oservice.insertOrders(orders);
         return Result.SUCCESS;
     }
 
     @PostMapping("/saveAddress")
-    public Integer saveAddress(@RequestBody Address address){
+    public Address saveAddress(@RequestBody Address address){
         return oservice.saveAddress(address);
     }
 
@@ -93,13 +93,22 @@ public class PLOrdersController {
         return oservice.OrdersAdvancedSearch(plOdersAdvancedSearch);
     }
     @PostMapping("/insetOdersDetail")
-    public Result insetOdersDetail(@RequestBody PLordersDetailVo pLordersDetailVo){
-        oservice.addAndEditOrderDdetail(pLordersDetailVo);
+    public Result insetOdersDetail(@RequestBody List<Orderdetail> orderdetail){
+        oservice.addAndEditOrderDdetail(orderdetail);
+        return Result.SUCCESS;
+    }
+    @PostMapping("/deleteBydetId")
+    public Result deleteBydetId(@RequestBody Integer[] del){
+        oservice.deleteBydetId(del);
         return Result.SUCCESS;
     }
     @GetMapping("/queryOrderdetailByOrdId")
     public List<Orderdetail> queryOrderdetailByOrdId(Integer ordid){
         return oservice.queryOrderdetailByOrdid(ordid);
     }
-
+    //HT 取消订单
+    @GetMapping("/cancelOrder")
+    public void cancelOrder(Integer ordId){
+        oservice.cancelOrder(ordId);
+    }
 }

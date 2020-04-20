@@ -10,6 +10,8 @@ import java.util.List;
 
 @Mapper
 public interface TWCustomerMapperDao {
+    //删除客户
+    public void deleteCustomer(Integer cusId);
     //查询所有客户
     public List<Customer> queryAllCustomer();
     //根据id排序（正序）
@@ -24,6 +26,8 @@ public interface TWCustomerMapperDao {
     public List<Customer> queryCustomerByName(String name);
     //根据名称加载客户
     public Customer findCustomerByName(String name);
+    //查看是否有重名客户
+    public Integer countCustomerByName(String cusName);
     //根据ID加载客户
     public Customer findCustomerById(Integer id);
     //高级查询客户
@@ -42,8 +46,10 @@ public interface TWCustomerMapperDao {
     public List<CountPie> countCusCreditPie();
     //统计定级饼图数据
     public List<CountPie> countCusGradingPie();
-    //根据cusId查询客户详情
+    //根据cusId查询客户详情(左)
     public Customer queryCustomerDetailsById(Integer cusId);
+    //根据cusId查询客户详情（全）
+    public Customer findCustomerDetailsById(Integer cusId);
     //根据cusId查询客户详情（右）1
     public Customer findCustomerDetailsById1(Integer cusId);
     //根据cusId查询客户详情（右）2

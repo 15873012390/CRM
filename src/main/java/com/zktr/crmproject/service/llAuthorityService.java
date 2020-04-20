@@ -43,6 +43,15 @@ public class llAuthorityService {
             }
         }
     }
+    //将用户的某个职位删除
+    public void removeUserP(Integer uId,Integer postId){
+        User user=llUserDao.findById(uId).get();
+        for(Position p:user.getPosition()){
+            if(p.getPostId()==postId) {
+                p.getUser().remove(user);
+            }
+        }
+    }
     //获得用户权限
     /*
     1,获得所有职位

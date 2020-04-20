@@ -1,5 +1,7 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -13,11 +15,18 @@ public class Quotedetails {
     private BigDecimal discount;
     private BigDecimal money;
     private String remarks;
+/*
+    @JsonIgnoreProperties("quotedetails")
+*/
     private Productspecification productspecification;
+/*
+    @JsonIgnoreProperties("quotedetails")
+*/
     private Quote quote;
 
     @Id
     @Column(name = "qd_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getQdId() {
         return qdId;
     }

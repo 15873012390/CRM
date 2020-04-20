@@ -34,6 +34,9 @@
     <insert id="insertSpe" parameterType="com.zktr.crmproject.vo.ProductSpecificationVo">
         insert into productspecification(pro_id,pro_name,spe_specification,spe_unit,spe_unit_conversion) values(#{proId},#{proName},#{speSpecification},#{speUnit},#{speUnitConversion})
     </insert>
+    <insert id="insertSpeProduct">
+        insert into productspecification(pro_id,pro_name,spe_specification,spe_unit,spe_unit_conversion) values(#{product.proId},#{proName},#{speSpecification},#{speUnit},#{speUnitConversion})
+    </insert>
 
     <update id="updateSpe" parameterType="com.zktr.crmproject.pojos.Productspecification">
         update productspecification set spe_specification=#{speSpecification},spe_unit=#{speUnit},spe_unit_conversion=#{speUnitConversion} where spe_id=#{speid}

@@ -33,6 +33,13 @@
             <result column="ord_number" property="ordNumber"></result>
             <result column="ord_theme" property="ordTheme"></result>
         </association>
+        <association property="warehouseallocation" javaType="Warehouseallocation">
+            <id column="wa_id" property="waId"></id>
+            <result column="title" property="title"></result>
+            <result column="wa_date" property="waDate"></result>
+            <result column="wa_status" property="waStatus"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
         <collection property="outstockdetail" ofType="Outstockdetails">
             <id column="osd_id" property="osdId"></id>
             <result column="osd_number" property="osdNumber"></result>
@@ -62,6 +69,13 @@
             <result column="pass_person" property="passPerson"></result>
             <result column="pass_time" property="passTime"></result>
             <result column="remarks" property="remarks"></result>
+            <association property="warehouse" javaType="Warehouse">
+                <id column="warehouse_id" property="warehouseId"></id>
+                <result column="warehouse_name" property="warehouseName"></result>
+                <result column="stock_type" property="stockType"></result>
+                <result column="stock_value" property="stockValue"></result>
+                <result column="remarks" property="remarks"></result>
+            </association>
         </association>
         <association property="productspecification" javaType="Productspecification">
             <id property="speId" column="spe_id"></id>
@@ -80,20 +94,23 @@
             LEFT JOIN orders ord on ou.ord_id = ord.ord_id
             LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
             LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
-            LEFT JOIN product p on prop.pro_id = p.pro_id
+            LEFT JOIN product p on prop.pro_id = p.pro_id where wa_id is null or wa_id = 0
             order by ou.out_id desc
     </select>
 
     <select id="queryOutstockByOutId" resultMap="outStockMap">
         select * from outstock ou
-        LEFT JOIN customer cus on ou.cus_id = cus.cus_id
-        LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
-        LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
-        LEFT JOIN orders ord on ou.ord_id = ord.ord_id where ou.out_id = #{outId} order by ou.out_id desc
+            LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+            LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+            LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+            LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+            LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+            LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+            LEFT JOIN product p on prop.pro_id = p.pro_id where ou.out_id = #{outId} order by ou.out_id desc
     </select>
 
     <insert id="insertOutstock" parameterType="Outstock" useGeneratedKeys="true" keyProperty="outId">
-        insert into outstock values (#{outId},#{outNumber},#{title},#{status},#{customer.cusId},#{ordNumber},#{purchasereturn.preturnId},#{warehouse.warehouseId},#{fillTime},#{passPerson},#{passTime},#{orders.ordId},#{remarks})
+        insert into outstock values (#{outId},#{outNumber},#{title},#{status},#{customer.cusId},#{ordNumber},#{purchasereturn.preturnId},#{warehouse.warehouseId},#{fillTime},#{passPerson},#{passTime},#{orders.ordId},#{warehouseallocation.waId},#{remarks})
     </insert>
 
     <insert id="insertOutStockDetails" parameterType="Outstockdetails">
@@ -102,12 +119,14 @@
 
     <update id="updateOutStock" parameterType="Outstock">
         update outstock set out_id=#{outId},out_number=#{outNumber},title=#{title},status=#{status},ord_number=#{ordNumber},fill_time=#{fillTime},
-        pass_person=#{passPerson},pass_time=#{passTime},remarks=#{remarks},cus_id=#{customer.cusId},preturn_id =#{purchasereturn.preturnId},warehouse_id=#{warehouse.warehouseId},ord_id=#{orders.ordId} where out_id = #{outId}
+        pass_person=#{passPerson},pass_time=#{passTime},remarks=#{remarks},cus_id=#{customer.cusId},preturn_id =#{purchasereturn.preturnId},warehouse_id=#{warehouse.warehouseId},ord_id=#{orders.ordId},wa_id=#{warehouseallocation.waId} where out_id = #{outId}
     </update>
     
     <select id="queryAllOutdetailById" resultMap="outDetailsMap">
         select * from outstockdetails outs
-        left join productspecification p on outs.spe_id = p.spe_id where outs.out_id = #{outId}
+        left join productspecification p on outs.spe_id = p.spe_id
+        left join outstock ou on outs.out_id = ou.out_id
+        left join warehouse w on ou.warehouse_id = w.warehouse_id where outs.out_id = #{outId}
     </select>
 
     <update id="updateOutDeatails" parameterType="Outstockdetails">
@@ -122,6 +141,10 @@
         delete from outstockdetails where out_Id=#{outId}
     </delete>
 
+    <delete id="deleteOutstockDetailByOutIdAndSpeId">
+        delete from outstockdetails where out_Id=#{outId} and spe_id =#{speId}
+    </delete>
+
     <select id="queryOutStockSelectAndInputByPage" resultMap="outStockMap">
         select * from outstock ou
         LEFT JOIN customer cus on ou.cus_id = cus.cus_id
@@ -134,7 +157,7 @@
         where 1=1
             <if test="value!=null and value.length!=0 and value!='全部数据'">
                 <choose>
-                    <when test="value=='未出库' || value=='已出库' || value=='已发货'">
+                    <when test="value=='未出库' || value=='已出库' || value=='已发货'|| value=='订单终止'">
                         and ou.status=#{value}
                     </when>
                 </choose>
@@ -196,6 +219,14 @@
             and purr.preturn_id =#{preturnId}
         </if>
         order by ou.out_id desc
+    </select>
+
+    <select id="queryOutstockByOrdId" resultMap="outStockMap">
+        select * from outstock where ord_id = #{ordId}
+    </select>
+
+    <select id="queryOsdByOutIdAndSpeId" resultMap="outDetailsMap">
+        select * from outstockdetails where out_id = #{outId} and spe_id =#{speId}
     </select>
 
 </mapper>

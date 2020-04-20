@@ -36,8 +36,8 @@ public class HTOutStockController {
     }
 
     @PostMapping("/editAndUpdateOutStock")
-    public void editAndUpdateOutStock(@RequestBody Outstock outstock){
-        outStockService.editAndUpdateOutStock(outstock);
+    public Integer editAndUpdateOutStock(@RequestBody Outstock outstock){
+       return outStockService.editAndUpdateOutStock(outstock);
     }
 
     @GetMapping("/queryAllOutdetailById")
@@ -69,5 +69,10 @@ public class HTOutStockController {
     @PostMapping("/queryOutstockByAdvancedSearch")
     public Pager<Outstock> queryOutstockByAdvancedSearch(@RequestBody  OutStockAdvancedSearch oas){
         return outStockService.queryOutstockByAdvancedSearch(oas);
+    }
+
+    @GetMapping("/updateOutStatus")
+    public void updateOutStatus(Integer outId){
+        outStockService.updateOutStatus(outId);
     }
 }
