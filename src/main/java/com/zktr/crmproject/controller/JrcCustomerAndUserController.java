@@ -19,6 +19,7 @@ public class JrcCustomerAndUserController {
     @Autowired
     private JrcCustomerAndUserService customerAndUserService;
 
+
     /**
      * 查看所有客户
      * @return
@@ -37,6 +38,7 @@ public class JrcCustomerAndUserController {
     public Customer queryContactByCusId(Integer cusid){
         return customerAndUserService.queryContactByCusId(cusid);
     }
+
 
     /**
      * 查找所有的用户
@@ -66,4 +68,15 @@ public class JrcCustomerAndUserController {
     public List<Product> queryAllProduct(){
         return customerAndUserService.queryAllProduct();
     }
+
+    /**
+     * 查询有审批权限的员工
+     * @return
+     */
+    @GetMapping("/get_all_user")
+    public List<User> getAllUser(){
+        return customerAndUserService.getAllUserList();
+    }
+
+
 }

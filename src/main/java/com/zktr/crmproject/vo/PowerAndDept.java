@@ -16,6 +16,7 @@ public class PowerAndDept {
     private Timestamp uBrith;
     private Timestamp uJoindate;
     private String uImg;
+    private String ucolor;
 
     public String getuName() {
         return uName;
@@ -86,6 +87,14 @@ public class PowerAndDept {
 
     public void setPostName(String postName) {
         this.postName = postName;
+    }
+
+    public String getUcolor() {
+        return ucolor;
+    }
+
+    public void setUcolor(String ucolor) {
+        this.ucolor = ucolor;
     }
 
     @Override

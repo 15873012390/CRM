@@ -68,10 +68,16 @@ public class llPositionController {
         return llPositionService.positionUser(postId);
     }
     //删除用户某个职位
+    @MyLog(value = "删除职位")
     @GetMapping("/removeUserP")
     public Result removeUserP(Integer uId,Integer postId){
         System.out.println(uId+"--"+postId);
         llAuthorityService.removeUserP(uId, postId);
         return Result.SUCCESS;
+    }
+    //模糊查询
+    @GetMapping("/queryLikePosition")
+    public Pager<Position> queryLikePosition(String name){
+        return llPositionService.queryLikePosition(name);
     }
 }

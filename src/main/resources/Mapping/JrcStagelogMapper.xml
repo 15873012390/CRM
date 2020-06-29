@@ -20,11 +20,16 @@
     <select id="queryStageLogBySoid" resultMap="stagelogtMap">
         select s.sl_id,s.sl_note,s.record_time,s.stage_name,u.u_id,u.u_name,s2.so_id
         from stagelog s
-        left join salesopport s2 on s.so_id = s2.so_id
+        left join salesopport s2 on s = s2.so_id
         left join user u on s.u_id=u.u_id
         where s2.so_id=#{soid}
         order by s.sl_id desc
     </select>
+
+    <delete id="deleteStageLogBySoid">
+        delete from stagelog  where so_id=#{soId}
+    </delete>
+
 
 
 </mapper>

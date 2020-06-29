@@ -9,6 +9,7 @@ import com.zktr.crmproject.vo.CustomerServiceAdvancedSearch;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.WareHouseAdvancedSearch;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.record.DVALRecord;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -183,8 +184,22 @@ public class HTWarehouseService {
     public void insertAllWarehouse(List<Warehouse> warehouses) {
         for(Warehouse w:warehouses){
             if(w!=null){
-                warehouseDao.save(w);
+                iwarehouseDao.insertWarehouse(w);
             }
+        }
+    }
+
+    /**
+     * 查询是否有相同的仓库名称
+     * @param warehouseName
+     * @return
+     */
+    public Integer querySameNameWarehouse(String warehouseName){
+        Warehouse warehouse = iwarehouseDao.querySameNameWarehouse(warehouseName);
+        if(warehouse!=null){
+            return 1;
+        }else{
+            return 0;
         }
     }
 

@@ -80,7 +80,9 @@
         ON c.cus_id=q.cus_id
         WHERE cla.cla_id_id=13 and quo.qd_id=#{qdid}
     </select>
-
+    <select id="PLMOney" resultType="Double">
+        select sum (money) from quotedetails where quo_id=#{quoId}
+    </select>
     <select id="queryQuoteDetailsByQuoId" resultMap="quotedetailsMap">
         select q.qd_id,q.specification, q.unit, q.quantity, q.unit_price, q.discount, q.money, q.remarks as details_remarks,
         p.spe_id,p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
@@ -218,4 +220,7 @@
         order by q.qd_id desc
     </select>
 
+    <delete id="deleteQuoteDetailsByquoId">
+        delete from quotedetails  where quo_id =#{quoId}
+    </delete>
 </mapper>

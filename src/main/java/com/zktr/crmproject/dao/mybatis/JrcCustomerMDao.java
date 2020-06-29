@@ -14,4 +14,6 @@ public interface JrcCustomerMDao {
     public Customer queryContactByCusid(@Param("cusid") Integer cusid);
 
     public Customer queryByCusNameAndConName(@Param("cusName") String cusName, @Param("conName") String conName);
+
+
 }

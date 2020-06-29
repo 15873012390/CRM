@@ -83,7 +83,8 @@ public class PLProductSepcificationService {
      * @param speid
      */
     public void delSpe(Integer speid){
-        psjdao.deleteById(speid);
+        psmdao.delBySpeId(speid);
+        //psjdao.deleteById(speid);
     }
 
 

@@ -7,7 +7,7 @@
         <id property="audId" column="aud_id"/>
         <result property="audTheme" column="aud_theme"/>
         <result property="audType" column="aud_type"/>
-        <result property="audTime" column="aud_time"/>
+        <result property="audTime" column="is_aud_time"/>
         <result property="audStatus" column="aud_status"/>
         <result property="delStatus" column="del_status"/>
         <association property="user" javaType="User">
@@ -72,7 +72,7 @@
         <collection property="auditdetails" ofType="Auditdetails">
             <id property="adId" column="ad_id"/>
             <result property="adOpinion" column="ad_opinion"/>
-            <result property="adTime" column="ad_time"/>
+            <result property="adTime" column="to_ad_time"/>
             <result property="adOperation" column="ad_operation"/>
             <association property="user" javaType="User">
                 <id property="uId" column="auditdetails_u_id"/>
@@ -82,10 +82,10 @@
     </resultMap>
 
     <select id="queryAllAudit" resultMap="auditMap">
-        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time,a.aud_status,a.del_status,
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
         u.u_id as audit_u_id,u.u_name as audit_u_name,
         u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
-        a2.ad_id, a2.ad_opinion, a2.ad_time,a2. ad_operation,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
         q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
         q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
         q.quotation_no,q.amount_before
@@ -98,10 +98,10 @@
     </select>
 
     <select id="queryLikeAudit" resultMap="auditMap">
-        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time,a.aud_status,a.del_status,
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
         u.u_id as audit_u_id,u.u_name as audit_u_name,
         u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
-        a2.ad_id, a2.ad_opinion, a2.ad_time,a2. ad_operation,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
         q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
         q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
         q.quotation_no,q.amount_before
@@ -162,7 +162,7 @@
                             and DATE_FORMAT(a.aud_time,'%Y-%m-%d') like #{input}
                         </when>
                         <when test="iftrue==2">
-                            and DATE_FORMAT(a.aud_time,'%Y-%m-%d') =STR_TO_DATE(#{input},'%Y-%m-%d')
+                            and DATE_FORMAT(a.aud_time,'%Y-%m-%d') =#{input}
                         </when>
                     </choose>
                 </if>
@@ -174,10 +174,10 @@
 
 
     <select id="queryAdvanceAudit" parameterType="com.zktr.crmproject.vo.JrcAdvancedAuditSearch" resultMap="auditMap">
-        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time,a.aud_status,a.del_status,
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
         u.u_id as audit_u_id,u.u_name as audit_u_name,
         u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
-        a2.ad_id, a2.ad_opinion, a2.ad_time,a2. ad_operation,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
         q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
         q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
         q.quotation_no,q.amount_before
@@ -217,7 +217,7 @@
     </select>
 
     <select id="queryAllAuditAndAuditDetails" resultMap="auditMap">
-        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time,a.aud_status,a.del_status,
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
         u.u_id as audit_u_id,u.u_name as audit_u_name,
         q.quo_id,q.quo_theme,q.to_order,q.cus_id,q.so_id,q. u_id,q.quo_phone,q.quo_date,q.total_money,
         q.gross_profit, q.instructions, q.remarks, q.approver, q.audit_status,q. del_status,
@@ -228,7 +228,7 @@
         q2.qd_id,q2.specification,q2.unit,q2.quantity,q2.unit_price,q2.discount,q2.money,q2.remarks,
         p.spe_id, p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
         p2.pro_id,p2.pro_name,
-        a2.ad_id,a2.ad_opinion,a2.ad_time,a2.ad_operation,
+        a2.ad_id,a2.ad_opinion,a2.ad_time as to_ad_time,a2.ad_operation,
         u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name
         from audit a
         left join user u on u.u_id=a.u_id
@@ -243,4 +243,9 @@
         left join user u2 on a2.u_id=u2.u_id
         where a.aud_id=#{audId}
     </select>
+
+    <delete id="deleteAuditByAudId">
+        delete from audit where aud_id=#{audId}
+    </delete>
+
 </mapper>

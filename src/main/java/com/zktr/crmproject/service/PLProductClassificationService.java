@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.springframework.beans.BeanUtils.*;
 
 @Service
 public class PLProductClassificationService {
@@ -23,53 +22,6 @@ public class PLProductClassificationService {
     private PLProductClassificationMDao ppcmdao;
     @Autowired
     private PLProductClassificationJDao ppcjdao;
-
-    public PLClassificationResponse getAllClassification(){
-        //返回结果对象
-        PLClassificationResponse response=new PLClassificationResponse();
-        //1.查询所有分类
-        List<Productclassification> allClassification=ppcmdao.queryAllProductClassification();
-        //如果分类存在
-        if(allClassification.size()>0) {
-            //2.放入父级
-            List<PLClassificationParent> parents=new ArrayList<>();
-            for(Productclassification p:allClassification){
-                if(p.getClaIdId()==0){
-                    //复制父级属性
-                    PLClassificationParent parent=new PLClassificationParent();
-                    BeanUtils.copyProperties(p,parent);
-                    //存入父级中
-                    parents.add(parent);
-                }
-            }
-            //如果存在父级集合
-            if(parents.size()>0){
-                //遍历父级，把父级下的所有子级放入当前当前遍历父级的子级集合中
-                for(PLClassificationParent parentFor:parents){
-                    //每一个父级 new 一个子级集合
-                    List<PLClassificationChild> childs=new ArrayList<>();
-                    //遍历所有的分类
-                    for(Productclassification classificationFor:allClassification){
-                        if(parentFor.getClaId()==classificationFor.getClaIdId()){
-                            //复制子级属性值
-                            PLClassificationChild child =new PLClassificationChild();
-                            //对象之间的属性赋值
-                            BeanUtils.copyProperties(classificationFor,child);
-                            //System.out.println("child..."+child.getClaName());
-                            childs.add(child);
-                        }
-                    }
-                    //每个父级遍历结束后都存入子级
-                    parentFor.setChildList(childs);
-                }
-                //父级遍历结束，父级集合放入响应对象
-                response.setParentList(parents);
-            }
-        }
-        //返回结果集
-        return response;
-    }
-
     /**
      * 查询所有分类
      * @return
@@ -120,5 +72,50 @@ public class PLProductClassificationService {
      */
     public Productclassification findByClaId(Integer claid){
         return ppcmdao.findByClaId(claid);
+    }
+    public PLClassificationResponse getAllClassification(){
+        //返回结果对象
+        PLClassificationResponse response=new PLClassificationResponse();
+        //1.查询所有分类
+        List<Productclassification> allClassification=ppcmdao.queryAllProductClassification();
+        //如果分类存在
+        if(allClassification.size()>0) {
+            //2.放入父级
+            List<PLClassificationParent> parents=new ArrayList<>();
+            for(Productclassification p:allClassification){
+                if(p.getClaIdId()==0){
+                    //复制父级属性
+                    PLClassificationParent parent=new PLClassificationParent();
+                    BeanUtils.copyProperties(p,parent);
+                    //存入父级中
+                    parents.add(parent);
+                }
+            }
+            //如果存在父级集合
+            if(parents.size()>0){
+                //遍历父级，把父级下的所有子级放入当前当前遍历父级的子级集合中
+                for(PLClassificationParent parentFor:parents){
+                    //每一个父级 new 一个子级集合
+                    List<PLClassificationChild> childs=new ArrayList<>();
+                    //遍历所有的分类
+                    for(Productclassification classificationFor:allClassification){
+                        if(parentFor.getClaId()==classificationFor.getClaIdId()){
+                            //复制子级属性值
+                            PLClassificationChild child =new PLClassificationChild();
+                            //对象之间的属性赋值
+                            BeanUtils.copyProperties(classificationFor,child);
+                            //System.out.println("child..."+child.getClaName());
+                            childs.add(child);
+                        }
+                    }
+                    //每个父级遍历结束后都存入子级
+                    parentFor.setChildList(childs);
+                }
+                //父级遍历结束，父级集合放入响应对象
+                response.setParentList(parents);
+            }
+        }
+        //返回结果集
+        return response;
     }
 }

@@ -11,10 +11,8 @@ import com.zktr.crmproject.dao.mybatis.HTIStockDao;
 import com.zktr.crmproject.dao.mybatis.PLProductClassificationMDao;
 import com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao;
 import com.zktr.crmproject.dao.mybatis.PLproductMDao;
-import com.zktr.crmproject.pojos.Product;
-import com.zktr.crmproject.pojos.Productclassification;
-import com.zktr.crmproject.pojos.Productspecification;
-import com.zktr.crmproject.pojos.Salesopport;
+import com.zktr.crmproject.pojos.*;
+import com.zktr.crmproject.utils.QiniuUtils;
 import com.zktr.crmproject.vo.PLCountPie;
 import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.ProductAdvancedSearch;
@@ -22,13 +20,16 @@ import com.zktr.crmproject.vo.ProductSpecificationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -40,11 +41,10 @@ public class PLproductService {
     @Autowired
     private PLProductSpecificationMDao psmdao;
     @Autowired
-    private PLProductSpecificationJDao psjdao;
-    @Autowired
     private HTIStockDao stockDao;
     @Autowired
     private PLProductClassificationMDao productClassificationMDao;
+
 
     /**
      * 分页查询全部产品
@@ -53,35 +53,62 @@ public class PLproductService {
      * @return
      */
     public Pager<Product> queryByPageProduct(int curpage, int sizepage){
-        PageHelper.startPage(curpage,sizepage);
-        List<Product> productList=pmpdao.queryAllProduct();
-        PageInfo<Product> pager=new PageInfo<>(productList);
-        return new Pager<Product>(pager.getTotal(),pager.getList());
-    }
 
+        //PageHelper.startPage(curpage,sizepage);
+        List<Product> list1=pmpdao.queryAllProduct();
+        List list2=new ArrayList();
+        for (int i=0;i<sizepage;i++){
+            //得到想要显示的下标
+            int index=(curpage-1)*sizepage+i;
+            if (index<list1.size()){
+                if(list1.get(index)!=null){
+                    list2.add(list1.get(index));
+                }
+            }
+        }
+        /*PageInfo<Product> pager=new PageInfo<>(productList);
+        System.out.println("sss"+pager.getTotal());*/
+        return new Pager<Product>(list1.size(),list2);
+    }
 
 
     /**
-     * 新增和修改
+     * 新增产品和修改产品
      * @param product
      */
     public Integer addAndUpdateProduct(Product product){
-        if(product.getProId()==0){
+        System.out.println("76"+product.getProId());
             product.setProDelState(1);
+            product.setProDate(new Timestamp(System.currentTimeMillis()));
             //保存
-            Product product1 = pjpdao.save(product);
-            Productspecification productspecification=new Productspecification();
-            productspecification.setProduct(product1);
-            productspecification.setProName(product1.getProName());
-            productspecification.setSpeSpecification("基准");
-            productspecification.setSpeUnit("个");
-            productspecification.setSpeUnitConversion(1);
-            psmdao.insertSpeProduct(productspecification);
-            return product.getProId();
-        }else {
-            return 0;
-        }
+            if(product.getProId()==0){
+                pmpdao.insertProduct(product);
+                List<Productspecification> list=psmdao.queryAllByProid(product.getProId());
+                System.out.println("83"+list);
+                if(list.size()==0){
+                        System.out.println(86);
+                        Productspecification productspecification=new Productspecification();
+                        productspecification.setProduct(product);
+                        productspecification.setProName(product.getProName());
+                        productspecification.setSpeSpecification("基准");
+                        productspecification.setSpeUnit("个");
+                        productspecification.setSpeUnitConversion(1);
+                        psmdao.insertSpeProduct(productspecification);
+                        return product.getProId();
+                }else{
+                    return 0;
+                }
+            }else{
+                pmpdao.updateProduct(product);
+            }
+          return 0;
+
+
     }
+
+    /**
+     * 新增规格
+     */
     public void addspe(){
         List<Product> list=pmpdao.queryAllProduct();
         Productspecification productspecification=new Productspecification();
@@ -91,11 +118,6 @@ public class PLproductService {
         productspecification.setSpeUnit("个");
         productspecification.setSpeUnitConversion(1);
         psmdao.insertSpeProduct(productspecification);
-    }
-
-
-    public void addSpe(){
-
     }
 
     /**
@@ -121,10 +143,21 @@ public class PLproductService {
             pjpdao.save(p);
         }
     }
+
+    /**
+     * 根据产品id查找
+     * @param proid
+     * @return
+     */
     public Product findByids(Integer proid){
         return pjpdao.findById(proid).get();
     }
 
+    /**
+     * 根据产品id查找
+     * @param proid
+     * @return
+     */
     public Product findByid(int proid){
         return pmpdao.findByid(proid);
     }
@@ -138,11 +171,19 @@ public class PLproductService {
      * @return
      */
     public Pager<Product> queryByselect(String value,String input,int curpage,int sizepage){
+        List<Product> list1=pmpdao.queryByselect(value,"%"+input.trim()+"%");
+        List list2=new ArrayList();
+        for (int i=0;i<sizepage;i++){
+            //得到想要显示的下标
+            int index=(curpage-1)*sizepage+i;
+            if (index<list1.size()){
+                if(list1.get(index)!=null){
+                    list2.add(list1.get(index));
+                }
+            }
+        }
 
-        PageHelper.startPage(curpage,sizepage);
-        List<Product> productList=pmpdao.queryByselect(value,"%"+input.trim()+"%");
-        PageInfo<Product> page=new PageInfo<>(productList);
-        return  new Pager<Product>(page.getTotal(),page.getList());
+        return new Pager<Product>(list1.size(),list2);
     }
 
     /**
@@ -155,15 +196,19 @@ public class PLproductService {
         String proMode="%"+productAdvancedSearch.getProMode().trim()+"%";
         productAdvancedSearch.setProName(proName);
         productAdvancedSearch.setProMode(proMode);
-        /*if(productAdvancedSearch.getProPrice()==0 || productAdvancedSearch.getProCostprice()==0){
-            productAdvancedSearch.setProPrice(null);
-            productAdvancedSearch.setProCostprice(null);
-        }*/
-        PageHelper.startPage(productAdvancedSearch.getCurpage(),productAdvancedSearch.getSizepage());
-        List<Product> productList=pmpdao.ProductAdvancedSearch(productAdvancedSearch);
-        PageInfo<Product> page=new PageInfo<>(productList);
-        //System.out.println(productAdvancedSearch.getProState()+"\t"+productAdvancedSearch.getProPrice()+"\t"+productAdvancedSearch.getProCostprice());
-        return new Pager<Product>(page.getTotal(),page.getList());
+       // PageHelper.startPage(productAdvancedSearch.getCurpage(),productAdvancedSearch.getSizepage());
+        List<Product> list1=pmpdao.ProductAdvancedSearch(productAdvancedSearch);
+        List list2=new ArrayList();
+        for (int i=0;i<productAdvancedSearch.getSizepage();i++){
+            //得到想要显示的下标
+            int index=(productAdvancedSearch.getCurpage()-1)*productAdvancedSearch.getSizepage()+i;
+            if (index<list1.size()){
+                if(list1.get(index)!=null){
+                    list2.add(list1.get(index));
+                }
+            }
+        }
+        return new Pager<Product>(list1.size(),list2);
     }
 
     /**
@@ -194,17 +239,12 @@ public class PLproductService {
         }
     }
 
-    public List<Product> test(){
-        return pmpdao.test();
-    }
-
     /**
      * 模糊查询
      * @param input
      * @return
      */
     public List<Product> likeByInput(String input){
-        //System.out.println(input);
         List<Product> like=pmpdao.likeByInput("%"+input.trim()+"%");
         return like;
     }
@@ -268,4 +308,7 @@ public class PLproductService {
     public List<PLCountPie> PLQueryByStock(){
         return stockDao.PLQueryByStock();
     }
+
+
+
 }

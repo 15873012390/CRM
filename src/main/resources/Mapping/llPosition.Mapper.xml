@@ -21,4 +21,8 @@
     <select id="qeryAllPosition" resultMap="llpositionMap">
         select post_id,post_name from position p
     </select>
+    <select id="queryLikePosition" resultMap="llpositionMap">
+        SELECT * FROM position p
+        where  p.post_name like CONCAT('%',#{postName},'%')
+    </select>
 </mapper>

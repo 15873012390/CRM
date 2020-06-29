@@ -16,7 +16,7 @@ public class Log {
     private String method; //方法名
     private String params; //参数
     private String ip; //ip地址
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createDate; //操作时间
     @Id
     @Column(name = "log_id")
@@ -74,7 +74,7 @@ public class Log {
     }
     @Basic
     @Column(name ="create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     public Date getCreateDate() {
         return createDate;
     }

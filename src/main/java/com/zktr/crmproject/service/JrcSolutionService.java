@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.JrcSolutionJDao;
+import com.zktr.crmproject.dao.mybatis.JrcSalesOpportMDao;
 import com.zktr.crmproject.dao.mybatis.JrcSolutionMDao;
 import com.zktr.crmproject.pojos.Solution;
 import com.zktr.crmproject.vo.JrcSolutionAdvenceSearch;
@@ -23,7 +24,8 @@ public class JrcSolutionService {
     private JrcSolutionMDao solutionMDao;
     @Autowired
     private JrcSolutionJDao solutionJDao;
-
+    @Autowired
+    private JrcSalesOpportMDao salesOpportMDao;
     /**
      * 分页查找全部的方法
      * @param curpage
@@ -79,7 +81,13 @@ public class JrcSolutionService {
      * @return
      */
     public Result addSolution(Solution solution){
-        solutionJDao.save(solution);
+        Solution solution1=solutionMDao.querySolutionById(solution.getSolId());
+        Solution s=solutionJDao.save(solution);
+        if(solution1==null){
+            if(s.getSalesopport()!=null){
+                salesOpportMDao.updateSales(s.getSalesopport().getSoId(),"方案制定");
+            }
+        }
         return Result.SUCCESS;
     }
 
@@ -103,6 +111,15 @@ public class JrcSolutionService {
             solutionJDao.deleteById(i);
         }
         return Result.SUCCESS;
+    }
+
+    /**
+     * 销售机会详情页刷新数据
+     * @param soId
+     * @return
+     */
+    public List<Solution> flashSolutionBySoid(Integer soId){
+        return solutionMDao.flashSolutionBySoid(soId);
     }
 
 }

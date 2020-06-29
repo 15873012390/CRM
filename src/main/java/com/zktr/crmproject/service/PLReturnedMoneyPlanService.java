@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.PLOrdersDao;
 import com.zktr.crmproject.dao.jpa.PLReturnedMoneyPlanJDao;
+import com.zktr.crmproject.dao.mybatis.PLContractMDao;
 import com.zktr.crmproject.dao.mybatis.PLIOrdersDao;
 import com.zktr.crmproject.dao.mybatis.PLReturnedMoneyPlanMDao;
 import com.zktr.crmproject.pojos.Contract;
@@ -30,6 +31,10 @@ public class PLReturnedMoneyPlanService {
     private PLIOrdersDao ordersDao;
     @Autowired
     private PLReturnedMoneyPlanMDao returnedMoneyPlanMDao;
+    @Autowired
+    private PLContractMDao contractMDao;
+
+
 
 
     public void saveRMP(Returnedmoneyplan returnedmoneyplan){
@@ -158,4 +163,39 @@ public class PLReturnedMoneyPlanService {
         PageInfo<Returnedmoneyplan> page=new PageInfo<>(list);
         return new Pager<Returnedmoneyplan>(page.getTotal(),page.getList());
     }
+
+    /**
+     * 新增 计划回款 合同
+     * @param returnedmoneyplan
+     */
+    public void insertRMPByContract(Returnedmoneyplan returnedmoneyplan){
+        if(returnedmoneyplan.getRmpId()==0){
+            contractMDao.updateRmOrRmp1(1);
+            returnedMoneyPlanMDao.insertRMPByContract(returnedmoneyplan);
+        }else {
+            returnedMoneyPlanMDao.updateRMPByContract(returnedmoneyplan);
+        }
+
+    }
+
+    /**
+     * 编辑 计划回款 合同
+     * @param rmpId
+     * @return
+     */
+    public Returnedmoneyplan findByRmpIdByContract(Integer rmpId){
+
+        return returnedMoneyPlanMDao.findByRmpIdByContract(rmpId);
+    }
+
+   public Returnedmoneyplan findByRmpIdContractAll(Integer ctrId){
+        List<Returnedmoneyplan> list=returnedMoneyPlanMDao.findByRmpIdContractAll(ctrId);
+        if(list!=null&&list.size()>0){
+            //System.out.println("jii"+ctrId);
+            return returnedMoneyPlanMDao.findByRmpIdContractAll(ctrId).get(0);
+
+        }else {
+            return new Returnedmoneyplan();
+        }
+   }
 }

@@ -247,11 +247,12 @@
         SELECT MAX(pro_id) FROM product
     </select>
     <insert id="insertProduct"  useGeneratedKeys="true" keyProperty="proId">
-        update into product(pro_id,pro_name,pro_image,pro_unit,pro_barcode,pro_weight,pro_group,pro_date,durable_years,pro_remark,pro_explain,pro_detailed_profile,pro_del_state,pro_mode,pro_state,pro_price,pro_costprice,cla_id)
+        insert into product(pro_id,pro_name,pro_image,pro_unit,pro_barcode,pro_weight,pro_group,pro_date,durable_years,pro_remark,pro_explain,pro_detailed_profile,pro_del_state,pro_mode,pro_state,pro_price,pro_costprice,cla_id)
         values (#{proId},#{proName},#{proImage},#{proUnit},#{proBarcode},#{proWeight},#{proGroup},#{proDate},#{durableYears},#{proRemark},#{proExplain},#{proDetailedProfile},#{proDelState},#{proMode},#{proState},#{proPrice},#{proCostprice},#{productclassification.claId})
     </insert>
     <update id="updateProduct">
-        update product set pro_name=#{proName},pro_image=#{proImage},pro_unit=#{proUnit},pro_barcode=#{proBarcode},pro_weight=#{proWeight},pro_group=#{proGroup},pro_date=#{proDate},durable_years=#{durablYears},pro_remark=#{proRemark},pro_explain=#{proExplain},pro_detailed_profile=#{proDetailedProfile},pro_del_state=#{proDelState},pro_mode=#{proMode},pro_state=#{proState},pro_price=#{proPrice},pro_costprice=#{proCostprice},cla_id=#{productclassification.claId}
+        update product set pro_name=#{proName},pro_image=#{proImage},pro_unit=#{proUnit},pro_barcode=#{proBarcode},pro_weight=#{proWeight},pro_group=#{proGroup},pro_date=#{proDate},durable_years=#{durableYears},pro_remark=#{proRemark},pro_explain=#{proExplain},pro_detailed_profile=#{proDetailedProfile},pro_del_state=#{proDelState},pro_mode=#{proMode},pro_state=#{proState},pro_price=#{proPrice},pro_costprice=#{proCostprice},cla_id=#{productclassification.claId}
+        where pro_id =#{proId}
     </update>
 
     <select id="queryAllProductInstock"  resultMap="productMap">

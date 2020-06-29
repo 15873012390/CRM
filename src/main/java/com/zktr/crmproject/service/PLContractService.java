@@ -163,11 +163,11 @@ public class PLContractService {
      * @return
      */
     public Pager<Contract> ContractAdvancedSearch(PLContractAdvancedSearch contractAdvancedSearch){
-        String ConTheme="%"+contractAdvancedSearch.getConTheme().trim()+"%";
-        String ConNumber="%"+contractAdvancedSearch.getConNumber().trim()+"%";
+        String conTheme="%"+contractAdvancedSearch.getConTheme().trim()+"%";
+        String conNumber="%"+contractAdvancedSearch.getConNumber().trim()+"%";
         String uId="%"+contractAdvancedSearch.getuId().trim()+"%";
-        contractAdvancedSearch.setConTheme(ConTheme);
-        contractAdvancedSearch.setConNumber(ConNumber);
+        contractAdvancedSearch.setConTheme(conTheme);
+        contractAdvancedSearch.setConNumber(conNumber);
         contractAdvancedSearch.setuId(uId);
         //System.out.println("aaaa"+contractAdvancedSearch.getConThemeSelect());
         PageHelper.startPage(contractAdvancedSearch.getCurpage(),contractAdvancedSearch.getPagesize());
@@ -191,7 +191,14 @@ public class PLContractService {
     public List<Productspecification> queryByClaState(){
         return specificationMDao.queryByClaState();
     }
-
+    /**
+     * //合同页面 根据规格id查找产品销售金额 赋值给合同金额
+     * @param speId
+     * @return
+     */
+    public Productspecification findBySpeIdPrice(Integer speId){
+        return specificationMDao.findBySpeIdPrice(speId);
+    }
     /**
      * 查询 报价详情服务类产品
      * @return

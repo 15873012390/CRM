@@ -19,6 +19,7 @@ public class Solution {
 
     @Id
     @Column(name = "sol_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getSolId() {
         return solId;
     }

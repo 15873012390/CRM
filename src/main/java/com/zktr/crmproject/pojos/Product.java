@@ -29,9 +29,7 @@ public class Product {
     private Integer proDelState;
     private String proExplain;
     private String proDetailedProfile;
-    @JsonIgnoreProperties("product")
     private Productclassification productclassification;
-    @JsonIgnoreProperties("product")
     private List<Productspecification> productspecification;
 
     @Id

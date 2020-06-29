@@ -159,7 +159,7 @@
             out_status
         </if>
     </select>
-    <!--柱状图 根据每月统计订单金额-->
+    <!--折现图 根据每月统计订单金额-->
     <select id="CountBar" resultType="com.zktr.crmproject.vo.PLCountPie">
         select
         <if test="barValue==1">
@@ -183,6 +183,19 @@
             date_format(ord_time, '%Y-%m-%d')
         </if>
     </select>
+    <!--统计当前月的每天的销售额-->
+    <select id="CountLineOne" resultType="com.zktr.crmproject.vo.PLCountPie">
+        SELECT sum(ord_total_amount) as value,CONCAT(YEAR(ord_time),'-',MONTH(ord_time),'-',DAYOFMONTH(ord_time)) as name
+        FROM orders
+        WHERE ord_del_state=1 and  ord_time>DATE_SUB(CURDATE(),INTERVAL DAY(CURDATE())-1 DAY) GROUP BY CONCAT(YEAR(ord_time),'-',MONTH(ord_time),'-',DAYOFMONTH(ord_time)) ASC
+    </select>
+    <!--统计上个月的每天的销售额-->
+    <select id="CountLineTwo" resultType="com.zktr.crmproject.vo.PLCountPie">
+        SELECT sum(ord_total_amount) as value,CONCAT(YEAR(ord_time),'-',MONTH(ord_time),'-',DAYOFMONTH(ord_time)) as name
+        FROM orders
+        WHERE ord_del_state=1 and  ord_time&lt;=DATE_SUB(CURDATE(),INTERVAL DAY(CURDATE())-1 DAY) GROUP BY CONCAT(YEAR(ord_time),'-',MONTH(ord_time),'-',DAYOFMONTH(ord_time)) ASC
+    </select>
+
     <!--分页查询全部-->
     <select id="queryAllOrders" resultMap="ordersMap">
         SELECT o.out_status,o.ord_purchase_way,o.ord_id,o.ord_theme,o.ord_number,o.ord_time,o.ord_remark,o.ord_classify,o.ord_total_amount,o.ord_send_out_money,o.ord_executing_state,o.ord_send_out_state,o.ord_payment,q.quo_id,q.quo_theme,q.total_money,c.cus_id,c.cus_name,u.u_id,u.u_name,a.add_id,a.add_province
@@ -209,7 +222,7 @@
         ON o.u_id=u.u_id
         LEFT JOIN address a
         ON a.add_id=o.add_id
-        WHERE o.ord_del_state=1 and o.rm_or_rmp is null group by ord_id desc
+        WHERE o.ord_del_state=1 and o.rm_or_rmp is null or o.rm_or_rmp=0 group by ord_id desc
     </select>
     <!--如果是计划回款 则表示被计划回款已记录 选择订单时不显示 根据订单id修改状态-->
     <update id="updateRmOrRmp1">
@@ -266,7 +279,7 @@
     </insert>
     <!--修改-->
     <update id="updateOrders" parameterType="Orders">
-        update orders set ord_theme=#{ordTheme},ord_classify=#{ordClassify},ord_payment=#{ordPayment},ord_total_amount=#{ordTotalAmount},ord_send_out_money=#{ordSendOutMoney},ord_margin=#{ordMargin},ord_time=#{ordTime},ord_purchase_way=#{ordPurchaseWay},ord_habit=#{ordHabit},ord_send_out_state=#{ordSendOutState},out_status=#{outStatus},ord_remark=#{ordRemark},add_id=#{address.addId},quo_id=#{quote.quoId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        update orders set ord_executing_state=#{ordExecutingState},ord_theme=#{ordTheme},ord_classify=#{ordClassify},ord_payment=#{ordPayment},ord_total_amount=#{ordTotalAmount},ord_send_out_money=#{ordSendOutMoney},ord_margin=#{ordMargin},ord_time=#{ordTime},ord_purchase_way=#{ordPurchaseWay},ord_habit=#{ordHabit},ord_send_out_state=#{ordSendOutState},out_status=#{outStatus},ord_remark=#{ordRemark},add_id=#{address.addId},quo_id=#{quote.quoId},u_id=#{user.uId},cus_id=#{customer.cusId}
         where ord_id=#{ordId}
     </update>
     <!--发货后把发货金额和发货状态赋值给订单中的发货金额和发货状态-->
@@ -403,7 +416,6 @@
                     </when>
                     <when test="ordThemeSelect !=null and ordThemeSelect!='' and ordThemeSelect=='不包含'">
                         and Lower(o.ord_theme) not like lower ( #{ordTheme})
-
                     </when>
                     <otherwise></otherwise>
                 </choose>

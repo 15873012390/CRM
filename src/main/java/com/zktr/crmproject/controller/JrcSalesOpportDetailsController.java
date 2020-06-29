@@ -26,8 +26,8 @@ public class JrcSalesOpportDetailsController {
 
     @GetMapping("/query_salesOpport_and_customer_details")
     @ResponseBody
-    public Map querySalesOpportAndCustomeDetails(Integer soId,Integer cusId){
-        return backLogTaskService.querySalesOpportAndCustomeDetails(soId,cusId);
+    public Map querySalesOpportAndCustomeDetails(Integer soId){
+        return backLogTaskService.querySalesOpportAndCustomeDetails(soId);
     }
     @GetMapping("/push_salesOpport_by_soid")
     @ResponseBody
@@ -42,29 +42,5 @@ public class JrcSalesOpportDetailsController {
     }
 
 
-    @PostMapping("/add_actionhistory_and_details")
-    @ResponseBody
-    public Result addActionHistory(@RequestBody JrcActionHistoryVo actionHistoryVo){
-        System.out.println(actionHistoryVo.toString());
-        return backLogTaskService.addActionHistory(actionHistoryVo);
-    }
-
-    @GetMapping("/query_action_history_by_ahid")
-    @ResponseBody
-    public Actionhistory queryActionHistoryByAhid(Integer ahid){
-        return backLogTaskService.queryActionHistoryByAhid(ahid);
-    }
-
-    @GetMapping("/query_acitonHistory_by_cusid")
-    @ResponseBody
-    public List<Actionhistory> queryAcitonHistoryByCusid(Integer cusid){
-        return backLogTaskService.queryAcitonHistoryByCusid(cusid);
-    }
-
-    @GetMapping("/delete_action_history_by_ahid")
-    @ResponseBody
-    public Result deleteActionHistoryByAhid(Integer ahid){
-        return backLogTaskService.deleteActionHistoryByAhid(ahid);
-    }
 
 }

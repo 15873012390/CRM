@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.JrcClientDemandJDao;
 import com.zktr.crmproject.dao.mybatis.JrcClientdemandMDao;
+import com.zktr.crmproject.dao.mybatis.JrcSalesOpportMDao;
 import com.zktr.crmproject.pojos.Backlogtask;
 import com.zktr.crmproject.pojos.Clientdemand;
 import com.zktr.crmproject.vo.JrcClientDemandAdvancedSearch;
@@ -22,6 +23,8 @@ public class JrcClientDemandService {
     private JrcClientdemandMDao clientdemandMDao;
     @Autowired
     private JrcClientDemandJDao clientDemandJDao;
+    @Autowired
+    private JrcSalesOpportMDao salesOpportMDao;
 
     /**
      * 分页查找全部数据
@@ -73,7 +76,13 @@ public class JrcClientDemandService {
      * @return
      */
     public Result addClientDemand(Clientdemand clientdemand){
-        clientDemandJDao.save(clientdemand);
+        Clientdemand clientdemand1=clientdemandMDao.queryClientDemandByCdId(clientdemand.getCdId());
+        Clientdemand c=clientDemandJDao.save(clientdemand);
+        if(clientdemand1==null){
+            if(c.getSalesopport()!=null){
+                salesOpportMDao.updateSales(c.getSalesopport().getSoId(),"需求分析");
+            }
+        }
         return Result.SUCCESS;
     }
 
@@ -106,6 +115,15 @@ public class JrcClientDemandService {
             clientDemandJDao.deleteById(cdid);
         }
         return Result.SUCCESS;
+    }
+
+    /**
+     * 根据销售机会查找所有的客户需求
+     * @param soid
+     * @return
+     */
+    public List<Clientdemand> queryClientdemandBySoid(Integer soid){
+        return clientdemandMDao.queryClientdemandBySoid(soid);
     }
 
 

@@ -9,9 +9,12 @@ import com.zktr.crmproject.pojos.Department;
 import com.zktr.crmproject.pojos.User;
 import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +48,14 @@ public class llUserService {
         user1.setuName(user.getuName());
         user1.setuSex(user.getuSex());
         user1.setuImg(user.getuImg());
+        user1.setUcolor(user.getUcolor());
         user1.setDepartment(d);
         return user1;
+    }
+
+    public void updateUser(Integer uId,String ucolor){
+        User user1=llUserDao.findById(uId).get();
+        user1.setUcolor(ucolor);
     }
     //名字查重
     public int checkName(String name){
@@ -73,12 +82,18 @@ public class llUserService {
             po.setuBrith(user1.getuBirth());
             po.setuJoindate(user1.getuJoindate());
             po.setuImg(user1.getuImg());
+            po.setUcolor(user1.getUcolor());
             po.setPower(a);
             po.setDeptName(dept);
             return po!=null?po:null;
         }else {
             return null;
         }
+    }
+
+    public void show(HttpSession session){
+        String name = (String)session.getAttribute("name");
+        System.out.println(name);
     }
     //获取用户所有信息
     public Pager<UserAndPosition> findAllUsers(Integer curpage,Integer pagesize){
@@ -121,7 +136,7 @@ public class llUserService {
     }
     //修改密码
     public void updatePass(Integer id,String pass){
-        User user=lliUserDao.findById(id);
+        User user=llUserDao.findById(id).get();
         user.setuPass(pass);
     }
     //编辑资料

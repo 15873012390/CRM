@@ -124,9 +124,15 @@
 
     <select id="queryClientdemandBySoid" resultMap="clientdemandMap">
         select c.cd_id, c.cd_theme, c.cd_people,c.record_time, c.importance, c.cd_content,
-        s.so_id,s.so_theme
+        s.so_id,s.so_theme,c2.cus_id,c2.cus_name
         from clientdemand c left join salesopport s on c.so_id = s.so_id
+        left join customer c2 on s.cus_id = c2.cus_id
         where c.so_id=#{soId}
         order by c.cd_id desc
+    </select>
+
+
+    <select id="deleteClientdemandBySoid">
+        delete from clientdemand where so_id = #{soId}
     </select>
 </mapper>

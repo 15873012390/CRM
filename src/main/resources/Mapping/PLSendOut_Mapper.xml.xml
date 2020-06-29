@@ -20,6 +20,13 @@
             <id column="ord_id" property="ordId"></id>
             <result column="ord_number" property="ordNumber"></result>
             <result column="ord_theme" property="ordTheme"></result>
+            <!--出库单-->
+            <collection property="outstock" ofType="Outstock">
+                <id column="out_id" property="outId"></id>
+                <result column="out_number" property="outNumber"></result>
+                <result column="title" property="title"></result>
+                <result column="status" property="status"></result>
+            </collection>
         </association>
         <collection property="sendoutdetial" ofType="Sendoutdetial">
             <id column="sod_id" property="sodId"></id>
@@ -75,11 +82,11 @@
             </association>
         </association>
     </resultMap>
-
+    <!--新增发货单-->
     <insert id="insertSendOut" parameterType="Sendout" useGeneratedKeys="true" keyProperty="senId">
         insert into sendout values(#{senId},#{customer.cusId},#{orders.ordId},#{senReceiving},#{senDate},#{senFreight},#{senState},#{senWay},#{senRemark},#{senDelState},#{ifReturnedgoods})
     </insert>
-
+    <!--新增发货单详情-->
     <insert id="insertSendOutDetail" parameterType="Sendoutdetial">
         insert into sendoutdetial values(#{sodId},#{sendout.senId},#{productspecification.speId},#{sodNumber},#{sodDate},#{sodMoney},#{sodRemark})
     </insert>
@@ -107,7 +114,7 @@
         LEFT JOIN customer c
         ON so.cus_id=c.cus_id
         LEFT JOIN orders o
-        ON so.ord_id=o.ord_id
+        ON so.ord_id=o.ord_id and so.sen_del_state=2
         WHERE so.ord_id=#{ordid}
     </select>
     <!--根据发货单id查询发货详情-->
@@ -135,12 +142,29 @@
         on so.sen_id=sod.sen_id
         where so.sen_id=#{senId}
     </select>
-
-
-
-
-
-
-
-
+    <!--首页-->
+    <select id="statisticsHomePageSO" resultType="java.util.Map">
+        SELECT date_format(send.sen_date, '%Y-%m-%d') times,c.cus_name cname,o.ord_theme theme
+        FROM sendout send
+        LEFT JOIN orders o
+        ON o.ord_id=send.ord_id
+        LEFT JOIN outstock outs
+        on o.ord_id=outs.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=send.cus_id
+        WHERE send.sen_state='未发货' and outs.`status`='已出库'
+        group by date_format(send.sen_date, '%Y-%m-%d'),c.cus_name,o.ord_theme
+     </select>
+    <!--首页-->
+    <select id="statisticsHomePageSONum" resultType="java.util.Map">
+        SELECT COUNT(send.sen_id) num
+        FROM sendout send
+        LEFT JOIN orders o
+        ON o.ord_id=send.ord_id
+        LEFT JOIN outstock outs
+        on o.ord_id=outs.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=send.cus_id
+        WHERE send.sen_state='未发货' and outs.`status`='已出库'
+    </select>
 </mapper>

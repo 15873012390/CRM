@@ -119,15 +119,31 @@
     </select>
 
     <select id="queryByMonth" resultType="Map">
-         select m.id name, IFNULL(b,0) value from
+        select m.id name, IFNULL(b,0) value from
 (
   select 1 as id union select 2 union select 3 union select 4 union select 5 union select 6
   union select 7 union select 8 union select 9 union select 10 union select 11 union select 12
 ) m
 left join
-(select month(com_date) a,count(title) b from complaint GROUP BY month(com_date)) n
-on m.id = n.a
+(select month(com_date) a,count(title) b from complaint
+where DATE_FORMAT(com_date,'%Y')=DATE_FORMAT(now(),'%Y')
+GROUP BY month(com_date)) n
+on m.id = n.a order by m.id
     </select>
+
+    <select id="queryByMonthBySelect" resultType="Map">
+        select m.id name, IFNULL(b,0) value from
+(
+  select 1 as id union select 2 union select 3 union select 4 union select 5 union select 6
+  union select 7 union select 8 union select 9 union select 10 union select 11 union select 12
+) m
+left join
+(select month(com_date) a,count(title) b from complaint
+where DATE_FORMAT(com_date,'%Y')=#{year}
+GROUP BY month(com_date)) n
+on m.id = n.a order by m.id
+    </select>
+
 
     <select id="queryByCustomer" resultType="Map">
         select cus.cus_name name,count(*) value
@@ -143,6 +159,12 @@ on m.id = n.a
         update complaint set com_id =#{comId},cus_id=#{customer.cusId},title=#{title},reception_person=#{receptionPerson},classify=#{classify},describes=#{describes},com_date=#{comDate},complainant=#{complainant},emergency_level=#{emergencyLevel},treatment_process=#{treatmentProcess},
         deal_result=#{dealResult},spent_time=#{spentTime},cus_feedback=#{cusFeedback},return_confirmation=#{returnConfirmation},remarks=#{remarks} where com_id = #{comId}
     </update>
+
+    <delete id="deleteByComId">
+        delete from complaint where com_id = #{comId}
+    </delete>
+
+
 
 
 

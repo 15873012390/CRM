@@ -37,4 +37,8 @@ public interface HTIOutstockDao {
     public Outstock queryOutstockByOrdId(Integer ordId);
 
     public Outstockdetails queryOsdByOutIdAndSpeId(Integer outId,Integer speId);
+
+    public Integer queryNoOutstock(String uName);
+
+    public List<Outstock> queryNoOutStockList(String uName);
 }

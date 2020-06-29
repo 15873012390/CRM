@@ -31,6 +31,7 @@ public class JrcBackLogTaskService {
     private JrcBackLogTaskDetailsMDao backLogTaskDetailsMDao;
     @Autowired
     private JrcCustomerAndUserService customerAndUserService;
+
     /**
      * 刷新待办任务
      * @param cusId
@@ -74,8 +75,11 @@ public class JrcBackLogTaskService {
 
         }else{
             b2.setCreationTime(new Timestamp(new Date().getTime()));
-            //创建人目前是1号员工 有了session改session里当前登录的员工
-            User user = customerAndUserService.queryByUid(1);
+            //前台获取员工
+            System.out.println("---------------");
+            System.out.println(backLogTaskVo.getUid());
+            System.out.println("---------------");
+            User user = customerAndUserService.queryByUid(backLogTaskVo.getUid());
             b2.setUser(user);
         }
 
@@ -131,8 +135,13 @@ public class JrcBackLogTaskService {
      */
     public Result delBackLogTaskByBltId(Integer bltid){
         Backlogtask backlogtask=backLogTaskMDao.delBackLogQuery(bltid);
-        backlogtask.setDelStatus(2);
-        backLogTaskJDao.save(backlogtask);
+        if(backlogtask!=null){
+            List<Backlogtaskdetails> backlogtaskdetails=
+                    backLogTaskDetailsMDao.queryBackLogTaskUserBybltId(backlogtask.getBltId());
+            backLogTaskDetailsJDao.deleteAll(backlogtaskdetails);
+            backLogTaskMDao.deleteBackTaskBltId(bltid);
+        }
+
         return Result.SUCCESS;
     }
 
@@ -144,9 +153,7 @@ public class JrcBackLogTaskService {
     public Result delBackLogTaskByBltIdAll(Integer[] bltIds){
         Backlogtask backlogtask=new Backlogtask();
         for(Integer i:bltIds){
-            backlogtask=backLogTaskMDao.delBackLogQuery(i);
-            backlogtask.setDelStatus(2);
-            backLogTaskJDao.save(backlogtask);
+           delBackLogTaskByBltId(i);
         }
         return Result.SUCCESS;
     }
@@ -199,6 +206,26 @@ public class JrcBackLogTaskService {
     }
 
     /**
+     * 根据客户分页
+     * @param cusId
+     * @param curpage
+     * @param pagesize
+     * @return
+     */
+    public Pager queryAllBackLogTaskByCusId(Integer cusId,Integer curpage,Integer pagesize){
+        List<Backlogtask> list=backLogTaskMDao.queryBackLogTaskByCusId(cusId);
+        List list1=new ArrayList();
+        for(int i=0;i<pagesize;i++){
+            int index=(curpage-1)*pagesize+i;
+            if(index<list.size()){
+                if(list.get(index)!=null){
+                    list1.add(list.get(index));
+                }
+            }
+        }
+        return new Pager<Backlogtask>(list.size(),list1);
+    }
+    /**
      * 查看所有客户列表
      * @return
      */
@@ -226,6 +253,8 @@ public class JrcBackLogTaskService {
      * 状态不是未结束，已结束，意外取消也是不合格数据
      */
     public Map outBackLogTask(List<OutBackLogTaskVo> outBackLogTaskVos){
+        System.out.println("--------------");
+        System.out.println(outBackLogTaskVos.toString());
         boolean qualifi=true;
         int numer=0;
         List<BackLogTaskVo> qualifiBackLogTaskVo=new ArrayList<>();
@@ -236,6 +265,7 @@ public class JrcBackLogTaskService {
                 if((o.getCusName()==null||o.getCusName().length()<=0)||(o.getUserList()== null ||o.getUserList().length() <= 0)||
                    (o.getBltDescription()==null||o.getBltDescription().length()<=0)||(o.getFinishDate()==null)||
                         (o.getPrecedence()==null||o.getPrecedence().length()<=0)||(o.getStatus()==null||o.getStatus().length()<=0)
+                        ||o.getCreateUser().length()<=0
                 ){
                     qualifi=false;
                     numer++;
@@ -274,25 +304,36 @@ public class JrcBackLogTaskService {
                     b.setUserList(users1);
                     b.setBltDescription(o.getBltDescription());
                     b.setFinishDate(o.getFinishDate());
-                    if(o.getPrecedence().equals("低")){
+                    if(o.getPrecedence().trim().equals("低")){
                         b.setPrecedence(1);
-                    }else if(o.getPrecedence().equals("高")){
+                    }else if(o.getPrecedence().trim().equals("高")){
                         b.setPrecedence(2);
                     }else{
                         qualifi=false;
                         numer++;
                         break;
                     }
-                    if(o.getStatus().equals("未结束")){
+                    if(o.getStatus().trim().equals("未结束")){
                         b.setStatus(1);
-                    }else if(o.getStatus().equals("已结束")){
+                    }else if(o.getStatus().trim().equals("已结束")){
                         b.setStatus(2);
-                    }else if(o.getStatus().equals("意外终止")){
+                    }else if(o.getStatus().trim().equals("意外终止")){
                         b.setStatus(3);
                     }else{
                         qualifi=false;
                         numer++;
                         break;
+                    }
+
+                    //创建人
+                    List<User> list=customerAndUserService.queryByUserName(o.getCreateUser().trim());
+                    //如果这个客户小于1
+                    if(list.size()<0){
+                        qualifi=false;
+                        numer++;
+                        break;
+                    }else{
+                        b.setUid(list.get(0).getuId());
                     }
                     qualifiBackLogTaskVo.add(b);
                     break;
@@ -318,6 +359,20 @@ public class JrcBackLogTaskService {
 
     public List<Backlogtask> queryCurMonth(Date startStr,Date end){
         return backLogTaskMDao.queryCurMoth(startStr,end);
+    }
+
+
+    /*首页的查看未完成任务以及超期任务*/
+    public List<Backlogtask> queryBakLogTaskDetailsByUidFinsh(Integer op,Integer uid){
+        List backList=new ArrayList();
+        List<Backlogtask> list=backLogTaskMDao.queryBakLogTaskDetailsByUidFinsh(op,uid);
+        for(int i=0;i<list.size();i++){
+            Backlogtask b=backLogTaskMDao.queryBackLogTaskByBltId(list.get(i).getBltId());
+            if(b!=null){
+                backList.add(b);
+            }
+        }
+        return backList;
     }
 
 }

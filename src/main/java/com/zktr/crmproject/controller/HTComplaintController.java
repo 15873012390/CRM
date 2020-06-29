@@ -64,4 +64,9 @@ public class HTComplaintController {
         return complaintService.linediagramQuery(selectValue2);
     }
 
+    @GetMapping("/queryByMonthBySelect")
+    public List queryByMonthBySelect(String year){
+        return complaintService.queryByMonthBySelect(year);
+    }
+
 }

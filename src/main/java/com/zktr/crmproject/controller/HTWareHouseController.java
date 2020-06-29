@@ -76,7 +76,10 @@ public class HTWareHouseController {
         return warehouseService.queryAllWarehouse();
     }
 
-
+    @GetMapping("/querySameNameWarehouse")
+    public Integer querySameNameWarehouse(String warehouseName){
+        return warehouseService.querySameNameWarehouse(warehouseName);
+    }
 
 
 

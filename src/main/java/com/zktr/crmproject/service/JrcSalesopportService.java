@@ -40,12 +40,21 @@ public class JrcSalesopportService {
 
     @Autowired
     private JrcSalesFunnelMDao salesFunnelMDao;
-
+    @Autowired
+    private JrcStagelogMDao stagelogMDao;
+    @Autowired
+    private JrcClientdemandMDao clientdemandMDao;
+    @Autowired
+    private JrcSolutionMDao solutionMDao;
+    @Autowired
+    private JrcQuoteMDao quoteMDao;
+    @Autowired
+    private JrcQuoteDetailsMDao quoteDetailsMDao;
 
     List<JrcSalesOpportStage> sos1=new ArrayList<>();
 
     /**
-     * 查看销售机会
+     * 查看所有
      * @return
      */
     public List<Salesopport> queryAll(){
@@ -54,74 +63,76 @@ public class JrcSalesopportService {
 
     /**
      * 分页查看全部
-     *
      * @param curpage
      * @param pagesize
      * @return
      */
-    public Pager<Salesopport> queryAllSalesOppoerByPage(int curpage, int pagesize) {
+    public Map queryAllSalesOppoerByPage(int curpage, int pagesize) {
+        List<Salesopport> sumList=salesOpportMDao.queryAll();
         PageHelper.startPage(curpage, pagesize);
         List<Salesopport> slist = salesOpportMDao.queryAll();
+        BigDecimal s=sum(sumList);
         PageInfo<Salesopport> pager = new PageInfo<>(slist);
-        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
+        return backDate(pager,s);
     }
 
     /**
      * 模糊搜索
-     *
      * @param value    下拉框的值
      * @param inputs   输入框的值
      * @param select   下拉列表【机会主题、客户名称】
      * @param pagesize 页大小
      * @return
      */
-    public Pager<Salesopport> querySalesOpportByLikeSearchPage(String value, String inputs, String select, int curpage, int pagesize) {
+    public Map querySalesOpportByLikeSearchPage(String value, String inputs, String select, int curpage, int pagesize) {
+        List<Salesopport> sumList=salesOpportMDao.queryByLikeSearch(value,inputs.trim()!=""?"%"+inputs.trim()+"%":"", select);
         PageHelper.startPage(curpage, pagesize);
-        String input = "";
-        System.out.println(inputs.trim().length() != 0);
-        if (inputs.trim().length() != 0) {
-            input = "%" + inputs.trim() + "%";
-        } else {
-            input = inputs.trim();
-        }
-        List<Salesopport> list = salesOpportMDao.queryByLikeSearch(value, input, select);
+        List<Salesopport> list = salesOpportMDao.queryByLikeSearch(value,inputs.trim()!=""?"%"+inputs.trim()+"%":"", select);
         PageInfo<Salesopport> pager = new PageInfo<>(list);
-        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
+        BigDecimal s=sum(sumList);
+        return backDate(pager,s);
     }
-
-    /**
-     * 查看所有客户
-     *
-     * @return
-     */
-    public List<Customer> queryAllCustomer() {
-        return customerMDao.queryAll();
-    }
-
-    /**
-     * 查看所有员工
-     *
-     * @return
-     */
-    public List<User> queryAllUser() {
-        return userMDao.queryAll();
-    }
-
     /**
      * 高级搜索员工
-     *
-     * @param salesOpportAdvancedSearch
+     * @param  s
      * @return
      */
-    public Pager<Salesopport> querySalesOpportByAdvancedSearch(SalesOpportAdvancedSearch salesOpportAdvancedSearch) {
-        String opportunites = "%" + salesOpportAdvancedSearch.getOpportunitiesThem().trim() + "%";
-        salesOpportAdvancedSearch.setOpportunitiesThem(opportunites);
-        PageHelper.startPage(salesOpportAdvancedSearch.getCurpage(), salesOpportAdvancedSearch.getPagesize());
-        List<Salesopport> list = salesOpportMDao.queryByAdvancedSearch(salesOpportAdvancedSearch);
+    public Map querySalesOpportByAdvancedSearch(SalesOpportAdvancedSearch s) {
+        s.setOpportunitiesThem(s.getOpportunitiesThem().trim()!=""?"%"+s.getOpportunitiesThem().trim()+"%":"");
+        List<Salesopport> sumList=salesOpportMDao.queryByAdvancedSearch(s);
+        PageHelper.startPage(s.getCurpage(), s.getPagesize());
+        List<Salesopport> list = salesOpportMDao.queryByAdvancedSearch(s);
+        BigDecimal su=sum(sumList);
         PageInfo<Salesopport> pager = new PageInfo<>(list);
-        return new Pager<Salesopport>(pager.getTotal(), pager.getList());
+        return backDate(pager,su);
     }
 
+
+    /**
+     * 计算全部数据
+     * @param list
+     * @return
+     */
+    public static BigDecimal sum(List<Salesopport> list){
+        BigDecimal s=new BigDecimal(0);
+        for(Salesopport sa:list){
+            s=(s.add(sa.getAmount()==null?new BigDecimal(0):sa.getAmount())).setScale(2);
+        }
+        return s;
+    }
+
+    /**
+     * 返回数据
+     * @param pageInfo
+     * @param sum
+     * @return
+     */
+    public static Map backDate(PageInfo pageInfo,BigDecimal sum){
+        Map map=new HashMap();
+        map.put("sum",sum);
+        map.put("list",new Pager<>(pageInfo.getTotal(), pageInfo.getList()));
+        return map;
+    }
     /**
      * 添加/编辑销售机会
      * 1.判断传进来的销售机会存不存在  存在则为修改   不存在则为添加
@@ -129,40 +140,46 @@ public class JrcSalesopportService {
      * （a.修改了阶段备注/阶段 则新增一条阶段日志记录和修改销售机会表
      * （b.没有修改则仅仅修改销售机会表
      *
-     * @param salesopport
+     * @param s
      */
-    public void addSalesOpport(Salesopport salesopport) {
+    public void addSalesOpport(Salesopport s) {
         Stagelog stagelog = new Stagelog();
-        if (salesopport.getSoId() != 0) {
-            Salesopport s = salesOpportMDao.queryBySoid(salesopport.getSoId());
-            salesOpportJDao.save(salesopport);
-            if (!((s.getStage().equals(salesopport.getStage())) &&
-                    (s.getConPhone().equals(salesopport.getConPhone())))) {
-                stagelog.setSlNote(salesopport.getConPhone());
-                stagelog.setRecordTime(new Timestamp(new Date().getTime()));
-                stagelog.setStageName(salesopport.getStage());
-                //当前登录员工
-                stagelog.setUserName(salesopport.getUser().getuName());
-                stagelog.setSalesopport(s);
+        Salesopport s2 = salesOpportMDao.queryBySoid(s.getSoId());
+        if (s2!=null) {
+            //编辑
+            Salesopport sales=salesOpportJDao.save(s);
 
+            if (!((s2.getStage().equals(s.getStage())) &&
+                    (s2.getConPhone().equals(s.getConPhone())))) {
+                stagelog.setSlNote(s.getConPhone());
+                stagelog.setRecordTime(new Timestamp(new Date().getTime()));
+                stagelog.setStageName(s.getStage());
+                //当前登录员工
+                stagelog.setUserName(s.getUser().getuName());
+                stagelog.setSalesopport(sales);
+                stagelogJDao.save(stagelog);
             }
             //新增
         } else {
-            Customer c = customerMDao.queryContactByCusid(salesopport.getCustomer().getCusId());
-            salesopport.setUpdateDate(new Timestamp(new Date().getTime()));
-            salesopport.setCustomer(c);
-            salesOpportJDao.save(salesopport);
-            Salesopport s2 = salesOpportMDao.queryAll().get(0);
-            stagelog.setSlNote(salesopport.getConPhone());
+            Customer c = customerMDao.queryContactByCusid(s.getCustomer().getCusId());
+            s.setUpdateDate(new Timestamp(new Date().getTime()));
+            s.setCustomer(c);
+            Salesopport saves=salesOpportJDao.save(s);
+            //Salesopport s2 = salesOpportMDao.queryAll().get(0);
+            stagelog.setSlNote(s.getConPhone());
             stagelog.setRecordTime(new Timestamp(new Date().getTime()));
-            stagelog.setStageName(salesopport.getStage());
+            stagelog.setStageName(s.getStage());
+
             //操作人 为 当前登录的员工
-            stagelog.setUserName(salesopport.getUser().getuName());
-            stagelog.setSalesopport(s2);
+            stagelog.setUserName(s.getUser().getuName());
+
+            stagelog.setSalesopport(saves);
+            stagelogJDao.save(stagelog);
 
         }
-        stagelogJDao.save(stagelog);
+
     }
+
 
     /**
      * 根据销售机会id查找销售机会和销售阶段日志
@@ -181,8 +198,18 @@ public class JrcSalesopportService {
      */
     public void delSalesOpport(Integer soid) {
         Salesopport s = salesOpportMDao.deleteQueryById(soid);
-        s.setDelStatus(2);
-        salesOpportJDao.save(s);
+        if(s!=null){
+            stagelogMDao.deleteStageLogBySoid(soid);
+            clientdemandMDao.deleteClientdemandBySoid(soid);
+            solutionMDao.deleteSolutionBySoid(soid);
+            List<Quote> quotes=quoteMDao.queryQuoteBySoid(soid);
+            for(Quote q:quotes){
+                quoteDetailsMDao.deleteQuoteDetailsByquoId(q.getQuoId());
+            }
+            quoteMDao.deleteQuoteBySoid(soid);
+            salesOpportMDao.deleteSalesBySoId(soid);
+        }
+
     }
 
     /**
@@ -192,83 +219,8 @@ public class JrcSalesopportService {
      */
     public void delBatchSalesopport(Integer[] soids) {
         for (Integer soid : soids) {
-            Salesopport s = salesOpportMDao.deleteQueryById(soid);
-            s.setDelStatus(2);
-            salesOpportJDao.save(s);
+            delSalesOpport(soid);
         }
-    }
-
-    /**
-     * 销售漏斗（销售机会阶段个数）
-     *
-     * @param users
-     * @return
-     */
-    public Map querySalesOpportByStageNumberAndMoney(List<User> users) {
-        HashMap map=new HashMap();
-        List<JrcSalesFunnel> salesFunnels=new ArrayList<>();
-        //个数
-        List<JrcCharType> charTypes=new ArrayList<>();
-        //金额
-        List<JrcCharType> charTypeMoneys=new ArrayList<>();
-
-        String stage = "";
-        for (int i = 1; i <= 6; i++) {
-            if (i == 1) {
-                stage = "初期沟通";
-            } else if (i == 2) {
-                stage = "需求分析";
-            } else if (i == 3) {
-                stage = "方案制定";
-            } else if (i == 4) {
-                stage = "招投标竞争";
-            } else if (i == 5) {
-                stage = "商务谈判";
-            } else if (i == 6) {
-                stage = "合同签约";
-            }
-            JrcSalesFunnel salesFunnel= salesFunnelMDao.querySalesOpportByStageNumberAndMoney(users,stage);
-            if(salesFunnel!=null){
-                salesFunnels.add(salesFunnel);
-            }
-        }
-        BigDecimal length=new BigDecimal(100);
-        BigDecimal lengthMoney=new BigDecimal(100);
-        for(int i=0;i<salesFunnels.size();i++){
-            JrcCharType charType=new JrcCharType();
-            JrcCharType charTypeMoney=new JrcCharType();
-            if(i==0){
-                //个数
-                charType.setValue(length.doubleValue());
-                charType.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getNumbers());
-                charTypes.add(charType);
-
-                //金额
-                charTypeMoney.setValue(length.doubleValue());
-                charTypeMoney.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getMoney());
-                charTypeMoneys.add(charTypeMoney);
-
-            }else{
-                //个数
-                if(!(new BigDecimal(salesFunnels.get(i).getNumbers()).divide(new BigDecimal(salesFunnels.get(i-1).getNumbers()),2,BigDecimal.ROUND_HALF_UP).compareTo(new BigDecimal("1"))==1)){
-                    length=(new BigDecimal(salesFunnels.get(i).getNumbers()).divide(new BigDecimal(salesFunnels.get(i-1).getNumbers()),2,BigDecimal.ROUND_HALF_UP).multiply(length)).setScale(0,BigDecimal.ROUND_HALF_UP);
-                }
-                charType.setValue(length.doubleValue());
-                charType.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getNumbers());
-                charTypes.add(charType);
-                //金额
-                if(!(salesFunnels.get(i).getMoney().divide(salesFunnels.get(i-1).getMoney(),2,BigDecimal.ROUND_HALF_UP).compareTo(new BigDecimal("1"))==1)){
-                    lengthMoney=(salesFunnels.get(i).getMoney().divide(salesFunnels.get(i-1).getMoney(),2,BigDecimal.ROUND_HALF_UP).multiply(lengthMoney)).setScale(0,BigDecimal.ROUND_HALF_UP);
-                }
-                charTypeMoney.setValue(lengthMoney.doubleValue());
-                charTypeMoney.setName(salesFunnels.get(i).getStage()+","+salesFunnels.get(i).getMoney());
-                charTypeMoneys.add(charTypeMoney);
-
-            }
-        }
-        map.put("charTypeNumbers",charTypes);
-        map.put("charTypeMoneys",charTypeMoneys);
-        return map;
     }
 
     /**
@@ -501,5 +453,138 @@ public class JrcSalesopportService {
 
         }
     }
+
+    //图表1
+    public List<CountPie> querySalesEarch1(Integer op){
+        return salesOpportMDao.querySalesEarch1(op);
+    }
+
+    //图表2
+    public CountBar querySalesEarch2(Integer op){
+        CountBar countBar=new CountBar();
+
+        List<CountPie> list=salesOpportMDao.querySalesEarch2(op);
+        String[] name=new String[list.size()];
+        int[] value=new int[list.size()];
+        int count=0;
+        for (CountPie countPie:list){
+
+            name[count]=countPie.getName();
+            value[count]=countPie.getValue();
+            count++;
+
+        }
+        countBar.setName(name);
+        countBar.setValue(value);
+
+        return countBar;
+    }
+
+    //图表3
+    public Map querySalesEarch3(Integer op){
+
+        List<Map> map = salesOpportMDao.querySalesEarch3(op);
+        Integer size=map.size();
+        System.out.println(map.toString());
+
+        List<String> des=new ArrayList<>();
+        List<String> names=new ArrayList<>();
+        List<Long> numbers=new ArrayList<>();
+        List<JrcSerices> listSerices = new ArrayList<>();
+        String d="";
+        System.out.println(map.size());
+        for(int i=0;i<map.size();i++){
+            String de=(String)map.get(i).get("de");
+            if(!de.equals(d)){
+                des.add(de);
+                for(int j=0;j<map.size();j++){
+                    if(de.equals(map.get(j).get("de"))){
+                        String n="";
+                        if(op==1 || op==3){
+                            Integer name=(Integer) map.get(j).get("name");
+                            n=oP(name);
+                        }else if(op==2||op==4) {
+                            n = (String) map.get(j).get("name");
+                        }
+                        names.add(n);
+                        numbers.add((Long)map.get(j).get("number"));
+                    }
+                }
+            }
+            d=de;
+        }
+
+        //移除重复的数据
+        for ( int x = 0 ; x < names.size() - 1 ; x ++ ) {
+            for ( int y = names.size() - 1 ; y > x; y -- ) {
+                if (names.get(y).equals(names.get(x))) {
+                    names.remove(y);
+                }
+            }
+        }
+        for(int i=0;i<names.size();i++){
+            JrcSerices serices=new JrcSerices();
+            List<Long> list1=new ArrayList<>();
+            serices.setName(names.get(i));
+            serices.setType("line");
+            serices.setStack("总数");
+            for(int j=0;j<map.size();j++){
+                String n="";
+                if(op==1 || op==3){
+                    Integer name=(Integer) map.get(j).get("name");
+                    n=oP(name);
+                }else if(op==2||op==4) {
+                    n = (String) map.get(j).get("name");
+                }
+                if(n.equals(names.get(i))){
+                    list1.add((Long)map.get(j).get("number"));
+                }
+            }
+            serices.setData(list1);
+            listSerices.add(serices);
+        }
+
+        Map map1=new HashMap();
+        map1.put("des",des);
+        map1.put("names",names);
+        map1.put("numbers",numbers);
+        map1.put("listSerices",listSerices);
+       return map1;
+
+     }
+
+
+     public static String oP(Integer op){
+        String n="";
+         switch (op){
+             case 1:
+                 n="跟踪";
+                 break;
+             case 2:
+                 n="成功";
+                 break;
+             case 3:
+                 n="失败";
+                 break;
+             case 4:
+                 n="搁置";
+                 break;
+             case 5:
+                 n="失效";
+                 break;
+         }
+         return n;
+     }
+
+    /**
+     * 销售漏斗图
+     * @param s
+     * @return
+     */
+     public List<Map> querySalesFunnel1(JrcSalesFunnelUO s){
+       return salesOpportMDao.querySalesFunnel1(s);
+     }
+
+
 
 }

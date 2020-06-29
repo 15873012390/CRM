@@ -15,7 +15,6 @@ import java.util.List;
 public class Salesopport {
     private int soId;
     private String soTheme;
-    @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp updateDate;
     private Integer status;
@@ -25,31 +24,22 @@ public class Salesopport {
     private String cusSource;
     private String priority;
     private String stage;
-    @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp disTime;
     private String provider;
     private String cusDemand;
-    @JSONField(format = "yyyy-MM-dd")
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp signingTime;
     private String possibility;
     private BigDecimal amount;
     private String starTarget;
     private Integer delStatus;
-    @JsonIgnoreProperties("salesopport")
     private Customer customer;
-    @JsonIgnoreProperties("salesopport")
     private User user;
-    @JsonIgnoreProperties("salesopport")
     private List<Stagelog> stagelog;
-    @JsonIgnoreProperties("salesopport")
     private List<Clientdemand> clientdemand;
-    @JsonIgnoreProperties("salesopport")
     private List<Solution> solution;
-    @JsonIgnoreProperties("salesopport")
     private List<Competitor> competitor;
-    @JsonIgnoreProperties("salesopport")
     private List<Quote> quote;
     @Id
     @Basic

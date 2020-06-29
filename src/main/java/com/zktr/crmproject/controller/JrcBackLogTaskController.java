@@ -1,7 +1,9 @@
 package com.zktr.crmproject.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.pagehelper.Page;
 import com.zktr.crmproject.pojos.Backlogtask;
+import com.zktr.crmproject.pojos.Backlogtaskdetails;
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.service.JrcBackLogTaskService;
 import com.zktr.crmproject.utils.ExcelUtils;
@@ -54,6 +56,12 @@ public class JrcBackLogTaskController {
         return backLogTaskService.queryAllContactByCusid(cusid);
     }
 
+    @GetMapping("/query_all_backLogTask_bycusId")
+    @ResponseBody
+    public Pager<Backlogtask> queryAllBackLogTaskByCusId(Integer cusId,Integer curpage,Integer pagesize){
+        return backLogTaskService.queryAllBackLogTaskByCusId(cusId,curpage,pagesize);
+    }
+
     @GetMapping("/push_backLogTask_by_cusid")
     @ResponseBody
     public List<Backlogtask> pushBackLogTask(Integer cusId){
@@ -102,6 +110,12 @@ public class JrcBackLogTaskController {
     @ResponseBody
     public List<Backlogtask> queryCurMonth(@DateTimeFormat(pattern = "yyyy-MM-dd") Date startStr,@DateTimeFormat(pattern = "yyyy-MM-dd") Date end){
         return backLogTaskService.queryCurMonth(startStr,end);
+    }
+
+    @GetMapping("/querybaklogtask_detailsbyuid_finsh")
+    @ResponseBody
+    public List<Backlogtask> queryBakLogTaskDetailsByUidFinsh(Integer op,Integer uid){
+        return backLogTaskService.queryBakLogTaskDetailsByUidFinsh(op,uid);
     }
 }
 

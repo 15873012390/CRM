@@ -31,6 +31,12 @@ public class BackLogTaskVo {
     private Integer status;
     //执行人（userList)
     private List<User> userList;
+    //创建人
+    private Integer uid;
+
+    public BackLogTaskVo() {
+
+    }
 
     public Integer getBltId() {
         return bltId;
@@ -104,10 +110,15 @@ public class BackLogTaskVo {
         this.userList = userList;
     }
 
-    public BackLogTaskVo() {
+    public Integer getUid() {
+        return uid;
     }
 
-    public BackLogTaskVo(Integer bltId, String bltDescription, Date finishDate, Time finishTime, Integer precedence, Customer customer, String conName, Integer status, List<User> userList) {
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public BackLogTaskVo(Integer bltId, String bltDescription, Date finishDate, Time finishTime, Integer precedence, Customer customer, String conName, Integer status, List<User> userList, Integer uid) {
         this.bltId = bltId;
         this.bltDescription = bltDescription;
         this.finishDate = finishDate;
@@ -117,7 +128,7 @@ public class BackLogTaskVo {
         this.conName = conName;
         this.status = status;
         this.userList = userList;
+        this.uid = uid;
     }
-
 
 }

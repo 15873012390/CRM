@@ -55,8 +55,7 @@ public class HTStockController {
 
     @GetMapping("/queryStockByWarehouseAndSpeId")
     public Stock queryStockByWarehouseAndSpeId(Integer speId,Integer warehouseId){
-        Stock s=  stockService.queryStockByWarehouseAndSpeId(speId,warehouseId);
-        return s;
+        return  stockService.queryStockByWarehouseAndSpeId(speId,warehouseId);
     }
     @PostMapping("/queryStockByAllWarehouse")
     public Map<String,Object> queryStockByAllWarehouse(@RequestBody List<Warehouseallocationdetail> warehouseallocationdetails){

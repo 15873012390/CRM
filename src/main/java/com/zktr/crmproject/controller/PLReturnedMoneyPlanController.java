@@ -68,17 +68,19 @@ public class PLReturnedMoneyPlanController {
     }
     @PostMapping("/RMPAdvancedSearch")
     public Pager<Returnedmoneyplan> RMPAdvancedSearch(@RequestBody PLRmpAdvancedSearch rmpAdvancedSearch){
-
-        if(rmpAdvancedSearch.getUname()==null){
-            for (Integer i:rmpAdvancedSearch.getRmpIssue()){
-                System.out.println("xxxx"+rmpAdvancedSearch.toString());
-            }
-
-            System.out.println("aaaabb"+rmpAdvancedSearch.getUname());
-        }else {
-            System.out.println("aaaaaaa"+rmpAdvancedSearch.getUname());
-        }
         return returnedMoneyPlanService.RMPAdvancedSearch(rmpAdvancedSearch);
     }
-
-}
+    @GetMapping("/findByRmpIdByContract")
+    public Returnedmoneyplan findByRmpIdByContract(Integer rmpId){
+       return returnedMoneyPlanService.findByRmpIdByContract(rmpId);
+    }
+    @PostMapping("/insertRMPByContract")
+    public Result insertRMPByContract(@RequestBody Returnedmoneyplan returnedmoneyplan){
+        returnedMoneyPlanService.insertRMPByContract(returnedmoneyplan);
+        return Result.SUCCESS;
+    }
+    @GetMapping("/findByRmpIdContractAll")
+    public Returnedmoneyplan findByRmpIdContractAll(Integer ctrId){
+        return returnedMoneyPlanService.findByRmpIdContractAll(ctrId);
+    }
+ }

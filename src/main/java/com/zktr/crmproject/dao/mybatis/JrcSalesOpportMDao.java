@@ -2,14 +2,14 @@ package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.Salesopport;
-import com.zktr.crmproject.vo.JrcSalesOpportStage;
-import com.zktr.crmproject.vo.SalesOpportAdvancedSearch;
+import com.zktr.crmproject.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface JrcSalesOpportMDao {
@@ -41,5 +41,19 @@ public interface JrcSalesOpportMDao {
                                                                @Param("uId") Integer uId);
 
     public List<JrcSalesOpportStage> queryFinallStage(@Param("uId") Integer uId);
+
+    public List<CountPie> querySalesEarch1(@Param("op") Integer op);
+
+    public List<CountPie> querySalesEarch2(@Param("op") Integer op);
+
+    public List<Map> querySalesEarch3(@Param("op") Integer op);
+
+    public List<Map> querySalesFunnel1(JrcSalesFunnelUO s);
+
+    public void deleteSalesBySoId(@Param("soId") Integer soId);
+
+    /*客户需求  方案制定  报价  生产订单以后 改变销售机会的状态*/
+    public void updateSales(@Param("soId") Integer soId, @Param("stage") String stage);
+
 
 }

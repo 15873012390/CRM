@@ -18,4 +18,6 @@ public interface JrcAuditMDao {
 
     public Audit queryAllAuditAndAuditDetails(@Param("audId") Integer audId);
 
+    public void deleteAuditByAudId(@Param("audId") Integer audId);
+
 }

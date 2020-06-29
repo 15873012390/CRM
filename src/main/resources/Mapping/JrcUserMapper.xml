@@ -39,4 +39,10 @@
             group by u.u_id
     </select>
 
+
+    <select id="getAllUsrList" resultMap="userMap">
+        select u.u_id,u.u_name,u.u_img from user u
+        where u.d_id=1
+    </select>
+
 </mapper>

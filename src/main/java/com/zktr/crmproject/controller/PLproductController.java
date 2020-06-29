@@ -5,6 +5,7 @@ import com.zktr.crmproject.pojos.Product;
 import com.zktr.crmproject.pojos.Productclassification;
 import com.zktr.crmproject.service.PLproductService;
 import com.zktr.crmproject.utils.ExcelUtils;
+import com.zktr.crmproject.utils.QiniuUtils;
 import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,9 @@ import java.util.UUID;
 public class PLproductController {
     @Autowired
     private PLproductService pservice;
+
+    @Autowired
+    private QiniuUtils qiniuUtils;
 
     @Value("${uploadFile.resourceHandler}")
     private String resourceHandler;//请求 url 中的资源映射，不推荐写死在代码中，最好提供可配置，如 /uploadImgFiles/**
@@ -173,5 +178,16 @@ public class PLproductController {
     @GetMapping("/PLQueryByStock")
     public List<PLCountPie> PLQueryByStock(){
         return pservice.PLQueryByStock();
+    }
+
+    @RequestMapping("/uploadUserImg")
+    public String uploadUserImg(@RequestParam MultipartFile file) throws IllegalStateException, IOException {
+        if (!file.isEmpty()) {
+            FileInputStream fileInputStream = (FileInputStream) file.getInputStream();
+            //默认不指定key的情况下，以文件内容的hash值作为文件名
+            String fileKey = UUID.randomUUID()+ ".png";
+            return qiniuUtils.upload(fileInputStream,fileKey);
+        }
+        return "上传失败";
     }
 }

@@ -37,4 +37,8 @@ public interface HTIInstockDao {
     public void updateInstockDetail(Instockdetail insd);
 
     public Instockdetail queryInsdByInsIdAndSpeId(Integer insId,Integer speId);
+
+    public Integer queryNoInstock(String uName);
+
+    public List<Instock> queryNoInstockList(String uName);
 }

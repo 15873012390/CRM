@@ -7,6 +7,7 @@ import com.zktr.crmproject.dao.jpa.JrcQuteDetailsJDao;
 import com.zktr.crmproject.dao.mybatis.JrcCustomerMDao;
 import com.zktr.crmproject.dao.mybatis.JrcQuoteDetailsMDao;
 import com.zktr.crmproject.dao.mybatis.JrcQuoteMDao;
+import com.zktr.crmproject.dao.mybatis.JrcSalesOpportMDao;
 import com.zktr.crmproject.pojos.Customer;
 import com.zktr.crmproject.pojos.Quote;
 import com.zktr.crmproject.pojos.Quotedetails;
@@ -36,6 +37,8 @@ public class JrcQuoteService {
     private JrcQuteDetailsJDao quteDetailsJDao;
     @Autowired
     private JrcCustomerMDao customerMDao;
+    @Autowired
+    private JrcSalesOpportMDao salesOpportMDao;
 
     /**
      * 添加报价记录
@@ -43,10 +46,21 @@ public class JrcQuoteService {
      * @return
      */
     public Result addQuote(Quote quote){
+        System.out.println(quote.toString());
+
         if(quoteMDao.queryByQuotId(quote.getQuoId())==null){
             quote.setAudit(null);
             quote.setAuditStatus(1);
             quote.setQuotationNo(JrcUUID.getNewNo("Q"));
+
+            if(quote.getSalesopport().getSoId()==0){
+                quote.setSalesopport(null);
+            }
+            Quote q=quoteJDao.save(quote);
+            if(q.getSalesopport()!=null){
+                salesOpportMDao.updateSales(q.getSalesopport().getSoId(),"商务谈判");
+            }
+
         }else{
             Quote q=quoteMDao.queryByQuotId(quote.getQuoId());
             if(quote.getAudit().getAudId()==0){
@@ -62,9 +76,9 @@ public class JrcQuoteService {
                 quote.setGrossProfit(list.size()==0?new BigDecimal(0):quote.getTotalMoney().subtract(sum));
 
             }
-
+            quoteJDao.save(quote);
         }
-        quoteJDao.save(quote);
+
         return Result.SUCCESS;
     }
 
@@ -103,9 +117,10 @@ public class JrcQuoteService {
      * @return
      */
     public Result deleteByQuoId(Integer quoId){
-        quoteJDao.deleteById(quoId);
         List<Quotedetails> list=quoteDetailsMDao.queryQuoteDetailsByQuoId(quoId);
+
         quteDetailsJDao.deleteAll(list);
+        quoteMDao.deleteQuoteByQuoId(quoId);
         return Result.SUCCESS;
     }
 
@@ -116,9 +131,9 @@ public class JrcQuoteService {
      */
     public Result deleteByQuoIds(Integer[] quoIds){
         for(Integer i:quoIds){
-            quoteJDao.deleteById(i);
             List<Quotedetails> list=quoteDetailsMDao.queryQuoteDetailsByQuoId(i);
             quteDetailsJDao.deleteAll(list);
+            quoteMDao.deleteQuoteByQuoId(i);
         }
         return Result.SUCCESS;
     }
@@ -166,9 +181,9 @@ public class JrcQuoteService {
             quote.setAuditStatus(1);
             quote.setInstructions("");
             quote.setRemarks("");
-            quote.setQuoDate(new Timestamp(System.currentTimeMillis()));
-            quote.setSalesopport(null);
+            quote.setQuoDate(new Timestamp(new Date().getTime()));
             quote.setAudit(null);
+            quote.setSalesopport(null);
             quoteJDao.save(quote);
             //添加报价详情
             List<Quotedetails> list1= quote.getQuotedetails();
@@ -181,4 +196,15 @@ public class JrcQuoteService {
             return Result.FAILURE;
         }
     }
+
+    /**
+     * 刷新销售机会详情页数据
+     * @param soId
+     * @return
+     */
+    public List<Quote> flashQuoteBysoid(Integer soId){
+        return quoteMDao.flashQuoteBysoid(soId);
+    }
+
+
 }

@@ -278,10 +278,17 @@ public class TWCustomerController {
         String[] strings=new String[list.size()];
 
         if (list!=null){
+            boolean num=true;
             strings=TWCustomerService.CustomerExcle(list);
-            if (strings==null){
-                TWCustomerService.InsertAllCustomer(list);
-            }
+           for (int i=0;i<strings.length;i++){
+               if (strings[i]!=null){
+                   num=false;
+               }
+           }
+           if (num){
+               TWCustomerService.InsertAllCustomer(list);
+           }
+
         }
         return strings;
     }

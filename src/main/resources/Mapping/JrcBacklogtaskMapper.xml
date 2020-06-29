@@ -21,6 +21,7 @@
         <association property="user" javaType="User">
             <id property="uId" column="u_id"/>
             <result property="uName" column="u_name"/>
+            <result property="uImg" column="u_img"/>
         </association>
         <collection property="backlogtaskdetails" ofType="Backlogtaskdetails">
             <id property="btdId" column="btd_id"/>
@@ -29,6 +30,7 @@
             <association property="user" javaType="User">
                 <id property="uId" column="uid"/>
                 <result property="uName" column="uname"/>
+                <result property="uImg" column="uimg"/>
             </association>
         </collection>
     </resultMap>
@@ -42,7 +44,6 @@
             from backlogtask b
             left join customer c2 on b.cus_id = c2.cus_id
             left join user u on u.u_id=b.creator
-            where b.del_status=1
             order by b.blt_id desc
     </select>
 
@@ -83,7 +84,6 @@
             <if test="inputs.length!=0 and select=='任务主题'">
                 and  b.blt_description like #{inputs}
             </if>
-            and b.del_status=1 
             order by b.blt_id desc
     </select>
 
@@ -97,7 +97,6 @@
             left join customer c2 on b.cus_id = c2.cus_id
             left join user u on u.u_id=b.creator
             <trim prefix="where" prefixOverrides="and">
-                b.del_status=1
                 <if test="cusId!=''">
                     and c2.cus_id=#{cusId}
                 </if>
@@ -160,7 +159,7 @@
             left join user u on u.u_id=b.creator
             left join backlogtaskdetails b2 on b.blt_id = b2.blt_id
             left join user u2 on b2.u_id=u2.u_id
-            where c2.cus_id = #{cusid} and b.del_status=1
+            where c2.cus_id = #{cusid}
             order by b.blt_id desc
     </select>
 
@@ -169,15 +168,15 @@
             b.blt_id, b.blt_description, b.finish_date, b.finish_time, b.precedence,
             b.con_name, b.con_phone,b. creator,b. status, b.creation_time, b.del_status,
             c2.cus_id,c2.cus_name,
-            u.u_id,u.u_name,
+            u.u_id,u.u_name,u.u_img,
             b2.btd_id,b2.finish_time,b2.status,
-            u2.u_id as uid,u2.u_name as uname
+            u2.u_id as uid,u2.u_name as uname,u2.u_img as uimg
             from backlogtask b
             left join customer c2 on b.cus_id = c2.cus_id
             left join user u on u.u_id=b.creator
             left join backlogtaskdetails b2 on b.blt_id = b2.blt_id
             left join user u2 on b2.u_id=u2.u_id
-            where b.blt_id =#{bltid} and b.del_status=1
+            where b.blt_id =#{bltid}
     </select>
 
     <select id="delBackLogQuery" resultMap="backLogTaskMap">
@@ -189,7 +188,7 @@
             from backlogtask b
             left join customer c2 on b.cus_id = c2.cus_id
             left join user u on u.u_id=b.creator
-            where b.blt_id =#{bltid} and b.del_status=1
+            where b.blt_id =#{bltid}
     </select>
 
     <select id="queryCurMoth" resultMap="backLogTaskMap">
@@ -203,9 +202,41 @@
             left join user u on u.u_id=b.creator
             where DATE_FORMAT(b.creation_time,'%Y%m%d') between DATE_FORMAT(#{startStr},'%Y%m%d') and
             DATE_FORMAT(#{end},'%Y%m%d')
-            and b.del_status=1
+
     </select>
 
 
+    <select id="deleteBackTaskBltId">
+        delete from backlogtask where blt_id =#{bltid}
+    </select>
+
+    <select id="queryBakLogTaskDetailsByUidFinsh" resultMap="backLogTaskMap">
+        select
+        bltd.btd_id, bltd.blt_id,bltd.finish_time, bltd.status,
+        u.u_id as uid,u.u_name as uname,u.u_img as uimg,
+        blt.blt_id, blt.blt_description, blt.finish_date, blt.finish_time, blt.precedence,
+        blt.con_name, blt.con_phone,blt. creator,blt. status, blt.creation_time, blt.del_status,
+        c2.cus_id,c2.cus_name,
+        u2.u_id as u_id,u2.u_name as u_name,u2.u_img as u_img
+        from backlogtaskdetails bltd
+        left join user u on u.u_id=bltd.u_id
+        left join backlogtask blt on blt.blt_id=bltd.blt_id
+
+        left join user u2 on u2.u_id =blt.creator
+        left join customer c2 on blt.cus_id = c2.cus_id
+
+        <trim prefixOverrides="and" prefix="where">
+            and blt.status=1
+            <if test="op==1">
+                and blt.finish_date >= now()
+            </if>
+            <if test="op==2">
+                and blt.finish_date &lt; now()
+            </if>
+            and u.u_id=#{uid}
+        </trim>
+
+        order by blt.blt_id desc
+    </select>
 
 </mapper>

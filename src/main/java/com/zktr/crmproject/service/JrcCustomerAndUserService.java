@@ -45,6 +45,7 @@ public class JrcCustomerAndUserService {
         return customerMDao.queryContactByCusid(cusid);
     }
 
+
     /**
      * 查找所有的员工
      * @return
@@ -93,4 +94,11 @@ public class JrcCustomerAndUserService {
         return productMDao.queryAllProduct();
     }
 
+    /**
+     * 查找所有有权限的员工
+     * @return
+     */
+    public List<User> getAllUserList(){
+        return userMDao.getAllUsrList();
+    }
 }

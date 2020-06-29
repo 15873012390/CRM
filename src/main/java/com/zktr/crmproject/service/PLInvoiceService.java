@@ -123,7 +123,6 @@ public class PLInvoiceService {
     public Pager<Invoice> queryByLikeQuery(int curpage,int pagesize,String value,String input){
         PageHelper.startPage(curpage,pagesize);
         String dateInput=input.trim()+"%";
-        System.out.println("aaa"+dateInput);
         List<Invoice> list=invoiceMDao.queryByLikeQuery(value,dateInput);
         PageInfo<Invoice> page=new PageInfo<>(list);
         return new Pager<Invoice>(page.getTotal(),page.getList());

@@ -114,6 +114,8 @@
         con_classify=#{conClassify},con_payment=#{conPayment},con_send_out_money=#{conSendOutMoney},con_start_time=#{conStartTime},con_end_time=#{conEndTime},con_signing_date=#{conSigningDate},con_money_way=#{conMoneyWay},con_del_state=#{conDelState},con_theme=#{conTheme},ord_purchase_way=#{ordPurchaseWay},ord_executing_state=#{ordExecutingState},con_qdid=#{conQdid},spe_id=#{productspecification.speId},quo_id=#{quote.quoId},u_id=#{user.uId},cus_id=#{customer.cusId}
         where ctr_id=#{ctrId}
     </update>
+
+
     <!--删除-->
     <update id="delByCtrId">
         update contract set con_del_state=2 where ctr_id=#{ctrId}
@@ -298,5 +300,30 @@
         </trim>
         and c.con_del_state=1
         ORDER BY c.ctr_id DESC
+    </select>
+    <!--首页 根据员工id最新20条-->
+    <select id="statisticsHomePageCon" resultType="java.util.Map">
+        SELECT con.con_theme as theme, con.ctr_id as ctrid, c.cus_name as cname,spe.pro_name as pname,con.con_signing_date as times
+        FROM contract con
+        LEFT JOIN customer c
+        ON con.cus_id =c.cus_id
+        LEFT JOIN productspecification spe
+        ON con.spe_id=spe.spe_id
+        left join user u
+        on u.u_id=con.u_id
+        WHERE date_format(con_signing_date, '%Y%m') = date_format(curdate() , '%Y%m') and con.u_id=#{uId}
+        GROUP BY ctr_id DESC
+        limit 20
+    </select>
+    <!--首页-->
+    <select id="statisticsHomePageConNum" resultType="java.util.Map">
+        SELECT COUNT(con.ctr_id) num
+        FROM contract con
+        LEFT JOIN customer c
+        ON con.cus_id =c.cus_id
+        LEFT JOIN productspecification spe
+        ON con.spe_id=spe.spe_id
+        WHERE date_format(con_signing_date, '%Y%m') = date_format(curdate() , '%Y%m') and con.u_id=#{uId}
+        limit 20
     </select>
 </mapper>

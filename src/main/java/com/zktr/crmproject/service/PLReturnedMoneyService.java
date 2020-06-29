@@ -35,7 +35,7 @@ public class PLReturnedMoneyService {
             returnedMoneyMDao.insertRMPByOrders(returnedmoney);
             //如果已选择订单 订单状态标识为回款
             ordersDao.updateRmOrRmp2(returnedmoney.getOrders().getOrdId());
-            System.out.println("dddd"+returnedmoney.getOrders().getOrdId());
+
         }else {
             returnedMoneyMDao.updateRMByOrders(returnedmoney);
         }
@@ -107,6 +107,7 @@ public class PLReturnedMoneyService {
         System.out.println("dddss"+inputDate);
         PageInfo<Returnedmoney> page=new PageInfo<>(list);
         return new Pager<Returnedmoney>(page.getTotal(),page.getList());
+
     }
 
     /**
@@ -119,7 +120,7 @@ public class PLReturnedMoneyService {
         String remark="%"+remAdvancedSearch.getRemRemark()+"%";
         remAdvancedSearch.setUname(uname);
         remAdvancedSearch.setRemRemark(remark);
-        System.out.println("zzzz"+remAdvancedSearch.getRemRemark());
+        //System.out.println("zzzz"+remAdvancedSearch.getRemRemark());
         PageHelper.startPage(remAdvancedSearch.getCurpage(),remAdvancedSearch.getPagesize());
         List<Returnedmoney> list=returnedMoneyMDao.REMAdvancedSearch(remAdvancedSearch);
         PageInfo<Returnedmoney> page=new PageInfo<>(list);

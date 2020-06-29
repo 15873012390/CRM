@@ -12,7 +12,7 @@ public class Clientdemand {
     private int cdId;
     private String cdTheme;
     private String cdPeople;
-    @JSONField(format = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp recordTime;
     private Integer importance;
     private String cdContent;

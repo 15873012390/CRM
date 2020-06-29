@@ -94,7 +94,7 @@
             LEFT JOIN orders ord on ou.ord_id = ord.ord_id
             LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
             LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
-            LEFT JOIN product p on prop.pro_id = p.pro_id where wa_id is null or wa_id = 0
+            LEFT JOIN product p on prop.pro_id = p.pro_id where ou.wa_id is null or ou.wa_id = 0
             order by ou.out_id desc
     </select>
 
@@ -154,7 +154,7 @@
         LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
         LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
         LEFT JOIN product p on prop.pro_id = p.pro_id
-        where 1=1
+        where ou.wa_id is null or ou.wa_id = 0
             <if test="value!=null and value.length!=0 and value!='全部数据'">
                 <choose>
                     <when test="value=='未出库' || value=='已出库' || value=='已发货'|| value=='订单终止'">
@@ -164,7 +164,7 @@
             </if>
             <choose>
                 <when test="input!=null and input!='' and select=='出库主题'">
-                    and ou.title like #{input}
+                    and ou.title like '%${input}%'
                 </when>
             </choose>
             order by ou.out_id desc
@@ -179,7 +179,7 @@
         LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
         LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
         LEFT JOIN product p on prop.pro_id = p.pro_id
-        where 1=1
+        where ou.wa_id is null or ou.wa_id = 0
         <if test="title!=null and title.length!=0">
             and ou.title = #{title}
         </if>
@@ -227,6 +227,16 @@
 
     <select id="queryOsdByOutIdAndSpeId" resultMap="outDetailsMap">
         select * from outstockdetails where out_id = #{outId} and spe_id =#{speId}
+    </select>
+
+    <select id="queryNoOutstock" resultType="Integer">
+        select count(*) from outstock where status = '未出库' and pass_person =#{uName}
+    </select>
+
+    <select id="queryNoOutStockList" resultMap="outStockMap">
+        select * from outstock o
+         LEFT JOIN warehouse w on o.warehouse_id = w.warehouse_id
+        where status = '未出库' and pass_person =#{uName}
     </select>
 
 </mapper>

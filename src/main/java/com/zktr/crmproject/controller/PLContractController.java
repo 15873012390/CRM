@@ -74,4 +74,8 @@ public class PLContractController {
         //System.out.println("bbbbbb"+contractAdvancedSearch.getConThemeSelect());
         return contractService.ContractAdvancedSearch(contractAdvancedSearch);
     }
+    @GetMapping("/findBySpeIdPrice")
+    public Productspecification findBySpeIdPrice(Integer speId){
+        return contractService.findBySpeIdPrice(speId);
+    }
 }

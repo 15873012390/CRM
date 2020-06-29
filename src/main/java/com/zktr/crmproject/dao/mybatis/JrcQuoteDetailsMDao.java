@@ -6,6 +6,7 @@ import com.zktr.crmproject.vo.JrcQuoteDetailsAdvance;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Mapper
@@ -22,9 +23,12 @@ public interface JrcQuoteDetailsMDao {
     //PL
     public Quotedetails findByQuoteClaIdId(Integer qdid);
 
-
+    //PL
+    public Double PLMOney(Integer quoId);
     public List<Quotedetails> queryLikeQuotedetails(@Param("input") String input);
 
     public List<Quotedetails> queryAdvanceQuotedetails(JrcQuoteDetailsAdvance jrcQuoteDetailsAdvance);
+
+    public void deleteQuoteDetailsByquoId(@Param("quoId") Integer quoId);
 
 }

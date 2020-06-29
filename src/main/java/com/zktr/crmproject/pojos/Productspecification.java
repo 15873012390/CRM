@@ -213,5 +213,14 @@ public class Productspecification {
         this.contracts = contracts;
     }
 
-
+    @Override
+    public String toString() {
+        return "Productspecification{" +
+                "speId=" + speId +
+                ", proName='" + proName + '\'' +
+                ", speSpecification='" + speSpecification + '\'' +
+                ", speUnit='" + speUnit + '\'' +
+                ", speUnitConversion=" + speUnitConversion +
+                '}';
+    }
 }

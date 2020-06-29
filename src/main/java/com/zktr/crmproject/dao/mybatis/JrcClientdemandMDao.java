@@ -22,5 +22,9 @@ public interface JrcClientdemandMDao {
     public List<Clientdemand> queryClientdemandBySoid(@Param("soId") Integer soId);
 
 
+    //删除销售机会时关联删除数据
+    public void deleteClientdemandBySoid(@Param("soId") Integer soId);
+
+
 
 }

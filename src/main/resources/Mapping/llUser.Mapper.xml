@@ -11,6 +11,7 @@
         <result property="uJoindate" column="u_joindate"></result>
         <result property="uImg" column="u_img"></result>
         <result property="uStatus" column="u_Status"></result>
+        <result property="ucolor" column="ucolor"></result>
         <association property="department" javaType="com.zktr.crmproject.pojos.Department">
             <id column="d_id" property="dId"/>
         </association>

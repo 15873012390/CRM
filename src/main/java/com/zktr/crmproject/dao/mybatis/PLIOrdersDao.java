@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Mapper
 public interface PLIOrdersDao {
-
+    //查询没有出库的订单
     public List<Orders> queryAllNoOutStock();
     //根据订单id查询订单详情
     public Orders queryOrderdetailByOrdId(Integer ordId);
@@ -64,7 +64,7 @@ public interface PLIOrdersDao {
     public void updateRmOrRmp1(Integer ordId);
     //如果是回款 则表示被款已记录 选择订单时不显示 根据订单id修改状态
     public void updateRmOrRmp2(Integer ordId);
-    //
+    //根据订单id查找 回款和计划回款
     public Orders OqueryByOrdersidByRM(Integer ordid);
     //根据客户id查找订单
     public List<Orders> findOrdersByCusId(Integer cusid);
@@ -76,5 +76,9 @@ public interface PLIOrdersDao {
     public int cancelOrders(Integer ordId);
     //修改发货金额和发货状态
     public void updateSendOut(@Param("ordId") Integer ordId, @Param("ordSendOutMoney") Integer ordSendOutMoney, @Param("ordSendOutState") String ordSendOutState);
+    //首页 统计当前月每天的销售额
+    public List<PLCountPie> CountLineOne();
+    //首页 统计上个月每天的销售额
+    public List<PLCountPie> CountLineTwo();
 
 }

@@ -38,4 +38,9 @@ public class JrcAuditController {
     public Result suggestAudit(Integer audId,String suggest,Integer opreation,Integer uId){
         return jrcAuditService.suggestAudit(audId,suggest,opreation,uId);
     }
+    @DeleteMapping("/delete_auditandaudit_byaudid")
+    public Result deleteAuditAndauditByAudid(Integer audId){
+        return jrcAuditService.deleteAuditAndAudit(audId);
+    }
+
 }

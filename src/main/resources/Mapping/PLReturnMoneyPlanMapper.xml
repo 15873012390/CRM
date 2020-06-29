@@ -11,6 +11,7 @@
         <result column="rmp_issue" property="rmpIssue"></result>
         <result column="rmp_date" property="rmpDate"></result>
         <result column="rmp_remark" property="rmpRemark"></result>
+
         <!--合同对象-->
         <association property="contract" javaType="Contract">
             <id column="ctr_id" property="ctrId"></id>
@@ -31,9 +32,8 @@
             <id property="uId" column="u_id"></id>
             <result property="uName" column="u_name"></result>
         </association>
-
-
     </resultMap>
+
     <!--查询全部计划回款的订单 订单id不为空的-->
     <select id="findAllRMP" resultMap="ReturnedmoneyplanMap">
         SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
@@ -47,6 +47,7 @@
         WHERE rmp.ord_id is not null
         GROUP BY rmp.rmp_id DESC
     </select>
+
     <!--查找 计划回款订单-->
     <select id="findByRmpId" resultMap="ReturnedmoneyplanMap">
         SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
@@ -57,9 +58,44 @@
         ON c.cus_id=rmp.cus_id
         LEFT JOIN `user` u
         ON rmp.u_id=u.u_id
-        where rmp.ord_id is not null and rmp.rmp_id=#{rmpId}
+        where rmp.ord_id is not null  and rmp.rmp_id=#{rmpId}
     </select>
-
+    <!--查找 一个 计划回款 合同-->
+    <select id="findByRmpIdByContract" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ctr_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,c.cus_name,u.u_name,c2.con_theme
+        FROM returnedmoneyplan rmp
+        LEFT JOIN contract c2
+        ON rmp.ctr_id=c2.ctr_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ctr_id is not null and rmp.rmp_id=#{rmpId}
+        GROUP BY rmp.rmp_id DESC
+    </select>
+    <select id="findByRmpIdContractAll" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ctr_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,c.cus_name,u.u_name,c2.con_theme
+        FROM returnedmoneyplan rmp
+        LEFT JOIN contract c2
+        ON rmp.ctr_id=c2.ctr_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ctr_id is not null and rmp.ctr_id=#{ctrId}
+        GROUP BY rmp.rmp_id DESC
+    </select>
+    <!--新增 计划回款 合同-->
+    <insert id="insertRMPByContract">
+        insert into returnedmoneyplan(rmp_money,rmp_rmp,rmp_billing,rmp_issue,rmp_date,rmp_remark,ctr_id,u_id,cus_id)
+        value (#{rmpMoney},#{rmpRmp},#{rmpBilling},#{rmpIssue},#{rmpDate},#{rmpRemark},#{contract.ctrId},#{user.uId},#{customer.cusId})
+    </insert>
+    <!--修改 计划回款 合同-->
+    <update id="updateRMPByContract">
+        update returnedmoneyplan set
+        rmp_money=#{rmpMoney},rmp_rmp=#{rmpRmp},rmp_billing=#{rmpBilling},rmp_issue=#{rmpIssue},rmp_date=#{rmpDate},rmp_remark=#{rmpRemark},ctr_id=#{contract.ctrId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where rmp_id=#{rmpId}
+    </update>
     <!--新增 计划回款订单-->
     <insert id="insertRMPByOrders">
         insert into returnedmoneyplan(rmp_money,rmp_rmp,rmp_billing,rmp_issue,rmp_date,rmp_remark,ord_id,u_id,cus_id)
@@ -71,6 +107,7 @@
         rmp_money=#{rmpMoney},rmp_rmp=#{rmpRmp},rmp_billing=#{rmpBilling},rmp_issue=#{rmpIssue},rmp_date=#{rmpDate},rmp_remark=#{rmpRemark},ord_id=#{orders.ordId},u_id=#{user.uId},cus_id=#{customer.cusId}
         where rmp_id=#{rmpId}
     </update>
+
     <!--删除-->
     <delete id="deleteByrmpId">
         delete from returnedmoneyplan  where rmp_id=#{rmpId}
@@ -190,6 +227,31 @@
             </if>
         </trim>
         group by rmp.rmp_id desc
+    </select>
+    <!--首页 回款计划 订单不为空 top20-->
+    <select id="findAllRMPTop" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ord_id is not null and rmp.u_id=#{uId}
+        GROUP BY rmp.rmp_id DESC LIMIT 20
+    </select>
+    <!--首页 回款计划 订单不为空 top20-->
+    <select id="findAllRMPTopNum" resultType="java.util.Map">
+       SELECT COUNT(rmp.rmp_id) as  num
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ord_id is not null and rmp.u_id=#{uId} LIMIT 20
     </select>
 
 

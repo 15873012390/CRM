@@ -60,5 +60,10 @@ public class JrcSolutionController {
     }
 
 
+    @GetMapping("/flash_solution_bysoid")
+    @ResponseBody
+    public List<Solution> flashSolutionBySoid(Integer soId){
+        return solutionService.flashSolutionBySoid(soId);
+    }
 
 }

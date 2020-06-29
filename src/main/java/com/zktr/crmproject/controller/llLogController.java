@@ -4,6 +4,7 @@ import com.zktr.crmproject.pojos.Log;
 import com.zktr.crmproject.service.llLogService;
 import com.zktr.crmproject.vo.MyLog;
 import com.zktr.crmproject.vo.Pager;
+import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,14 @@ public class llLogController {
     //根据用户名获得日志信息
     @GetMapping("/findLogByName")
     public Pager<Log> findLogByName(Integer curpage, Integer pagesize,String uname){
-        System.out.println(uname);
+//        System.out.println(uname);
         return llLogService.findLogsByName(curpage,pagesize,uname);
+    }
+    //根据id删除日志
+    @MyLog(value = "删除日志")
+    @GetMapping("/deleteLog")
+    public Result deleteLog(Integer logId){
+        llLogService.deleteLog(logId);
+        return Result.SUCCESS;
     }
 }

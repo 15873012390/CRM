@@ -86,4 +86,18 @@
         where so.so_id=#{soId}
         order by so.sol_id desc
     </select>
+
+    <delete id="deleteSolutionBySoid">
+        delete from solution where so_id=#{soId}
+    </delete>
+
+    <select id="flashSolutionBySoid" resultMap="solutionMap">
+         select so.sol_id, so.sol_theme,so.submission_time,so.sol_content, so.feedback,
+            s.so_id,s.so_theme,c2.cus_id,c2.cus_name
+            from solution so
+            left join salesopport s on so.so_id = s.so_id
+            left join customer c2 on s.cus_id = c2.cus_id
+            where so.so_id=#{soId}
+            order by so.sol_id desc
+    </select>
 </mapper>

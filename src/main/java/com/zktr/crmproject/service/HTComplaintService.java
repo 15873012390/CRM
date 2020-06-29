@@ -86,7 +86,7 @@ public class HTComplaintService {
      * @param comId
      */
     public void deleteByComId(Integer comId){
-        complaintDao.deleteById(comId);
+        icomplaintDao.deleteByComId(comId);
     }
 
     /**
@@ -95,7 +95,7 @@ public class HTComplaintService {
      */
     public void deleteByComIds(Integer[] comIds){
         for(Integer c : comIds){
-            complaintDao.deleteById(c);
+            icomplaintDao.deleteByComId(c);
         }
     }
 
@@ -128,6 +128,10 @@ public class HTComplaintService {
         }else{
             return icomplaintDao.queryByCustomer();
         }
+    }
+
+    public List queryByMonthBySelect(String year){
+        return icomplaintDao.queryByMonthBySelect(year);
     }
 
 

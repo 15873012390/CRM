@@ -29,7 +29,7 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Timestamp uJoindate;
     private String uImg;
-    @JsonIgnoreProperties("user")
+    private String ucolor;
     private List<Customer> customer;
     @JsonIgnoreProperties("user3")
     private List<Customertransfer> customertransfer3;
@@ -148,6 +148,14 @@ public class User {
 
     public void setuStatus(Integer uStatus) {
         this.uStatus = uStatus;
+    }
+
+    public String getUcolor() {
+        return ucolor;
+    }
+
+    public void setUcolor(String ucolor) {
+        this.ucolor = ucolor;
     }
 
     @Override
@@ -441,4 +449,6 @@ public class User {
     public void setOutConfirms(List<Warehouseallocation> outConfirms) {
         this.outConfirms = outConfirms;
     }
+
+
 }

@@ -198,4 +198,16 @@ public class JrcAuditService {
 
     }
 
+
+    public Result deleteAuditAndAudit(Integer audId){
+        List<Auditdetails> auditdetails=auditDetailsMDao.queryAuditListByAudId(audId);
+        if(auditdetails.size()>0){
+            //先删除审核详情
+            auditDetailsMDao.deleteAuditByAudId(audId);
+        }
+        //再删除审核
+        auditMDao.deleteAuditByAudId(audId);
+
+        return Result.SUCCESS;
+    }
 }

@@ -30,6 +30,9 @@ public class OutBackLogTaskVo {
     @Excel(name = "状态")
     private String status;
 
+    @Excel(name = "创建人")
+    private String createUser;
+
     public String getBltDescription() {
         return bltDescription;
     }
@@ -87,7 +90,15 @@ public class OutBackLogTaskVo {
         this.status = status;
     }
 
-    public OutBackLogTaskVo(String bltDescription, String cusName, String conName, Date finishDate, String precedence, String userList, String status) {
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public OutBackLogTaskVo(String bltDescription, String cusName, String conName, Date finishDate, String precedence, String userList, String status, String createUser) {
         this.bltDescription = bltDescription;
         this.cusName = cusName;
         this.conName = conName;
@@ -95,9 +106,7 @@ public class OutBackLogTaskVo {
         this.precedence = precedence;
         this.userList = userList;
         this.status = status;
-    }
-
-    public OutBackLogTaskVo() {
+        this.createUser = createUser;
     }
 
     @Override
@@ -110,6 +119,10 @@ public class OutBackLogTaskVo {
                 ", precedence='" + precedence + '\'' +
                 ", userList='" + userList + '\'' +
                 ", status='" + status + '\'' +
+                ", createUser='" + createUser + '\'' +
                 '}';
+    }
+
+    public OutBackLogTaskVo() {
     }
 }

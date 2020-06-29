@@ -95,7 +95,7 @@
         left join user u on c.u_id=u.u_id
 
         <trim prefix="where" prefixOverrides="and | or">
-            <if test='value =="客户介绍".toString() || value =="电话来访" || value =="媒体宣传" || value =="网站填表" || value =="其他"'>
+            <if test='value =="客户介绍".toString() || value =="电话来访".toString() || value =="媒体宣传".toString() || value =="网站填表".toString() || value =="其他".toString()'>
                 and c.cus_source=#{value}
             </if>
             <if test="value =='高' || value =='较高' || value =='中' || value =='较低' || value =='低'">

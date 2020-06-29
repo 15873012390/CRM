@@ -1,5 +1,6 @@
 package com.zktr.crmproject.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -9,10 +10,10 @@ import java.sql.Timestamp;
 public class Stagelog {
     private int slId;
     private String slNote;
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Timestamp recordTime;
     private String stageName;
     private String userName;
-    @JsonIgnoreProperties("stagelog")
     private Salesopport salesopport;
 
     @Id
@@ -66,7 +67,7 @@ public class Stagelog {
         this.userName = userName;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @ManyToOne
     @JoinColumn(name="so_id",referencedColumnName = "so_id")
     public Salesopport getSalesopport() {
         return salesopport;

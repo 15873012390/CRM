@@ -23,4 +23,9 @@ public interface JrcSolutionMDao {
 
     public List<Solution> querySolutionBySoid(@Param("soId") Integer soId);
 
+    //删除销售机会关联删除数据
+    public void deleteSolutionBySoid(@Param("soId") Integer soId);
+
+    //属性解决方案数据
+    public List<Solution> flashSolutionBySoid(@Param("soId") Integer soId);
 }

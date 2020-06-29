@@ -141,8 +141,6 @@
         ,execution_time=#{executionTime},pco_id=#{purchaseorder.pcoId},reg_id=#{returnedgoods.regId},supplier_id=#{supplier.supplierId},remarks=#{remarks},wa_id=#{warehouseallocation.waId} where ins_id =#{insId}
     </update>
 
-
-
     <delete id="deleteInstockById">
         delete from instock where ins_id = #{insId}
     </delete>
@@ -152,7 +150,7 @@
     </delete>
 
     <delete id="deleteInstockDetailBySpeIdAndInsId">
-        delete form instockdetail where spe_id=#{speId} and ins_id = #{insId}
+        delete from instockdetail where spe_id=#{speId} and ins_id = #{insId}
     </delete>
 
     <select id="queryInsdByInsIdAndSpeId" resultMap="instockdetailMap">
@@ -161,20 +159,26 @@
 
 
     <select id="querySelectAndInputByPage" resultMap="instockMap">
-         select * from instock where 1=1
+        select * from instock ins
+        LEFT JOIN warehouse ware on ins.warehouse_id = ware.warehouse_id
+        LEFT JOIN purchaseorder puro on ins.pco_id = puro.pco_id
+        LEFT JOIN supplier su on ins.supplier_id = su.supplier_id
+        LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
+        LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id
+        LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id where wa_id is null or wa_id = 0
         <if test="value!=null and value.length!=0 and value!='全部数据'">
             <choose>
                 <when test="value=='已入库' || value=='未入库'">
-                    and status=#{value}
+                    and ins.status=#{value}
                 </when>
             </choose>
         </if>
         <choose>
             <when test="input!=null and select=='入库主题'">
-                and title like #{input}
+                and ins.title like #{input}
             </when>
         </choose>
-        order by ins_id desc
+         order by ins.ins_id desc
     </select>
 
     <select id="queryInstockByAdvancedSearch" resultMap="instockMap" parameterType="com.zktr.crmproject.vo.InstockAdvancedSearch">
@@ -185,7 +189,7 @@
         LEFT JOIN instockdetail insd on ins.ins_id = insd.ins_id
         LEFT JOIN returnedgoods ret on ins.reg_id = ret.reg_id
         LEFT JOIN productspecification ppf on insd.spe_id = ppf.spe_id
-        where 1=1
+        where ins.wa_id is null or ins.wa_id = 0
         <if test="title!=null and title.length!=0">
             and ins.title = #{title}
         </if>
@@ -239,5 +243,15 @@
         update instockdetail set insd_id=#{insdId},spe_id=#{productspecification.speId},insd_quantity=#{insdQuantity},status=#{status},ins_id=#{instock.insId},
         remarks=#{remarks} where insd_id=#{insdId}
     </update>
+    <!--查询未入库的总数 !-->
+    <select id="queryNoInstock" resultType="Integer">
+        select count(*) from instock where status = '未入库' and filler = #{uName}
+    </select>
+
+    <select id="queryNoInstockList" resultMap="instockMap">
+        select * from instock i
+        LEFT JOIN warehouse w on i.warehouse_id = w.warehouse_id
+        where status = '未入库' and filler = #{uName}
+    </select>
 
 </mapper>

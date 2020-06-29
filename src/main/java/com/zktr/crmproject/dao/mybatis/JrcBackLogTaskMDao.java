@@ -1,6 +1,7 @@
 package com.zktr.crmproject.dao.mybatis;
 
 import com.zktr.crmproject.pojos.Backlogtask;
+import com.zktr.crmproject.pojos.Backlogtaskdetails;
 import com.zktr.crmproject.vo.JrcBackLogTaskAdvancedSearch;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,5 +27,9 @@ public interface JrcBackLogTaskMDao {
 
     public List<Backlogtask> queryCurMoth(@Param("startStr") Date startStr, @Param("end") Date end);
 
+    public void deleteBackTaskBltId(@Param("bltid") Integer bltid);
+
+
+    public List<Backlogtask> queryBakLogTaskDetailsByUidFinsh(@Param("op") Integer op, @Param("uid") Integer uid);
 
 }

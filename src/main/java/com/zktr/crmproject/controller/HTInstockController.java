@@ -4,10 +4,13 @@ import com.zktr.crmproject.dao.mybatis.HTIWarehouseDao;
 import com.zktr.crmproject.pojos.Instock;
 import com.zktr.crmproject.pojos.Instockdetail;
 import com.zktr.crmproject.pojos.Product;
+import com.zktr.crmproject.pojos.Warehouse;
 import com.zktr.crmproject.service.HTInstockService;
+import com.zktr.crmproject.utils.ExcelUtils;
 import com.zktr.crmproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -83,7 +86,27 @@ public class HTInstockController {
         return Result.SUCCESS;
     }
 
+    @GetMapping("/queryNoInstock")
+    public Integer queryNoInstock(String uName){
+        return instockService.queryNoInstock(uName);
+    }
 
+    @GetMapping("/queryNoInstockList")
+    public List<Instock> queryNoInstockList(String uName){
+        return instockService.queryNoInstockList(uName);
+    }
+
+    @PostMapping("/importInstock")
+    public String importInstock(MultipartFile file){
+        List<InstockAndDeatilVo> instockAndDeatilVo = ExcelUtils.importData(file, 1, InstockAndDeatilVo.class);
+        System.out.println(instockAndDeatilVo);
+        if(instockAndDeatilVo!=null){
+            String importInstockData = instockService.insertInstocks(instockAndDeatilVo);
+            return importInstockData;
+        }else{
+            return "false";
+        }
+    }
 
 }
 

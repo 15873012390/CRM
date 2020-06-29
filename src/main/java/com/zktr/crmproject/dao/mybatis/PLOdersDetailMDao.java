@@ -7,5 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface PLOdersDetailMDao {
+    //根据订单id查询订单详情
     public List<Orderdetail> queryOrderdetailByOrdid(Integer ordId);
 }

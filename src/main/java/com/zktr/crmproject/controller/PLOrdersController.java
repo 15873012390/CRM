@@ -111,4 +111,10 @@ public class PLOrdersController {
     public void cancelOrder(Integer ordId){
         oservice.cancelOrder(ordId);
     }
+    //HT
+    @GetMapping("/queryAllAddress")
+    public List<Address> queryAllAddress(){
+        return oservice.queryAllAddress();
+    }
+
 }

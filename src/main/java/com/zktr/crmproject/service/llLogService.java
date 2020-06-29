@@ -34,4 +34,8 @@ public class llLogService {
         PageInfo<Log> pager = new PageInfo<>(list);
         return new Pager<Log>(pager.getTotal(),pager.getList());
     }
+    //根据ID删除日志
+    public void deleteLog(Integer id){
+        llLogDao.deleteById(id);
+    }
 }

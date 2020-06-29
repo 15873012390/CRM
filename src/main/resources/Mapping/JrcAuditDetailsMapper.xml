@@ -31,4 +31,18 @@
         where a.aud_id=#{audId} order by a.ad_id desc limit 1
     </select>
 
+    <select id="queryAuditListByAudId" resultMap="auditdetailsMap">
+         select a.ad_id,a.ad_opinion,a.ad_time,a.ad_operation,
+        u.u_id as auditdetails_u_id,u.u_name as auditdetails_u_name,
+        a2.aud_id,a2.aud_theme,a2.aud_type,a2.aud_time,a2.aud_status,a2.del_status
+        from auditdetails a
+        left join user u on u.u_id=a.u_id
+        left join audit a2 on a.aud_id = a2.aud_id
+        where a.aud_id=#{audId}
+    </select>
+
+    <delete id="deleteAuditByAudId">
+        delete from auditdetails where aud_id=#{audId}
+    </delete>
+
 </mapper>

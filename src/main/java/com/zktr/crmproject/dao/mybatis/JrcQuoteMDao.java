@@ -31,5 +31,12 @@ public interface JrcQuoteMDao {
 
     public List<Quote> copyQuote(@Param("quotationNo") String quotationNo);
 
+    //删除销售机会关联删除数据
+    public void deleteQuoteBySoid(@Param("soId") Integer soId);
+
+    public void deleteQuoteByQuoId(@Param("quoId") Integer quoId);
+
+    /*刷新报价数据*/
+    public List<Quote> flashQuoteBysoid(@Param("soId") Integer soId);
 
 }

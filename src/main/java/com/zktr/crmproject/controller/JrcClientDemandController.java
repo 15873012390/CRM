@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
@@ -61,4 +62,9 @@ public class JrcClientDemandController {
         return clientDemandService.delClientDemandByCdIdAll(cdids);
     }
 
+    @GetMapping("/query_clientdemand_by_soid")
+    @ResponseBody
+    public List<Clientdemand> queryClientdemandBySoid(Integer soid){
+        return clientDemandService.queryClientdemandBySoid(soid);
+    }
 }

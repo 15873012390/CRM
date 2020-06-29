@@ -135,4 +135,10 @@
         select <include refid="warehouseColumns" /> from warehouse w where w.warehouse_name = #{warehouseName}
     </select>
 
+    <insert id="insertWarehouse" parameterType="Warehouse">
+        insert into warehouse values (#{warehouseId},#{warehouseName},#{stockType},#{stockValue},#{remarks})
+    </insert>
+
+
+
 </mapper>

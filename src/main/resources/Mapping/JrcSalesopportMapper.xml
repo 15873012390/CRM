@@ -56,7 +56,6 @@
         from salesopport s
         left join customer c on s.cus_id = c.cus_id
         left join user u on u.u_id=s.u_id
-        where s.del_status=1
         order by s.so_id desc
     </select>
 
@@ -70,7 +69,7 @@
         left join stagelog sl on s.so_id = sl.so_id
         left join user u on s.u_id = u.u_id
         left join customer c on s.cus_id = c.cus_id
-        where s.del_status=1 and s.so_id=#{soid}
+        where s.so_id=#{soid}
         order by s.so_id desc 
     </select>
 
@@ -82,7 +81,6 @@
         from salesopport s
         left join customer c on s.cus_id = c.cus_id
         left join user u on s.u_id = u.u_id where 1=1
-        and s.del_status=1
         <if test="value!=null and value.length!=0 and value!='全部数据'">
             <choose>
                 <when test="value=='初期沟通' || value=='需求分析'|| value=='方案制定'
@@ -144,7 +142,6 @@
         left join user u on s.u_id = u.u_id
         left join customer c on s.cus_id = c.cus_id
         <trim prefix="where" prefixOverrides="and">
-            and s.del_status=1
             <if test="cusId!=''">
                 and c.cus_id=#{cusId}
             </if>
@@ -267,14 +264,13 @@
         from salesopport s
         left join user u on s.u_id = u.u_id
         left join customer c on s.cus_id = c.cus_id
-        where s.del_status=1 and s.so_id=#{soid}
+        where s.so_id=#{soid}
         order by s.so_id desc
     </select>
 
     <select id="querySalesOpportByCustomer" resultMap="salesopportMap">
         select s.so_id,s.so_theme from salesopport s left join customer c2 on s.cus_id = c2.cus_id
         <trim prefix="where" prefixOverrides="and">
-            and s.del_status=1
             <if test="customer!=null">
                 and c2.cus_id=#{customer.cusId}
             </if>
@@ -283,7 +279,7 @@
 
     <select id="querySalesOpportByCusId" resultMap="salesopportMap">
         select s.so_id,s.so_theme from salesopport s left join customer c2 on s.cus_id = c2.cus_id
-        where s.del_status=1 and c2.cus_id=#{cusid}
+        where c2.cus_id=#{cusid}
     </select>
 
     <select id="querySalesOpportByForecast" resultMap="salesopportMap">
@@ -354,6 +350,180 @@
         </trim>
         group by s.stage
     </select>
+
+
+    <select id="querySalesEarch1" resultType="com.zktr.crmproject.vo.CountPie">
+        select
+        <choose>
+            <when test="op==1">
+                u.u_name
+            </when>
+            <when test="op==2">
+                s.cus_source
+            </when>
+            <when test="op==3">
+                s.architecture
+            </when>
+        </choose>
+        as name,count(*) as value
+         from salesopport s left join user u on s.u_id=u.u_id
+        <trim prefixOverrides="and" prefix="where">
+            <choose>
+                <when test="op==1">
+                    and u.u_name is not null
+                </when>
+                <when test="op==2">
+                    and s.cus_source is not null
+                </when>
+                <when test="op==3">
+                    and s.architecture is not null
+                </when>
+            </choose>
+        </trim>
+        group by
+        <choose>
+            <when test="op==1">
+                u.u_id
+            </when>
+            <when test="op==2">
+                s.cus_source
+            </when>
+            <when test="op==3">
+                s.architecture
+            </when>
+        </choose>
+
+    </select>
+
+    <select id="querySalesEarch2" resultType="com.zktr.crmproject.vo.CountPie">
+        select
+        <choose>
+            <when test="op==1">
+                DATE_FORMAT(s.dis_time,'%Y-%m')
+            </when>
+            <when test="op==2">
+                DATE_FORMAT(s.signing_time,'%Y-%m')
+            </when>
+            <when test="op==3">
+                DATE_FORMAT(s.update_date,'%Y-%m')
+            </when>
+        </choose>
+        as name,count(*) as value
+        from salesopport s
+        <trim prefixOverrides="and" prefix="where">
+            <choose>
+                <when test="op==1">
+                    and s.dis_time is not null
+                </when>
+                <when test="op==2">
+                    and s.signing_time is not null
+                </when>
+                <when test="op==3">
+                    and s.update_date is not null
+                </when>
+            </choose>
+        </trim>
+        group by
+        <choose>
+            <when test="op==1">
+                DATE_FORMAT(s.dis_time,'%Y-%m')
+            </when>
+            <when test="op==2">
+                DATE_FORMAT(s.signing_time,'%Y-%m')
+            </when>
+            <when test="op==3">
+                DATE_FORMAT(s.update_date,'%Y-%m')
+            </when>
+        </choose>
+
+    </select>
+
+
+    <select id="querySalesEarch3" resultType="Map">
+        select
+        <choose>
+            <when test="op==1">
+                u.u_name as de,s.status
+            </when>
+            <when test="op==2">
+                u.u_name as de, s.stage
+            </when>
+            <when test="op==3">
+                s.possibility as de,s.status
+            </when>
+            <when test="op==4">
+                s.possibility as de,s.stage
+            </when>
+        </choose>
+        as name,count(*) as number
+        from salesopport s left join user u on s.u_id=u.u_id
+        <trim prefixOverrides="and" prefix="where">
+            <choose>
+                <when test="op==1||op==2">
+                    and u.u_name is not null
+                </when>
+                <when test="op==3||op==4">
+                    and s.possibility is not null
+                </when>
+            </choose>
+        </trim>
+        group by
+        <choose>
+            <when test="op==1">
+                u.u_id,s.status
+            </when>
+            <when test="op==2">
+                u.u_id,s.stage
+            </when>
+            <when test="op==3">
+                s.possibility,s.status
+            </when>
+            <when test="op==4">
+                s.possibility,s.stage
+            </when>
+        </choose>
+
+    </select>
+
+    <select id="querySalesFunnel1" parameterType="com.zktr.crmproject.vo.JrcSalesFunnelUO" resultType="Map">
+        select
+         s.stage as name,
+        <choose>
+            <when test="op==1">
+                count(*)
+            </when>
+            <when test="op==2">
+                sum(s.amount)
+            </when>
+        </choose>
+         as value
+        from salesopport s
+        left join user u on s.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            and s.status=1
+            <if test="users.size()>0">
+                and u.u_id in
+                <foreach collection="users" open="(" separator="," close=")" item="user">
+                    #{user.uId}
+                </foreach>
+            </if>
+        </trim>
+        group by s.stage
+    </select>
+
+
+    <delete id="deleteSalesBySoId">
+        delete from salesopport where so_id =#{soId}
+    </delete>
+
+    <!--需求分析 方案制定 报价 合同之后改变销售机会的状态-->
+    <update id="updateSales">
+        update salesopport set stage=#{stage}
+        <if test="stage=='合同签约'">
+            ,status=2
+        </if>
+         where so_id=#{soId}
+    </update>
 
 
 

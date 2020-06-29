@@ -75,4 +75,15 @@ public class HTOutStockController {
     public void updateOutStatus(Integer outId){
         outStockService.updateOutStatus(outId);
     }
+
+    @GetMapping("/queryNoOutstockNum")
+    public Integer queryNoOutstockNum(String uName){
+        return outStockService.queryNoOutstock(uName);
+    }
+
+    @GetMapping("/queryNoOutStockList")
+    public List<Outstock> queryNoOutStockList(String uName){
+        return outStockService.queryNoOutStockList(uName);
+    }
+
 }

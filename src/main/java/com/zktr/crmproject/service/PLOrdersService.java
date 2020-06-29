@@ -44,6 +44,9 @@ public class PLOrdersService {
     private JrcQuoteDetailsMDao quoteDetailsMDao;
     @Autowired
     private HTIOutstockDao outstockDao;
+    @Autowired
+    private JrcSalesOpportMDao salesOpportMDao;
+
 
     /**
      * 饼状图表 执行状态
@@ -69,7 +72,6 @@ public class PLOrdersService {
      */
     public PLCountBar countBar(String barValue){
         PLCountBar countBar=new PLCountBar();
-
             List<PLCountPie> list=this.countBars(barValue);
             String[] name=new String[list.size()];
             int[] value=new int[list.size()];
@@ -95,6 +97,13 @@ public class PLOrdersService {
         List<Orders> ordersList=omdao.queryAllOrders();
         PageInfo<Orders> page=new PageInfo<>(ordersList);
         return new Pager<>(page.getTotal(),page.getList());
+    }
+    /**
+     * 查询所有的地址 HT
+     * @return
+     */
+    public List<Address> queryAllAddress(){
+        return addressMDao.queryAllAdress();
     }
 
     /**
@@ -122,14 +131,6 @@ public class PLOrdersService {
         List<Orders> ordersList=omdao.findAll();
         List<Quote> quoteList=quomdao.PLqueryAllQuote();
         //在订单中 如果报价已经存在 则不显示该报价
-        /*for(int i=0;i<ordersList.size();i++){
-            for (int j=0;j<quoteList.size();j++){
-              if(quoteList.get(j).getQuoId().eq){
-
-              }
-            }
-        }*/
-
         return quomdao.PLqueryAllQuote();
     }
 
@@ -153,24 +154,8 @@ public class PLOrdersService {
      * 自动生成订单编号
      * @return
      */
-    public String getId(){
-        String id=String.valueOf(omdao.findMaxOrdid());
-        if(id==null&&id=="") {
-            //String s=id.substring(id.length()-4);//截取最大id的后4位
-            String equipmentNo = UUIDUtils.getNewNo("ORDER", id);
-            System.out.println(equipmentNo);
-            return equipmentNo;
-        }else{
-            return "ORDER00001"; //若没有id则返回这个
-        }
-    }
-    /**
-     * 自动生成订单编号
-     * @return
-     */
     public String getIds(){
         String id=String.valueOf(omdao.findMaxOrdid());
-        //System.out.println("aaa"+id);
         String equipmentNo= JrcUUID.getNewNo(id);
         return equipmentNo;
     }
@@ -230,12 +215,13 @@ public class PLOrdersService {
             orders1.setOrdRemark(orders.getOrdRemark());
             omdao.insertOrders(orders1);
             //如果是获取报价的产品 就把报价的产品详情都添加进订单详情
+            if(orders.getQuote()!=null){
             if(orders.getQuote().getQuoId()!=0) {
                 //把报价详情中的产品查询出来
                 List<Quotedetails> quotedetails=quoteDetailsMDao.queryByQuoId(orders.getQuote().getQuoId());
                 for(Quotedetails q:quotedetails){
                     Orderdetail orderdetail=new Orderdetail();
-                    orderdetail.setOrders(orders);
+                    orderdetail.setOrders(orders1);
                     orderdetail.setCustomer(orders.getCustomer());
                     orderdetail.setUser(orders.getUser());
                     orderdetail.setProductspecification(q.getProductspecification());
@@ -248,13 +234,19 @@ public class PLOrdersService {
                     omdao.insertOrderdetail(orderdetail);
                 }
                 //根据订单id 把订单详情中的详情金额统计出来
-                Integer m=omdao.findByOrdersDetailMonery(orders.getOrdId());
+                Integer m=omdao.findByOrdersDetailMonery(orders1.getOrdId());
                 //把订单的总金额重新修改赋值
-                omdao.updateTotalMoney(m,orders.getOrdId());
+                omdao.updateTotalMoney(m,orders1.getOrdId());
                 //改为待出库
                 omdao.updateOutStatus(orders1.getOrdId());
                 //选择后把报价的Id修改成3表示已经转成订单了
                 quomdao.PLupdateByQutId(orders.getQuote().getQuoId());
+                //把销售机会的状态改为合同签约
+                Quote quote =quomdao.queryByQuotId(orders.getQuote().getQuoId());
+                if(quote.getSalesopport()!=null){
+                    salesOpportMDao.updateSales(quote.getSalesopport().getSoId(),"合同签约");
+                }
+            }
             }
         }else {
             //修改
@@ -316,7 +308,6 @@ public class PLOrdersService {
         plOdersAdvancedSearch.setOrdNumber(ordNumber);
         plOdersAdvancedSearch.setuIdSingle(uIdSingle);
         plOdersAdvancedSearch.setAddCity(addCity);
-
         PageHelper.startPage(plOdersAdvancedSearch.getCurpage(),plOdersAdvancedSearch.getPagesize());
         List<Orders> list=omdao.OrdersAdvancedSearch(plOdersAdvancedSearch);
         PageInfo<Orders> page=new PageInfo<>(list);

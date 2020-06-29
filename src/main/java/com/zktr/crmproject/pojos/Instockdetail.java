@@ -82,8 +82,7 @@ public class Instockdetail {
                 ", insdQuantity=" + insdQuantity +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", productspecification=" + productspecification +
-                ", instock=" + instock +
+                ", productspecification=" + productspecification+
                 '}';
     }
 }

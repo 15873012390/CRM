@@ -70,6 +70,7 @@ public class llDeptController {
         return llDeptService.findDeptUser(dId);
     }
     //修改部门主管
+    @MyLog(value = "修改部门主管")
     @GetMapping("/setDeptManager")
     public Result setDeptManager(Integer uId,Integer dId){
         llDeptService.setDeptManager(uId, dId);

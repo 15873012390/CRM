@@ -23,10 +23,14 @@ public interface HTIComplaintDao {
 
     public List queryByMonth();
 
+    public List queryByMonthBySelect(String year);
+
     public List queryByCustomer();
 
     public void insertComplaint(Complaint complaint);
 
     public void updateComplaint(Complaint complaint);
+
+    public void deleteByComId(Integer comId);
 
 }

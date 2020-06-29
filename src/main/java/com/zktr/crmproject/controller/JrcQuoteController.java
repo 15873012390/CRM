@@ -1,6 +1,7 @@
 package com.zktr.crmproject.controller;
 
 import com.github.pagehelper.Page;
+import com.sun.org.apache.xpath.internal.operations.Quo;
 import com.zktr.crmproject.pojos.Quote;
 import com.zktr.crmproject.service.JrcQuoteService;
 import com.zktr.crmproject.vo.JrcQuoteAdvancedQuery;
@@ -9,6 +10,8 @@ import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class JrcQuoteController {
@@ -63,5 +66,10 @@ public class JrcQuoteController {
         return quoteService.saveCopyQuote(quotationNo,uId,cusId);
     }
 
+    @GetMapping("/flash_quote_bysoid")
+    @ResponseBody
+    public List<Quote> flashQuoteBysoid(Integer soId){
+        return quoteService.flashQuoteBysoid(soId);
+    }
 
 }

@@ -1,17 +1,21 @@
 package com.zktr.crmproject.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.zktr.crmproject.dao.jpa.JrcBackLogTaskDetailsJDao;
 import com.zktr.crmproject.dao.jpa.JrcBackLogTaskJDao;
 import com.zktr.crmproject.dao.mybatis.*;
 import com.zktr.crmproject.pojos.*;
 import com.zktr.crmproject.vo.BackLogTaskVo;
 import com.zktr.crmproject.vo.JrcActionHistoryVo;
+import com.zktr.crmproject.vo.Pager;
 import com.zktr.crmproject.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,48 +34,35 @@ public class JrcSalesOpportDetailsService {
     @Autowired
     private JrcSolutionMDao solutionMDao;
     @Autowired
-    private JrcActionHistoryMDao actionHistoryMDao;
-    @Autowired
-    private JrcUserMDao userMDao;
-    @Autowired
     private JrcCustomerMDao customerMDao;
     @Autowired
-    private JrcBackLogTaskJDao backLogTaskJDao;
-    @Autowired
     private JrcBackLogTaskMDao backLogTaskMDao;
-    @Autowired
-    private JrcBackLogTaskDetailsJDao backLogTaskDetailsJDao;
-    @Autowired
-    private JrcBackLogTaskDetailsMDao backLogTaskDetailsMDao;
     @Autowired
     private JrcRepairMDao repairMDao;
     @Autowired
     private JrcBackLogTaskService backLogTaskService;
-    @Autowired
-    private JrcActionHIstoryService actionHIstoryService;
     /**
      * 查找销售机会的所有信息（竞争对手、需求分析、报价单、解决方案）
-     * 以及客户的所有待办任务、行动历史记录
+     * 客户的所有待办任务
      * @param soId
-     * @param cusId
      * @return
      */
-    public Map querySalesOpportAndCustomeDetails(Integer soId,Integer cusId){
+    public Map querySalesOpportAndCustomeDetails(Integer soId){
         Map map=new HashMap();
         Salesopport salesopport=salesOpportMDao.queryBySoid(soId);
-        List<Competitor> competitors=competitorMDao.queryComptitorBySoid(soId);
+
         List<Clientdemand> clientdemands=clientdemandMDao.queryClientdemandBySoid(soId);
         List<Quote> quotes=quoteMDao.queryQuoteBySoid(soId);
         List<Solution> solutions=solutionMDao.querySolutionBySoid(soId);
-        List<Backlogtask> backlogtasks=backLogTaskMDao.queryBackLogTaskByCusId(cusId);
-        List<Actionhistory> actionhistories=actionHistoryMDao.queryActionhistoryByCusId(cusId);
-        Customer customer=customerMDao.queryContactByCusid(cusId);
+        Customer customer=customerMDao.queryContactByCusid(salesopport.getCustomer().getCusId());
+
+        Pager<Backlogtask> pager=backLogTaskService.queryAllBackLogTaskByCusId(salesopport.getCustomer().getCusId(),1,5);
         map.put("salesopport",salesopport);
-        map.put("competitors",competitors);
+
+        map.put("clientdemands",clientdemands);
         map.put("quotes",quotes);
         map.put("solutions",solutions);
-        map.put("backlogtasks",backlogtasks);
-        map.put("actionhistories",actionhistories);
+        map.put("backlogtasks",pager);
         map.put("customer",customer);
         return map;
     }
@@ -138,39 +129,7 @@ public class JrcSalesOpportDetailsService {
         return repairMDao.queryRepairAllByCusId(cusid);
     }
 
-    /**
-     * 添加行动历史记录和行动历史详情记录
-     * @param actionHistoryVo
-     * @return
-     */
-    public Result addActionHistory(JrcActionHistoryVo actionHistoryVo){
-        return actionHIstoryService.addActionHistory(actionHistoryVo);
-    }
 
-    /**
-     * 根据行动历史id找行动历史记录以及详情记录
-     * @param ahid
-     * @return
-     */
-    public Actionhistory queryActionHistoryByAhid(Integer ahid){
-        return actionHIstoryService.queryActionHistoryByAhid(ahid);
-    }
 
-    /**
-     * 刷新行动历史记录
-     * @param cusid
-     * @return
-     */
-    public List<Actionhistory> queryAcitonHistoryByCusid(Integer cusid){
-        return actionHIstoryService.queryAcitonHistoryByCusid(cusid);
-    }
 
-    /**
-     * 删除行动历史记录
-     * @param ahid
-     * @return
-     */
-    public Result deleteActionHistoryByAhid(Integer ahid){
-        return actionHIstoryService.deleteActionHistoryByAhid(ahid);
-    }
 }

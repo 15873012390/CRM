@@ -111,6 +111,10 @@ public class llUserAndMessageController {
             user.setuBirth(up.getuBirth());
             user.setuJoindate(up.getuJoindate());
             user1=llUserService.addUser(user,up.getdId());
+            Integer[] i=new Integer[1];
+            i[0]= Integer.valueOf(up.getPostId());
+
+            llAuthorityService.addAndUserPosition(user1.getuId(),i);
         }
         return "succes";
     }
@@ -144,5 +148,10 @@ public class llUserAndMessageController {
 //        Pager<PowerAndDept> p=llUserService.screenUser(value);
 //        System.out.println(p.getList().toString());
         return llUserService.screenUser(value);
+    }
+    @MyLog(value = "修改背景")
+    @GetMapping("/updteUser")
+    public void updteUser(Integer uId,String ucolor){
+        llUserService.updateUser(uId, ucolor);
     }
 }

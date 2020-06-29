@@ -86,7 +86,7 @@
         SELECT quo_id,quo_theme,cus_id
         FROM quote
         WHERE del_status=1
-        AND to_order=2
+        AND to_order=1
     </select>
 
     <update id="PLupdateByQutId" >
@@ -173,7 +173,7 @@
         order by a.aud_id asc
     </select>
 
-    <select id="queryQuoteByAdvancedSearch" resultType="com.zktr.crmproject.vo.JrcQuoteAdvancedQuery" resultMap="quoteMap">
+    <select id="queryQuoteByAdvancedSearch" parameterType="com.zktr.crmproject.vo.JrcQuoteAdvancedQuery" resultMap="quoteMap">
         select q.quo_id, q.quo_theme, q.to_order, q.quo_phone, q.quo_date, q.total_money, q.gross_profit,
         q.instructions, q.remarks, q.approver,q.audit_status, q.del_status,q.created_id,q.quotation_no,q.amount_before,
         s.so_id,s.so_theme,c2.cus_id,c2.cus_name,
@@ -232,12 +232,9 @@
                 </choose>
             </if>
             <if test="quoDateStars!=null">
-            and q.quo_date >=#{quoDateStars}
+                 and q.quo_date between #{quoDateStars} and #{quoDateEnd}
             </if>
-            <if test="quoDateEnd!=null">
-            and q.quo_date &lt;=#{quoDateEnd}
 
-            </if>
             <if test="toOrders.size()>0">
                 and q.to_order in
                 <foreach collection="toOrders" open="(" separator="," close=")" item="item">
@@ -266,6 +263,7 @@
                 </foreach>
             </if>
         </trim>
+        order by q.quo_id desc
     </select>
 
     <select id="copyQuote" resultMap="quoteMap">
@@ -280,7 +278,7 @@
         left join user u on u.u_id = q.u_id
         left join quotedetails q2 on q.quo_id = q2.quo_id
         left join productspecification p on p.spe_id=q2.spe_id
-        where q.quotation_no=#{quotationNo}
+        where q.quotation_no=#{quotationNo} order by q.quo_id desc
     </select>
 
     <select id="queryQuoteByAudId" resultMap="quoteMap">
@@ -298,4 +296,28 @@
         left join audit a on q.aud_id = a.aud_id
         where a.aud_id=#{audId}
     </select>
+
+    <delete id="deleteQuoteBySoid">
+        delete from quote  where so_id =#{soId}
+    </delete>
+
+
+    <select id="flashQuoteBysoid" resultMap="quoteMap">
+        select q.quo_id, q.quo_theme, q.to_order, q.quo_phone, q.quo_date, q.total_money, q.gross_profit,
+        q.instructions, q.remarks, q.approver,q.audit_status, q.del_status,q.created_id,q.quotation_no,q.amount_before,
+        s.so_id,s.so_theme,c2.cus_id,c2.cus_name,
+        u.u_id,u.u_name
+        from quote q
+        left join salesopport s on q.so_id = s.so_id
+        left join customer c2 on q.cus_id = c2.cus_id
+        left join user u on u.u_id = q.u_id
+        where s.so_id=#{soId}
+        order  by q.quo_id desc
+    </select>
+
+    <select id="deleteQuoteByQuoId">
+        delete from quote  where quo_id =#{quoId}
+    </select>
+
+
 </mapper>

@@ -22,4 +22,9 @@ public interface JrcUserMDao {
                                              @Param("timeEnd") Date timeEnd,
                                              @Param("possibity") String possibity);
 
+    /**
+     * 获得有权限审核的员工
+     * @return
+     */
+    public List<User> getAllUsrList();
 }

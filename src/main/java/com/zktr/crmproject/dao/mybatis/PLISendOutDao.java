@@ -9,9 +9,9 @@ import java.util.Map;
 
 @Mapper
 public interface PLISendOutDao {
-
+    //新增发货单
     public void insertSendOut(Sendout sendout);
-
+    //新增发货单详情
     public void insertSendOutDetail(Sendoutdetial sendoutdetial);
     //根据ordid查找
     public Sendout findSendOutByOrdid(Integer ordid);
@@ -29,6 +29,10 @@ public interface PLISendOutDao {
     public Sendout findBySenId(Integer senId);
     //统计发货单金额
     public Map statisticsMoney(Integer senId);
+    //已出库未发货的发货单
+    public List<Map> statisticsHomePageSO();
+    //数量
+    public Map statisticsHomePageSONum();
 
 
 }

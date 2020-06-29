@@ -57,7 +57,7 @@
             <result column="ord_del_state" property="ordDelState"></result>
         </association>
     </resultMap>
-
+    <!--根据订单id查询订单详情-->
     <select id="queryOrderdetailByOrdid" resultMap="orderDetailMap">
         select * from  orders o
         left join orderdetail ord  on o.ord_id = ord.ord_id

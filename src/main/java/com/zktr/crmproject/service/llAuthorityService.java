@@ -41,6 +41,11 @@ public class llAuthorityService {
                 Position p=llPositionDao.findById(i).get();
                 p.getUser().add(user);
             }
+        }else{
+            for(Integer i:postids){
+                Position p=llPositionDao.findById(i).get();
+                p.getUser().add(user);
+            }
         }
     }
     //将用户的某个职位删除

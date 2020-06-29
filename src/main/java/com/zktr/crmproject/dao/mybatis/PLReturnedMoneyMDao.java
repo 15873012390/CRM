@@ -28,4 +28,12 @@ public interface PLReturnedMoneyMDao {
     public List<Returnedmoney> queryByLikeQuery(@Param("select") String select, @Param("input") String input, @Param("statevalue") String statevalue);
     //高级查询
     public List<Returnedmoney> REMAdvancedSearch(PLRemAdvancedSearch remAdvancedSearch);
+    //首页 回款统计
+    public List<Map> statisticsHomePageRM(Integer uId);
+    //首页
+    public Map statisticsHomePageRMNum(Integer uId);
+    //首页 本月回款top20
+    public List<Map> statisticsHomePageRMState();
+    //首页 本月回款数量top20
+    public Map statisticsHomePageRMStateNum();
 }

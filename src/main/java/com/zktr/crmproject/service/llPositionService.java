@@ -27,7 +27,6 @@ public class llPositionService {
     public Pager<Position> findAllPositons(Integer curpage,Integer pagesize){
         PageHelper.startPage(curpage,pagesize);
         List<Position> list=lliPositionDao.findAllPosition();
-        System.out.println(list+"=======================");
         PageInfo<Position> pager = new PageInfo<>(list);
         return new Pager<Position>(pager.getTotal(),pager.getList());
     }
@@ -48,5 +47,12 @@ public class llPositionService {
     //获得该职位所有用户
     public List<UserAndPosition> positionUser(Integer postId){
         return llUserAndPositionDao.positionUser(postId);
+    }
+    //模糊查询
+    public Pager<Position> queryLikePosition(String postName){
+        PageHelper.startPage(1,5);
+        List<Position> list=lliPositionDao.queryLikePosition(postName);
+        PageInfo<Position> pager = new PageInfo<>(list);
+        return new Pager<Position>(pager.getTotal(),pager.getList());
     }
 }
