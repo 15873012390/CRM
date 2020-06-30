@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcAuditMDao">
+    
+    <resultMap id="auditMap" type="Audit">
+        <id property="audId" column="aud_id"/>
+        <result property="audTheme" column="aud_theme"/>
+        <result property="audType" column="aud_type"/>
+        <result property="audTime" column="is_aud_time"/>
+        <result property="audStatus" column="aud_status"/>
+        <result property="delStatus" column="del_status"/>
+        <association property="user" javaType="User">
+            <id property="uId" column="audit_u_id"/>
+            <result property="uName" column="audit_u_name"/>
+        </association>
+        <collection property="quote" ofType="Quote">
+            <id property="quoId" column="quo_id"/>
+            <result property="quoTheme" column="quo_theme"/>
+            <result property="toOrder" column="to_order"/>
+            <result property="quoPhone" column="quo_phone"/>
+            <result property="quoDate" column="quo_date"/>
+            <result property="totalMoney" column="total_money"/>
+            <result property="grossProfit" column="gross_profit"/>
+            <result property="instructions" column="instructions"/>
+            <result property="remarks" column="remarks"/>
+            <result property="approver" column="approver"/>
+            <result property="auditStatus" column="audit_status"/>
+            <result property="delStatus" column="del_status"/>
+            <result property="createdId" column="created_id"/>
+            <result property="quotationNo" column="quotation_no"/>
+            <result property="amountBefore" column="amount_before"/>
+            <!--销售机会-->
+            <association property="salesopport" javaType="Salesopport">
+                <id property="soId" column="so_id"/>
+                <result property="soTheme" column="so_theme"/>
+            </association>
+            <!--客户-->
+            <association property="customer" javaType="Customer">
+                <id property="cusId" column="cus_id"/>
+                <result property="cusName" column="cus_name"/>
+            </association>
+            <!--用户-->
+            <association property="user" javaType="User">
+                <id property="uId" column="quo_uid"/>
+                <result property="uName" column="quo_uname"/>
+            </association>
+
+            <collection property="quotedetails" ofType="Quotedetails">
+                <id property="qdId" column="qd_id"/>
+                <result property="specification" column="specification"/>
+                <result property="unit" column="unit"/>
+                <result property="quantity" column="quantity"/>
+                <result property="unitPrice" column="unit_price"/>
+                <result property="discount" column="discount"/>
+                <result property="money" column="money"/>
+                <result property="remarks" column="details_remarks"/>
+                <association property="productspecification" javaType="Productspecification">
+                    <id property="speId" column="spe_id"/>
+                    <result property="proName" column="pro_name"/>
+                    <result property="speSpecification" column="spe_specification"/>
+                    <result property="speUnit" column="spe_unit"/>
+                    <result property="speUnitConversion" column="spe_unit_conversion"/>
+                    <association property="product" javaType="Product">
+                        <id property="proId" column="pro_id"/>
+                        <result property="proName" column="pro_name"/>
+                    </association>
+                </association>
+            </collection>
+
+        </collection>
+        <collection property="auditdetails" ofType="Auditdetails">
+            <id property="adId" column="ad_id"/>
+            <result property="adOpinion" column="ad_opinion"/>
+            <result property="adTime" column="to_ad_time"/>
+            <result property="adOperation" column="ad_operation"/>
+            <association property="user" javaType="User">
+                <id property="uId" column="auditdetails_u_id"/>
+                <result property="uName" column="auditdetails_u_name"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllAudit" resultMap="auditMap">
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
+        u.u_id as audit_u_id,u.u_name as audit_u_name,
+        u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
+        q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
+        q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
+        q.quotation_no,q.amount_before
+        from audit a
+        left join user u on u.u_id=a.u_id
+        left join auditdetails a2 on a.aud_id = a2.aud_id
+        left join user u2 on u2.u_id=a2.u_id
+        left join quote q on a.aud_id = q.aud_id
+         order by a.aud_id desc
+    </select>
+
+    <select id="queryLikeAudit" resultMap="auditMap">
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
+        u.u_id as audit_u_id,u.u_name as audit_u_name,
+        u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
+        q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
+        q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
+        q.quotation_no,q.amount_before
+        from audit a
+        left join user u on u.u_id=a.u_id
+        left join auditdetails a2 on a.aud_id = a2.aud_id
+        left join user u2 on u2.u_id=a2.u_id
+        left join quote q on a.aud_id = q.aud_id
+        <trim prefix="where" prefixOverrides="and">
+
+            <if test="select!=null">
+                <choose>
+                    <when test="select=='全部数据'"></when>
+                    <when test="select=='待审'">
+                        and a.aud_status=1
+                    </when>
+                    <when test="select=='审核中'">
+                        and a.aud_status=2
+                    </when>
+                    <when test="select=='同意'">
+                        and a.aud_status=3
+                    </when>
+                    <when test="select=='否决'">
+                        and a.aud_status=4
+                    </when>
+                    <when test="select=='已撤销'">
+                        and a.aud_status=5
+                    </when>
+                    <when test="select=='我申请:待审批'">
+                        and a.aud_status=1 and q.created_id=#{uId}
+                    </when>
+                    <when test="select=='我申请:审核中'">
+                        and a.aud_status=2 and q.created_id=#{uId}
+                    </when>
+                    <when test="select=='我申请:同意'">
+                        and a.aud_status=3 and q.created_id=#{uId}
+                    </when>
+                    <when test="select=='我申请:否决'">
+                        and a.aud_status=4 and q.created_id=#{uId}
+                    </when>
+                    <when test="select=='我申请:已撤销'">
+                        and a.aud_status=5 and q.created_id=#{uId}
+                    </when>
+                    <when test="select=='我审批:需我审批'">
+                        and a.aud_status=1 and a2.u_id=#{uId}
+                    </when>
+                    <when test="select=='我审批:同意'">
+                        and a.aud_status=3 and a2.u_id=#{uId}
+                    </when>
+                    <when test="select=='我审批:否决'">
+                        and a.aud_status=4 and a2.u_id=#{uId}
+                    </when>
+                </choose>
+
+                <if test="input!=null and input.length>0">
+                    <choose>
+                        <when test="iftrue==1">
+                            and DATE_FORMAT(a.aud_time,'%Y-%m-%d') like #{input}
+                        </when>
+                        <when test="iftrue==2">
+                            and DATE_FORMAT(a.aud_time,'%Y-%m-%d') =#{input}
+                        </when>
+                    </choose>
+                </if>
+            </if>
+        </trim>
+        order by a.aud_id desc
+
+    </select>
+
+
+    <select id="queryAdvanceAudit" parameterType="com.zktr.crmproject.vo.JrcAdvancedAuditSearch" resultMap="auditMap">
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
+        u.u_id as audit_u_id,u.u_name as audit_u_name,
+        u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name,
+        a2.ad_id, a2.ad_opinion, a2.ad_time as to_ad_time,a2. ad_operation,
+        q.quo_id, q.quo_theme,q. to_order, q.quo_phone,q. quo_date,q. total_money,q.gross_profit,
+        q.instructions,q.remarks,q.approver,q.aud_id,q.audit_status,q.del_status,q.created_id,
+        q.quotation_no,q.amount_before
+        from audit a
+        left join user u on u.u_id=a.u_id
+        left join auditdetails a2 on a.aud_id = a2.aud_id
+        left join user u2 on u2.u_id=a2.u_id
+        left join quote q on a.aud_id = q.aud_id
+        <trim prefix="where" prefixOverrides="and">
+
+            <if test="proposer!=null and proposer.length>0">
+                and a.u_id in
+                <foreach collection="proposer" open="(" separator="," close=")" item="user">
+                    #{user}
+                </foreach>
+            </if>
+            <if test="start!=null and start.length>0">
+                and a.aud_status in
+                <foreach collection="start" open="(" separator="," close=")" item="star">
+                    #{star}
+                </foreach>
+            </if>
+            <if test="currentApprover!=null and currentApprover.length>0">
+                and a2.u_id in
+                <foreach collection="currentApprover" open="(" separator="," close=")"  item="app">
+                    #{app}
+                </foreach>
+            </if>
+
+            <if test="createDate!=null and createDate.length>0">
+                and a.aud_time >= #{createStart}
+                and a.aud_time &lt;=#{createEnd}
+            </if>
+
+        </trim>
+        order by a.aud_id desc
+    </select>
+
+    <select id="queryAllAuditAndAuditDetails" resultMap="auditMap">
+        select a.aud_id,a.aud_theme,a.aud_type,a.aud_time as is_aud_time,a.aud_status,a.del_status,
+        u.u_id as audit_u_id,u.u_name as audit_u_name,
+        q.quo_id,q.quo_theme,q.to_order,q.cus_id,q.so_id,q. u_id,q.quo_phone,q.quo_date,q.total_money,
+        q.gross_profit, q.instructions, q.remarks, q.approver, q.audit_status,q. del_status,
+        q.created_id, q.quotation_no,q.amount_before,
+        s.so_id,s.so_theme,
+        c.cus_id,c.cus_name,
+        qu.u_id as quo_uid,qu.u_name as quo_uname,
+        q2.qd_id,q2.specification,q2.unit,q2.quantity,q2.unit_price,q2.discount,q2.money,q2.remarks,
+        p.spe_id, p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
+        p2.pro_id,p2.pro_name,
+        a2.ad_id,a2.ad_opinion,a2.ad_time as to_ad_time,a2.ad_operation,
+        u2.u_id as auditdetails_u_id,u2.u_name as auditdetails_u_name
+        from audit a
+        left join user u on u.u_id=a.u_id
+        left join quote q on a.aud_id = q.aud_id
+        left join salesopport s on s.so_id = q.so_id
+        left join customer c on q.cus_id=s.cus_id
+        left join user qu on qu.u_id = q.u_id
+        left join quotedetails q2 on q.quo_id =q2.quo_id
+        left join productspecification p on q2.spe_id=p.spe_id
+        left join product p2 on p.pro_id = p2.pro_id
+        left join auditdetails a2 on a.aud_id = a2.aud_id
+        left join user u2 on a2.u_id=u2.u_id
+        where a.aud_id=#{audId}
+    </select>
+
+    <delete id="deleteAuditByAudId">
+        delete from audit where aud_id=#{audId}
+    </delete>
+
+</mapper>

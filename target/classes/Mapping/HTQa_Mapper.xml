@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIQaDao">
+
+    <resultMap id="qaMap" type="Qa">
+        <id column="qa_id" property="qaId"></id>
+        <result column="question" property="question"></result>
+        <result column="answer" property="answer"></result>
+        <result column="internal_prompt" property="internalPrompt"></result>
+        <result column="anthor" property="anthor"></result>
+        <result column="creaton_time" property="creatonTime"></result>
+        <result column="classification" property="classification"></result>
+        <result column="status" property="status"></result>
+    </resultMap>
+
+    <select id="queryAllByPage" resultMap="qaMap">
+        select * from qa order by qa_id desc
+    </select>
+
+    <select id="queryById" resultMap="qaMap">
+    select * from qa where qa_id=#{qaId} order by qa_id desc
+    </select>
+
+    <select id="queryByLike" resultMap="qaMap">
+       select * from qa where question like #{value} or answer like #{value} order by qa_id desc
+    </select>
+    
+    <select id="queryConditionByPage" resultMap="qaMap" parameterType="com.zktr.crmproject.vo.QaAdvancedSearch">
+        select * from qa
+        <where>
+            <if test="anthor!=null and anthor.length!=0">
+                and anthor = #{anthor}
+            </if>
+            <if test="question!=null and question.length!=0">
+                and question like CONCAT(CONCAT('%',#{question}),'%')
+            </if>
+            <if test="creatonTime!=null and creatonTime.length!=0">
+                and creaton_time between #{s1} and #{s2}
+            </if>
+            <if test="classification!=null and classification.length!=0">
+                and classification in
+                <foreach collection="classification" index="index" item="c"
+                         open="(" separator="," close=")">
+                    #{c}
+                </foreach>
+            </if>
+            <if test="status!=null and status.length!=0">
+                and status in
+                <foreach collection="status" index="index" item="c"
+                         open="(" separator="," close=")">
+                    #{c}
+                </foreach>
+            </if>
+        </where>
+        order by qa_id desc
+    </select>
+
+    <select id="queryLikeQa" resultMap="qaMap">
+        select * from qa where 1=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='1类' || value=='2类' || value=='3类' || value=='4类' " >
+                    and classification=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='问题全文索引'">
+                and question like #{input}
+            </when>
+        </choose>
+        order by qa_id desc
+    </select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.TWCustomerMapperDao">
+    <resultMap id="customerMap" type="Customer">
+        <id property="cusId" column="cus_id"></id>
+        <result property="cusName" column="cus_name"></result>
+        <result property="cusAddr" column="cus_addr"></result>
+        <result property="cusTel" column="cus_tel"></result>
+        <result property="cusSource" column="cus_source"></result>
+        <result property="cusCreationTime" column="cus_creation_time"></result>
+        <result property="cusUpdateTime" column="cus_update_time"></result>
+        <result property="cusLevel" column="cus_level"></result>
+        <result property="cusCredit" column="cus_credit"></result>
+        <result property="cusZip" column="cus_zip"></result>
+        <result property="cusFax" column="cus_fax"></result>
+        <result property="cusLifeCycle" column="cus_life_cycle"></result>
+        <result property="cusCountry" column="cus_country"></result>
+        <result property="cusProvince" column="cus_province"></result>
+        <result property="cusCity" column="cus_city"></result>
+        <result property="cusDistrict" column="cus_district"></result>
+        <result property="cusState" column="cus_state"></result>
+        <result property="cusGrading" column="cus_grading"></result>
+        <result property="cusRemarks" column="cus_remarks"></result>
+        <association property="user" javaType="com.zktr.crmproject.pojos.User">
+            <id column="u_id" property="uId"/>
+            <result column="u_name" property="uName"/>
+        </association>
+    </resultMap>
+    <select id="countCustomerByName" resultType="java.lang.Integer">
+        select count(*) from customer
+        where cus_name=#{cusName}
+    </select>
+    <select id="queryAllCustomer" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        order by c.cus_id desc
+    </select>
+    <select id="queryAllCustomerByIdASC" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        order by c.cus_id asc
+    </select>
+    <select id="queryAllCustomerBycusUpdateTimeASC" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        order by c.cus_update_time asc
+    </select>
+    <select id="queryAllCustomerBycusUpdateTimeDESC" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        order by c.cus_update_time desc
+    </select>
+    <select id="queryCustomerById" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where c.cus_id=#{id}
+    </select>
+    <select id="findCustomerById" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where c.cus_id=#{id}
+    </select>
+    <select id="queryCustomerByName" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where c.cus_name like CONCAT('%',#{name},'%')
+        order by c.cus_id desc
+    </select>
+    <select id="findCustomerByName" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where c.cus_name = #{name}
+    </select>
+    <select id="queryCustomerBy1" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(c.cus_update_time)
+        order by c.cus_id desc
+    </select>
+    <select id="queryCustomerBy2" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        WHERE DATE_FORMAT(c.cus_update_time,'%Y-%m') = DATE_FORMAT(CURDATE(),'%Y-%m')
+        order by c.cus_id desc
+    </select>
+    <select id="queryCustomerBy3" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        where YEAR(c.cus_update_time)=YEAR(NOW())
+        order by c.cus_id desc
+    </select>
+    <select id="queryCustomerBy4" resultMap="customerMap">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test='value =="客户介绍".toString() || value =="电话来访".toString() || value =="媒体宣传".toString() || value =="网站填表".toString() || value =="其他".toString()'>
+                and c.cus_source=#{value}
+            </if>
+            <if test="value =='高' || value =='较高' || value =='中' || value =='较低' || value =='低'">
+                or c.cus_credit=#{value}
+            </if>
+            <if test="value =='一次性' || value =='重复购买' || value =='长期合作'">
+                or c.cus_life_cycle=#{value}
+            </if>
+            <if test="value =='正常' || value =='预警' || value =='流失'">
+                or c.cus_state=#{value}
+            </if>
+            <if test="value =='特级' || value =='大单' || value =='正常' || value =='小单'">
+                or c.cus_grading=#{value}
+            </if>
+        </trim>
+        order by c.cus_id desc
+    </select>
+
+    <select id="queryCustomerSenior" resultMap="customerMap" parameterType="com.zktr.crmproject.vo.AdvancedQueryCustomerData">
+        select * from customer c
+        left join user u on c.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="cusId != null and cusId != '' and cusId!=0">
+                and c.cus_id like concat('%', #{cusId}, '%')
+            </if>
+            <if test="cusName != null and cusName != ''">
+                and cus_name  like concat('%', #{cusName}, '%')
+            </if>
+            <if test="uId != null and uId != '' and uId!=0">
+                and c.u_id  like concat('%', #{uId}, '%')
+            </if>
+            <if test="uName != null and uName != ''">
+                and u.u_name  like concat('%', #{uName}, '%')
+            </if>
+            <if test="cusLevel != null and cusLevel.length>0">
+                and cus_level in
+                <foreach collection="cusLevel" item="cusLevels"
+                         open="(" close=")" separator=",">
+                    #{cusLevels}
+                </foreach>
+            </if>
+            <if test="cusAddr != null and cusAddr != ''">
+                and cus_addr  like concat('%', #{cusAddr}, '%')
+            </if>
+            <if test="cusTel != null and cusTel != ''">
+                and cus_tel  like concat('%', #{cusTel}, '%')
+            </if>
+            <if test="cusSource != null and cusSource.length>0">
+                and cus_source in
+                <foreach collection="cusSource" item="cusSources"
+                         open="(" close=")" separator=",">
+                    #{cusSources}
+                </foreach>
+            </if>
+            <if test="cusCreationTimeStart != null and cusCreationTimeEnd != null">
+                and DATE_FORMAT(cus_creation_time, '%Y-%m-%d')  between DATE_FORMAT(#{cusCreationTimeStart}, '%Y-%m-%d') and  DATE_FORMAT(#{cusCreationTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="cusCreationTimeStart != null">
+                and DATE_FORMAT(cus_creation_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{cusCreationTimeStart}, '%Y-%m-%d')
+            </if>
+            <if test="cusCreationTimeEnd != null">
+                and DATE_FORMAT(cus_creation_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{cusCreationTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="cusUpdateTimeStart != null and cusUpdateTimeEnd != null">
+                and DATE_FORMAT(cus_update_time, '%Y-%m-%d')  between DATE_FORMAT(#{cusUpdateTimeStart}, '%Y-%m-%d') and  DATE_FORMAT(#{cusUpdateTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="cusUpdateTimeStart != null">
+                and DATE_FORMAT(cus_update_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{cusUpdateTimeStart}, '%Y-%m-%d')
+            </if>
+            <if test="cusUpdateTimeEnd != null">
+                and DATE_FORMAT(cus_update_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{cusUpdateTimeEnd}, '%Y-%m-%d')
+            </if>
+            <if test="cusCredit != null and cusCredit.length>0">
+                and cus_credit in
+                <foreach collection="cusCredit" item="cusCredits"
+                         open="(" close=")" separator=",">
+                    #{cusCredits}
+                </foreach>
+            </if>
+            <if test="cusZip != null and cusZip != ''">
+                and cus_zip  like concat('%', #{cusZip}, '%')
+            </if>
+            <if test="cusFax != null and cusFax != ''">
+                and cus_fax like concat('%', #{cusFax}, '%')
+            </if>
+            <if test="cusLifeCycle != null and cusLifeCycle.length>0">
+                and cus_life_cycle in
+                <foreach collection="cusLifeCycle" item="cusLifeCycles"
+                         open="(" close=")" separator=",">
+                    #{cusLifeCycles}
+                </foreach>
+            </if>
+            <if test="cusCountry != null and cusCountry != ''">
+                and cus_country  like concat('%', #{cusCountry}, '%')
+            </if>
+            <if test="cusProvince != null and cusProvince != ''">
+                and cus_province  like concat('%', #{cusProvince}, '%')
+            </if>
+            <if test="cusCity != null and cusCity != ''">
+                and cus_city  like concat('%', #{cusCity}, '%')
+            </if>
+            <if test="cusDistrict != null and cusDistrict != ''">
+                and cus_district  like concat('%', #{cusDistrict}, '%')
+            </if>
+            <if test="cusState != null and cusState.length>0">
+                and cus_state in
+                <foreach collection="cusState" item="cusStates"
+                         open="(" close=")" separator=",">
+                    #{cusStates}
+                </foreach>
+            </if>
+            <if test="cusGrading != null and cusGrading.length>0">
+                and cus_grading in
+                <foreach collection="cusGrading" item="cusGradings"
+                         open="(" close=")" separator=",">
+                    #{cusGradings}
+                </foreach>
+            </if>
+            <if test="cusRemarks != null and cusRemarks != ''">
+                and cus_remarks like concat('%', #{cusRemarks}, '%')
+            </if>
+        </trim>
+        order by c.cus_id desc
+    </select>
+    <select id="countCusSourcePie" resultType="com.zktr.crmproject.vo.CountPie">
+        SELECT cus_source name,COUNT(cus_source) value
+        FROM customer
+        GROUP BY cus_source
+    </select>
+    <select id="countCusCreditPie" resultType="com.zktr.crmproject.vo.CountPie">
+        SELECT cus_credit name,COUNT(cus_credit) value
+        FROM customer
+        GROUP BY cus_credit
+    </select>
+    <select id="countCusGradingPie" resultType="com.zktr.crmproject.vo.CountPie">
+        SELECT cus_grading name,COUNT(cus_grading) value
+        FROM customer
+        GROUP BY cus_grading
+    </select>
+    <resultMap id="customerMap2" type="Customer">
+        <id property="cusId" column="cus_id"></id>
+        <result property="cusName" column="cus_name"></result>
+        <result property="cusAddr" column="cus_addr"></result>
+        <result property="cusTel" column="cus_tel"></result>
+        <result property="cusSource" column="cus_source"></result>
+        <result property="cusCreationTime" column="cus_creation_time"></result>
+        <result property="cusUpdateTime" column="cus_update_time"></result>
+        <result property="cusLevel" column="cus_level"></result>
+        <result property="cusCredit" column="cus_credit"></result>
+        <result property="cusZip" column="cus_zip"></result>
+        <result property="cusFax" column="cus_fax"></result>
+        <result property="cusLifeCycle" column="cus_life_cycle"></result>
+        <result property="cusCountry" column="cus_country"></result>
+        <result property="cusProvince" column="cus_province"></result>
+        <result property="cusCity" column="cus_city"></result>
+        <result property="cusDistrict" column="cus_district"></result>
+        <result property="cusState" column="cus_state"></result>
+        <result property="cusGrading" column="cus_grading"></result>
+        <result property="cusRemarks" column="cus_remarks"></result>
+        <association property="user" javaType="com.zktr.crmproject.pojos.User">
+            <id column="u_id" property="uId"/>
+            <result column="u_name" property="uName"/>
+        </association>
+        <collection property="contacts" ofType="com.zktr.crmproject.pojos.Contacts">
+            <id column="con_id" property="conId"></id>
+            <result column="con_name" property="conName"/>
+            <result column="con_tel" property="conTel"/>
+            <result column="con_mobile" property="conMobile"/>
+            <result column="con_sex" property="conSex"/>
+            <result column="con_position" property="conPosition"/>
+            <result column="con_img" property="conImg"/>
+        </collection>
+    </resultMap>
+    <delete id="deleteCustomer" parameterType="java.lang.Integer">
+            DELETE a,b FROM customer a
+            LEFT JOIN customertransfer b ON a.cus_id=b.cus_id
+            WHERE a.cus_id=#{cusId}
+    </delete>
+    <select id="queryCustomerDetailsById" resultMap="customerMap2">
+        select c.cus_id,c.cus_name,
+            c.cus_level,c.cus_addr,
+            c.cus_tel,c.cus_source,
+            c.cus_creation_time,c.cus_update_time,
+            c.cus_credit,c.cus_zip,
+            c.cus_fax,c.cus_life_cycle,
+            c.cus_country,c.cus_province,
+            c.cus_city,c.cus_district,
+            c.cus_state,c.cus_grading,
+            c.cus_remarks,u.u_id,
+            u.u_name,n.con_name,
+            n.con_tel,n.con_mobile,
+            n.con_sex,n.con_position,
+            n.con_img
+        from customer c
+        left join user u on c.u_id=u.u_id
+        LEFT JOIN contacts n on c.cus_id=n.cus_id
+        WHERE c.cus_id=#{cusId}
+        order by c.cus_id desc
+    </select>
+
+    <resultMap id="customerMap3" type="Customer">
+        <id property="cusId" column="cus_id"></id>
+        <result property="cusName" column="cus_name"></result>
+<!--        联系人-->
+        <collection property="contacts" ofType="com.zktr.crmproject.pojos.Contacts">
+            <id column="con_id" property="conId"></id>
+            <result column="con_name" property="conName"/>
+            <result column="con_time" property="conTime"/>
+        </collection>
+<!--        出库单表-->
+        <collection property="outstock" ofType="com.zktr.crmproject.pojos.Outstock">
+            <id column="out_id" property="outId"></id>
+            <result column="title" property="title"/>
+            <result column="fill_time" property="fillTime"/>
+        </collection>
+<!--        客户关怀-->
+        <collection property="customercare" ofType="com.zktr.crmproject.pojos.Customercare">
+            <id column="cc_id" property="ccId"></id>
+            <result column="title" property="title"/>
+            <result column="cc_date" property="ccDate"/>
+        </collection>
+<!--        销售机会表-->
+        <collection property="salesopport" ofType="com.zktr.crmproject.pojos.Salesopport">
+            <id column="so_id" property="soId"></id>
+            <result column="so_theme" property="soTheme"/>
+            <result column="dis_time" property="disTime"/>
+        </collection>
+<!--        待办任务表-->
+        <collection property="backlogtask" ofType="com.zktr.crmproject.pojos.Backlogtask">
+            <id column="blt_id" property="bltId"></id>
+            <result column="blt_description" property="bltDescription"/>
+            <result column="creation_time" property="creationTime"/>
+        </collection>
+<!--        订单表-->
+        <collection property="orders" ofType="com.zktr.crmproject.pojos.Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"/>
+            <result column="ord_time" property="ordTime"/>
+        </collection>
+<!--        合同表-->
+        <collection property="contract" ofType="com.zktr.crmproject.pojos.Contract">
+            <id column="ctr_id" property="ctrId"></id>
+            <result column="con_theme" property="conTheme"/>
+            <result column="con_signing_date" property="conSigningDate"/>
+        </collection>
+<!--        客户服务表-->
+        <collection property="customerservice" ofType="com.zktr.crmproject.pojos.Customerservice">
+        <id column="cs_id" property="csId"></id>
+        <result column="title" property="title"/>
+        <result column="start_time" property="startTime"/>
+        </collection>
+<!--        发货表-->
+        <collection property="sendout" ofType="com.zktr.crmproject.pojos.Sendout">
+            <id column="sen_id" property="senId"></id>
+        </collection>
+<!--        报价表-->
+        <collection property="quote" ofType="com.zktr.crmproject.pojos.Quote">
+            <id column="quo_id" property="quoId"></id>
+        </collection>
+<!--        退货表-->
+        <collection property="returnedgoods" ofType="com.zktr.crmproject.pojos.Returnedgoods">
+            <id column="reg_id" property="regId"></id>
+        </collection>
+<!--        回款表-->
+        <collection property="returnedmoney" ofType="com.zktr.crmproject.pojos.Returnedmoney">
+            <id column="rem_id" property="remId"></id>
+        </collection>
+<!--        计划回款表-->
+        <collection property="returnedmoneyplan" ofType="com.zktr.crmproject.pojos.Returnedmoneyplan">
+            <id column="rmp_id" property="rmpId"></id>
+        </collection>
+<!--        开发票表-->
+        <collection property="invoice" ofType="com.zktr.crmproject.pojos.Invoice">
+            <id column="inv_id" property="invId"></id>
+        </collection>
+<!--        投诉管理表-->
+        <collection property="complaint" ofType="com.zktr.crmproject.pojos.Complaint">
+            <id column="com_id" property="comId"></id>
+        </collection>
+
+    </resultMap>
+
+    <select id="findCustomerDetailsById1" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    b.con_name,b.con_time
+            FROM customer a
+            LEFT JOIN contacts b ON a.cus_id=b.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by b.con_time desc
+    </select>
+    <select id="findCustomerDetailsById2" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    c.title,c.fill_time
+            FROM customer a
+            LEFT JOIN outstock c ON a.cus_id=c.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by c.fill_time desc
+    </select>
+    <select id="findCustomerDetailsById3" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    d.title,d.cc_date
+            FROM customer a
+            LEFT JOIN customercare d ON a.cus_id=d.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by d.cc_date desc
+    </select>
+    <select id="findCustomerDetailsById4" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    e.so_theme,e.dis_time
+            FROM customer a
+            LEFT JOIN salesopport e ON a.cus_id=e.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by e.dis_time desc
+    </select>
+    <select id="findCustomerDetailsById5" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    f.blt_description,f.creation_time
+            FROM customer a
+            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by f.creation_time desc
+    </select>
+    <select id="findCustomerDetailsById6" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    g.ord_theme,g.ord_time
+            FROM customer a
+            LEFT JOIN orders g ON a.cus_id=g.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by g.ord_time desc
+    </select>
+    <select id="findCustomerDetailsById7" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    h.con_theme,h.con_signing_date
+            FROM customer a
+            LEFT JOIN contract h ON a.cus_id=h.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by h.con_signing_date desc
+    </select>
+    <select id="findCustomerDetailsById8" resultMap="customerMap3">
+            SELECT  a.cus_id,a.cus_name,
+                    i.title,i.start_time
+            FROM customer a
+            LEFT JOIN customerservice i ON a.cus_id=i.cus_id
+            WHERE a.cus_id=#{cusId}
+            order by i.start_time desc
+    </select>
+    <select id="findCustomerDetailsById" resultMap="customerMap3">
+            SELECT  a.cus_id,b.con_id,c.out_id,
+				    d.cc_id,e.so_id,f.blt_id,g.ord_id,
+				    h.ctr_id,i.cs_id,j.sen_id,k.quo_id,
+					l.reg_id,m.rem_id,n.rmp_id
+            FROM customer a
+            LEFT JOIN contacts b ON a.cus_id=b.cus_id
+            LEFT JOIN outstock c ON a.cus_id=c.cus_id
+            LEFT JOIN customercare d ON a.cus_id=d.cus_id
+            LEFT JOIN salesopport e ON a.cus_id=e.cus_id
+            LEFT JOIN backlogtask f ON a.cus_id=f.cus_id
+            LEFT JOIN orders g ON a.cus_id=g.cus_id
+            LEFT JOIN contract h ON a.cus_id=h.cus_id
+            LEFT JOIN customerservice i ON a.cus_id=i.cus_id
+            LEFT JOIN sendout j ON j.cus_id=c.cus_id
+            LEFT JOIN quote k ON k.cus_id=d.cus_id
+            LEFT JOIN returnedgoods l ON l.cus_id=e.cus_id
+            LEFT JOIN returnedmoney m ON m.cus_id=f.cus_id
+            LEFT JOIN returnedmoneyplan n ON n.cus_id=g.cus_id
+            LEFT JOIN invoice o ON o.cus_id=h.cus_id
+            LEFT JOIN complaint p ON p.cus_id=i.cus_id
+            WHERE a.cus_id=#{cusId}
+    </select>
+</mapper>

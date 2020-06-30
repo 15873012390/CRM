@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.lliUserDao">
+    <resultMap id="lluserMap" type="User">
+        <id property="uId" column="u_id"></id>
+        <result property="uName" column="u_name"></result>
+        <result property="uPass" column="u_pass"></result>
+        <result property="uSex" column="u_sex"></result>
+        <result property="uBirth" column="u_birth"></result>
+        <result property="uJoindate" column="u_joindate"></result>
+        <result property="uImg" column="u_img"></result>
+        <result property="uStatus" column="u_Status"></result>
+        <result property="ucolor" column="ucolor"></result>
+        <association property="department" javaType="com.zktr.crmproject.pojos.Department">
+            <id column="d_id" property="dId"/>
+        </association>
+        <association property="position" javaType="com.zktr.crmproject.pojos.Position">
+            <id column="post_id" property="postId"/>
+        </association>
+    </resultMap>
+
+    <select id="findById" resultMap="lluserMap">
+        select * from user u where u.u_id=#{uid}
+    </select>
+    <select id="findAllUsers" resultMap="lluserMap">
+        select * from user u
+    </select>
+    <select id="findByNameAndPass" resultMap="lluserMap">
+        select * from user u where u.u_name=#{uname} and u.u_pass=#{upass}
+    </select>
+    <select id="queryAtUser" resultMap="lluserMap">
+        select u.u_id,u_name from user u where u.u_status=1 and u.d_id is null
+    </select>
+    <select id="countDeptUser" resultType="java.lang.Integer">
+        select count(*) from user u where u.d_id=#{did}
+    </select>
+    <select id="findDeptUser" resultMap="lluserMap">
+        select u.u_id,u.u_name from user u where u.u_status=1 and u.d_id=#{dId}
+    </select>
+</mapper>

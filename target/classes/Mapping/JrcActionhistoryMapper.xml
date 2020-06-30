@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcActionHistoryMDao">
+    
+    <resultMap id="actionhistoryMap" type="Actionhistory">
+        <id property="ahId" column="ah_id"/>
+        <result property="actDescribe" column="act_describe"/>
+        <result property="conName" column="con_name"/>
+        <result property="conPhone" column="con_phone"/>
+        <result property="action" column="action"/>
+        <result property="actDate" column="act_date"/>
+        <result property="delStatus" column="del_status"/>
+        <association property="customer" javaType="Customer">
+            <id property="cusId" column="cus_id"/>
+            <result property="cusName" column="cus_name"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+        </association>
+        <association property="repair" column="Repair">
+            <id property="repairId" column="repair_id"/>
+            <result property="title" column="title"/>
+        </association>
+        <collection property="actionhistorydetails" ofType="Actionhistorydetails">
+            <id property="ahdId" column="ahd_id"/>
+            <association property="user" javaType="User">
+                <id property="uId" column="uid"/>
+                <result property="uName" column="uname"/>
+            </association>
+        </collection>
+    </resultMap>
+    
+    <select id="queryActionhistoryByCusId" resultMap="actionhistoryMap">
+            select
+            a.ah_id, a.act_describe,a.con_name,a.con_phone, a.action, a.act_date,a.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name,
+            r.repair_id,r.title,
+            a2.ahd_id,
+            u2.u_id  as uid,u2.u_name as uname
+            from actionhistory a
+            left join customer c2 on a.cus_id = c2.cus_id
+            left join user u on u.u_id=a.u_id
+            left join repair r on r.repair_id= a.mai_id
+            left join actionhistorydetails a2 on a.ah_id = a2.ah_id
+            left join user u2 on a2.u_id=u2.u_id
+            where a.cus_id=#{cusid} and a.del_status=1
+            order by a.ah_id desc
+    </select>
+
+    <select id="queryActionHistoryByAhid" resultMap="actionhistoryMap">
+            select
+            a.ah_id, a.act_describe,a.con_name,a.con_phone, a.action, a.act_date,a.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id,u.u_name,
+            r.repair_id,r.title,
+            a2.ahd_id,
+            u2.u_id  as uid,u2.u_name as uname
+            from actionhistory a
+            left join customer c2 on a.cus_id = c2.cus_id
+            left join user u on u.u_id=a.u_id
+            left join repair r on r.repair_id= a.mai_id
+            left join actionhistorydetails a2 on a.ah_id = a2.ah_id
+            left join user u2 on a2.u_id=u2.u_id
+            where a.ah_id=#{ahid}
+    </select>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao">
+
+    <resultMap id="specificationMap" type="Productspecification">
+        <id property="speId" column="spe_id"></id>
+        <result property="proName" column="pro_name"></result>
+        <result property="speSpecification" column="spe_specification"></result>
+        <result property="speUnit" column="spe_unit" ></result>
+        <result property="speUnitConversion" column="spe_unit_conversion"></result>
+
+        <association property="product" javaType="Product">
+            <id property="proId" column="pro_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="proDate" column="pro_date"></result>
+            <result property="proPrice" column="pro_rice"></result>
+            <result property="proCostprice" column="pro_costprice"></result>
+            <association property="productclassification" javaType="Productclassification">
+                <id column="cla_id" property="claId"></id>
+                <result column="cla_name" property="claName"></result>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="queryAllByProid" resultMap="specificationMap">
+        SELECT s.spe_id,s.pro_id,s.pro_name,s.spe_specification,s.spe_unit,s.spe_unit_conversion,p.pro_date
+        FROM
+        productspecification s
+        INNER JOIN
+        product p
+        ON s.pro_id=p.pro_id
+        WHERE p.pro_id=#{proid} AND p.pro_del_state=1
+        ORDER BY s.spe_id DESC
+    </select>
+    <insert id="insertSpe" parameterType="com.zktr.crmproject.vo.ProductSpecificationVo">
+        insert into productspecification(pro_id,pro_name,spe_specification,spe_unit,spe_unit_conversion) values(#{proId},#{proName},#{speSpecification},#{speUnit},#{speUnitConversion})
+    </insert>
+    <insert id="insertSpeProduct">
+        insert into productspecification(pro_id,pro_name,spe_specification,spe_unit,spe_unit_conversion) values(#{product.proId},#{proName},#{speSpecification},#{speUnit},#{speUnitConversion})
+    </insert>
+    <!--把产品服务的产品销售价赋值给合同总价-->
+    <select id="findBySpeIdPrice" resultMap="specificationMap">
+        SELECT p.pro_id,spe.spe_id,p.pro_price,spe.pro_name,p.pro_costprice,spe.spe_specification
+        FROM product p
+        LEFT JOIN productspecification spe
+        ON p.pro_id=spe.pro_id
+        where p.pro_del_state=1 and spe.spe_id=#{speId}
+    </select>
+    <update id="updateSpe" parameterType="com.zktr.crmproject.pojos.Productspecification">
+        update productspecification set spe_specification=#{speSpecification},spe_unit=#{speUnit},spe_unit_conversion=#{speUnitConversion} where spe_id=#{speid}
+    </update>
+
+    <select id="queryBySepId" resultMap="specificationMap">
+        select * from productspecification where spe_id=#{speid}
+    </select>
+    <!--合同 查询分类是服务类-->
+    <select id="queryByClaState" resultMap="specificationMap">
+        SELECT p.pro_id,spe.spe_id,p.pro_price,p.pro_costprice,spe.pro_name,spe.spe_specification,cla.cla_name,cla.cla_id
+        FROM product p
+        LEFT JOIN productspecification spe
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        WHERE p.pro_del_state=1
+        AND cla.cla_id_id=13
+    </select>
+
+    <!--删除-->
+    <delete id="delBySpeId">
+        delete from productspecification  where spe_id=#{speId}
+    </delete>
+</mapper>

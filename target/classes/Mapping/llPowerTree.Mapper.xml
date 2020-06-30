@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.lliPowerTreeDao">
+    <resultMap id="llPowerManageMap" type="com.zktr.crmproject.pojos.PowerManage">
+        <id property="pmId" column="pm_id"></id>
+        <result property="pmName" column="pm_name"></result>
+        <result property="pmMessage" column="pm_message"></result>
+        <collection property="powerfather" ofType="com.zktr.crmproject.pojos.PowerFather">
+            <id property="powerFid" column="power_fid"></id>
+            <result property="powerFmessage" column="power_fmessage"></result>
+            <collection property="power" ofType="com.zktr.crmproject.pojos.Power">
+                <id property="powerId" column="power_id"></id>
+                <result property="powerMessage" column="power_message"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findAllPower" resultMap="llPowerManageMap">
+        select pm.pm_id,pm.pm_message,pf.power_fid,pf.power_fmessage,po.power_id,po.power_message from power_manage pm
+            left join power_father pf on pm.pm_id= pf.pm_id
+				left join power po on pf.power_fid=po.power_fid
+    </select>
+</mapper>

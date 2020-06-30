@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTICustomerServiceDao">
+
+    <resultMap id="customerserviceMap" type="com.zktr.crmproject.pojos.Customerservice">
+        <id column="cs_id" property="csId"></id>
+        <result column="title" property="title"></result>
+        <result column="service_type" property="serviceType"></result>
+        <result column="service_way" property="serviceWay"></result>
+        <result column="start_time" property="startTime"></result>
+        <result column="spend_time" property="spendTime"></result>
+        <result column="executor" property="executor"></result>
+        <result column="status" property="status"></result>
+        <result column="service_content" property="serviceContent"></result>
+        <result column="customer_feedback" property="customerFeedback"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+    </resultMap>
+
+    <select id="queryAllByPage" resultMap="customerserviceMap">
+        select * from customerservice left join customer on customerservice.cus_id = customer.cus_id order by customerservice.cs_id desc
+    </select>
+
+    <select id="queryById" resultMap="customerserviceMap">
+    select * from customerservice left join customer on customerservice.cus_id = customer.cus_id where cs_id = #{csId} order by customerservice.cs_id desc
+    </select>
+
+    <select id="queryLikeCustomerService" resultMap="customerserviceMap">
+    select * from customerservice left join customer on customerservice.cus_id = customer.cus_id where 1=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='答疑' || value=='故障排除' || value=='培训' || value=='升级'
+                || value=='其他'">
+                    and customerservice.service_type =#{value}
+                </when>
+                <when test="value=='电话'|| value=='传真' || value=='邮寄'
+                || value=='上门'">
+                        and customerservice.service_way = #{value}
+                </when>
+                <when test="value=='无需处理' || value=='未处理' || value=='处理中'
+                || value=='处理完成'">
+                    and customerservice.status=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='服务主题'">
+                and customerservice.title like #{input}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    order by customerservice.cs_id desc
+    </select>
+
+    <select id="queryConditionByPage" resultMap="customerserviceMap" parameterType="com.zktr.crmproject.vo.CustomerServiceAdvancedSearch">
+         select * from customerservice cs left join customer c on cs.cus_id = c.cus_id
+         <where>
+             <if test="title!=null and title.length!=0">
+                 and cs.title=#{title}
+             </if>
+             <if test="serviceType!=null and serviceType.length!=0">
+                 and cs.service_type in
+                 <foreach collection="serviceType" index="index" item="c"
+                          open="(" separator="," close=")">
+                     #{c}
+                 </foreach>
+             </if>
+             <if test="serviceWay!=null and serviceWay.length!=0">
+                 and cs.service_way in
+                 <foreach collection="serviceWay" index="index" item="c"
+                          open="(" separator="," close=")">
+                     #{c}
+                 </foreach>
+             </if>
+             <if test="startTime!=null and startTime.length!=0">
+                 and cs.start_time between #{s1} and #{s2}
+             </if>
+             <if test="executor!=null and executor.length!=0">
+                 and cs.executor = #{executor}
+             </if>
+             <if test="status!=null and status.length!=0">
+                 and cs.status in
+                 <foreach collection="status" index="index" item="c"
+                          open="(" separator="," close=")">
+                     #{c}
+                 </foreach>
+             </if>
+             <if test="cusId!=null and cusId!=''">
+                 and c.cus_id = #{cusId}
+             </if>
+         </where>
+         order by cs.cs_id desc
+    </select>
+    <!--饼图-->
+    <select id="queryQueryDistribution" resultType="Map">
+        select
+        <if test="selectValue==1">
+            service_type
+        </if>
+        <if test="selectValue==2">
+            service_way
+        </if>
+        <if test="selectValue==3">
+            spend_time
+        </if>
+        <if test="selectValue==4">
+            status
+        </if>
+        as name,count(*) as value from customerservice
+        group by
+        <if test="selectValue==1">
+            service_type
+        </if>
+        <if test="selectValue==2">
+            service_way
+        </if>
+        <if test="selectValue==3">
+            spend_time
+        </if>
+        <if test="selectValue==4">
+            status
+        </if>
+    </select>
+    <!--按月查询（条形图）-->
+    <select id="queryQueryMonth" resultType="Map">
+        select date_format(start_time, '%Y-%m') as date,
+        <if test="selectValue2==1">
+            service_type as name,
+        </if>
+        <if test="selectValue2==2">
+            service_way as name,
+        </if>
+        <if test="selectValue2==3">
+            spend_time as name,
+        </if>
+        <if test="selectValue2==4">
+            status as name,
+        </if>
+        count(*) as data from customerservice group by date_format(start_time, '%Y-%m'),
+        <if test="selectValue2==1">
+            service_type
+        </if>
+        <if test="selectValue2==2">
+            service_way
+        </if>
+        <if test="selectValue2==3">
+            spend_time
+        </if>
+        <if test="selectValue2==4">
+            status
+        </if>
+    </select>
+
+
+</mapper>

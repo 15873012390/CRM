@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcCharTypeMDao">
+    
+    <resultMap id="charTypeMap" type="com.zktr.crmproject.utils.JrcCharType">
+        <result property="value" column="value"/>
+        <result property="name" column="name"/>
+    </resultMap>
+    
+    <select id="querySalesOpportByStageNumber" resultMap="charTypeMap">
+        select ROUND(count(s.so_id)/(SELECT count(s2.so_id) from salesopport s2 where s2.STATUS=1)*100,2) as value,
+        CONCAT_WS(',',s.stage,count(s.so_id)) as name from salesopport s
+        <trim prefix="where" prefixOverrides="and">
+            and s.status=1 and s.stage=#{stage}
+            <if test="users.size() > 0">
+                and s.u_id in
+                <foreach collection="users" index="index" item="customerSource"
+                         open="(" separator="," close=")">
+                    #{customerSource.uId}
+                </foreach>
+            </if>
+        </trim>
+        group  by s.stage
+    </select>
+
+    <select id="querySalesOpportByStageSignMoney" resultMap="charTypeMap">
+        select ROUND(sum(s.amount)/(SELECT sum(s2.amount) from salesopport s2 where s2.STATUS=1)*100,2) as value,
+        CONCAT_WS(',',s.stage,sum(s.amount)) as name from salesopport s
+        <trim prefix="where" prefixOverrides="and" >
+            and s.status=1
+            <if test="users.size() > 0">
+                and s.u_id in
+                <foreach collection="users" index="index" item="customerSource"
+                         open="(" separator="," close=")">
+                    #{customerSource.uId}
+                </foreach>
+            </if>
+        </trim>
+        group  by s.stage
+    </select>
+
+
+
+
+</mapper>

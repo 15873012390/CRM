@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcSalesFunnelMDao">
+    
+    <resultMap id="salesFunnelMap" type="com.zktr.crmproject.vo.JrcSalesFunnel">
+        <result property="stage" column="stage"/>
+        <result property="numbers" column="numbers"/>
+        <result property="nmberHistoryConversion" column="nmberHistoryConversion"/>
+        <result property="numberAvgen" column="numberAvgen"/>
+        <result property="money" column="money"/>
+        <result property="moneyHistoryConversion" column="moneyHistoryConversion"/>
+        <result property="moneyAvgen" column="moneyAvgen"/>
+    </resultMap>
+    <!--销售漏斗表格-->
+    <select id="querySalesFunnel" resultMap="salesFunnelMap">
+        select s.stage as stage,count(s.so_id) as numberAvgen,sum(s.amount) as moneyAvgen,
+        (select count(s2.so_id) from salesopport s2 left join user u2 on s2.u_id=u2.u_id
+                <trim prefix="where" prefixOverrides="and">
+                    <if test="users.size() > 0">
+                        and u2.u_id in
+                        <foreach collection="users" index="index" item="user" open="(" separator="," close=")">
+                            #{user.uId}
+                        </foreach>
+                    </if>
+                    and s2.stage=#{stage} and s2.status=1
+                </trim>
+                group by s2.stage
+        ) as numbers,
+
+        (select count(s3.so_id) from salesopport s3 left join user u3 on s3.u_id=u3.u_id
+                <trim prefix="where" prefixOverrides="and">
+                    <if test="users.size() > 0">
+                        and u3.u_id in
+                        <foreach collection="users" index="index" item="user" open="(" separator="," close=")">
+                            #{user.uId}
+                        </foreach>
+                    </if>
+                    and s3.stage=#{stage}
+                </trim> group by s3.stage
+        ) as nmberHistoryConversion,
+
+        (select sum(s4.amount) from salesopport s4 left join user u4 on s4.u_id=u4.u_id
+                <trim prefix="where" prefixOverrides="and">
+                    <if test="users.size() > 0">
+                        and u4.u_id in
+                        <foreach collection="users" index="index" item="user" open="(" separator="," close=")">
+                            #{user.uId}
+                        </foreach>
+                    </if>
+                    and s4.stage=#{stage} and s4.status=1
+                </trim>
+                group by s4.stage
+        ) as money,
+
+        (select sum(s5.amount) from salesopport s5 left join user u5 on s5.u_id=u5.u_id
+                <trim prefix="where" prefixOverrides="and">
+                    <if test="users.size() > 0">
+                        and u5.u_id in
+                        <foreach collection="users" index="index" item="user" open="(" separator="," close=")">
+                            #{user.uId}
+                        </foreach>
+                    </if>
+                    and s5.stage=#{stage}
+                </trim> group by s5.stage
+        ) as moneyHistoryConversion
+
+        from salesopport s left join user u on s.u_id=u.u_id
+        where s.stage=#{stage}  and s.status=1 group by s.stage
+    </select>
+
+
+
+</mapper>

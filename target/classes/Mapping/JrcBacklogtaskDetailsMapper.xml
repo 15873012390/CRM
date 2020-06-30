@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcBackLogTaskDetailsMDao">
+
+    <resultMap id="backLogTaskDetailsMap" type="Backlogtaskdetails">
+        <id property="btdId" column="btd_id"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="status" column="status"/>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+            <result property="uImg" column="u_img"/>
+        </association>
+        <association property="backlogtask" javaType="Backlogtask">
+            <id property="bltId" column="blt_id"/>
+            <result property="bltDescription" column="blt_description"/>
+            <result property="finishDate" column="finish_date"/>
+            <result property="finishTime" column="finish_time"/>
+            <result property="precedence" column="precedence"/>
+            <result property="conName" column="con_name"/>
+            <result property="conPhone" column="con_phone"/>
+            <result property="status" column="status"/>
+            <result property="creationTime" column="creation_time"/>
+            <result property="delStatus" column="del_status"/>
+            <association property="customer" javaType="Customer">
+                <id property="cusId" column="cus_id"/>
+                <result property="cusName" column="cus_name"/>
+            </association>
+            <association property="user" javaType="User">
+                <id property="uId" column="u_id_b"/>
+                <result property="uName" column="u_name_b"/>
+                <result property="uImg" column="u_img_b"/>
+            </association>
+            <collection property="backlogtaskdetails" ofType="Backlogtaskdetails">
+                <id property="btdId" column="btd_id"/>
+                <result property="finishTime" column="finish_time"/>
+                <result property="status" column="status"/>
+                <association property="user" javaType="User">
+                    <id property="uId" column="uid"/>
+                    <result property="uName" column="uname"/>
+                </association>
+            </collection>
+        </association>
+    </resultMap>
+    
+    <select id="queryBackLogTaskUserBybltId" resultMap="backLogTaskDetailsMap">
+            select
+            bltd.btd_id, bltd.blt_id,bltd.finish_time, bltd.status,
+            u.u_id,u.u_name
+            from backlogtaskdetails bltd
+            left join backlogtask blt on blt.blt_id=bltd.blt_id
+            left join user u on u.u_id=bltd.u_id
+            where blt.blt_id=#{bltId}
+    </select>
+
+    <select id="queryBakLogTaskDetailsByUidFinsh" resultMap="backLogTaskDetailsMap">
+         select
+            bltd.btd_id, bltd.blt_id,bltd.finish_time, bltd.status,
+            u.u_id,u.u_name,u.u_img,
+            blt.blt_id, blt.blt_description, blt.finish_date, blt.finish_time, blt.precedence,
+            blt.con_name, blt.con_phone,blt. creator,blt. status, blt.creation_time, blt.del_status,
+            c2.cus_id,c2.cus_name,
+            u.u_id as u_id_b,u.u_name as u_name_b,u.u_img as u_img_b
+            from backlogtaskdetails bltd
+            left join user u on u.u_id=bltd.u_id
+            left join backlogtask blt on blt.blt_id=bltd.blt_id
+
+            left join user u2 on u2.u_id =blt.creator
+            left join customer c2 on blt.cus_id = c2.cus_id
+            <trim prefixOverrides="and" prefix="where">
+                and blt.status=1
+                <if test="op==1">
+                      and blt.finish_date > current_timestamp()
+                </if>
+                <if test="op==2">
+                    and blt.finish_date &lt; current_timestamp()
+                </if>
+                 and u.u_id=#{uid}
+            </trim>
+    </select>
+
+
+</mapper>

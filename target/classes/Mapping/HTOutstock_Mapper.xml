@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIOutstockDao">
+
+    <resultMap id="outStockMap" type="Outstock">
+        <id column="out_id" property="outId"></id>
+        <result column="out_number" property="outNumber"></result>
+        <result column="title" property="title"></result>
+        <result column="status" property="status"></result>
+        <result column="ord_number" property="ordNumber"></result>
+        <result column="fill_time" property="fillTime"></result>
+        <result column="pass_person" property="passPerson"></result>
+        <result column="pass_time" property="passTime"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <association property="purchasereturn" javaType="Purchasereturn">
+            <id column="preturn_id" property="preturnId"></id>
+            <result column="preturn_number" property="preturnNumber"></result>
+        </association>
+        <association property="warehouse" javaType="Warehouse">
+            <id column="warehouse_id" property="warehouseId"></id>
+            <result column="warehouse_name" property="warehouseName"></result>
+            <result column="stock_type" property="stockType"></result>
+            <result column="stock_value" property="stockValue"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_number" property="ordNumber"></result>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <association property="warehouseallocation" javaType="Warehouseallocation">
+            <id column="wa_id" property="waId"></id>
+            <result column="title" property="title"></result>
+            <result column="wa_date" property="waDate"></result>
+            <result column="wa_status" property="waStatus"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
+        <collection property="outstockdetail" ofType="Outstockdetails">
+            <id column="osd_id" property="osdId"></id>
+            <result column="osd_number" property="osdNumber"></result>
+            <result column="status" property="status"></result>
+            <result column="remarks" property="remarks"></result>
+            <association property="productspecification" javaType="Productspecification">
+                <id property="speId" column="spe_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="speUnit" column="spe_unit" ></result>
+                <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            </association>
+        </collection>
+    </resultMap>
+    <resultMap id="outDetailsMap" type="Outstockdetails">
+        <id column="osd_id" property="osdId"></id>
+        <result column="osd_number" property="osdNumber"></result>
+        <result column="status" property="status"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="outstock" javaType="Outstock">
+            <id column="out_id" property="outId"></id>
+            <result column="out_number" property="outNumber"></result>
+            <result column="title" property="title"></result>
+            <result column="status" property="status"></result>
+            <result column="ord_number" property="ordNumber"></result>
+            <result column="fill_time" property="fillTime"></result>
+            <result column="pass_person" property="passPerson"></result>
+            <result column="pass_time" property="passTime"></result>
+            <result column="remarks" property="remarks"></result>
+            <association property="warehouse" javaType="Warehouse">
+                <id column="warehouse_id" property="warehouseId"></id>
+                <result column="warehouse_name" property="warehouseName"></result>
+                <result column="stock_type" property="stockType"></result>
+                <result column="stock_value" property="stockValue"></result>
+                <result column="remarks" property="remarks"></result>
+            </association>
+        </association>
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit" ></result>
+            <result property="speUnitConversion" column="spe_unit_conversion"></result>
+        </association>
+    </resultMap>
+
+    <select id="queryAllOutstock" resultMap="outStockMap">
+            select * from outstock ou
+            LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+            LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+            LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+            LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+            LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+            LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+            LEFT JOIN product p on prop.pro_id = p.pro_id where ou.wa_id is null or ou.wa_id = 0
+            order by ou.out_id desc
+    </select>
+
+    <select id="queryOutstockByOutId" resultMap="outStockMap">
+        select * from outstock ou
+            LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+            LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+            LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+            LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+            LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+            LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+            LEFT JOIN product p on prop.pro_id = p.pro_id where ou.out_id = #{outId} order by ou.out_id desc
+    </select>
+
+    <insert id="insertOutstock" parameterType="Outstock" useGeneratedKeys="true" keyProperty="outId">
+        insert into outstock values (#{outId},#{outNumber},#{title},#{status},#{customer.cusId},#{ordNumber},#{purchasereturn.preturnId},#{warehouse.warehouseId},#{fillTime},#{passPerson},#{passTime},#{orders.ordId},#{warehouseallocation.waId},#{remarks})
+    </insert>
+
+    <insert id="insertOutStockDetails" parameterType="Outstockdetails">
+        insert into outstockdetails (osd_number, out_id, spe_id, remarks, status) values (#{osdNumber}, #{outstock.outId},#{productspecification.speId} ,#{remarks}, #{status})
+    </insert>
+
+    <update id="updateOutStock" parameterType="Outstock">
+        update outstock set out_id=#{outId},out_number=#{outNumber},title=#{title},status=#{status},ord_number=#{ordNumber},fill_time=#{fillTime},
+        pass_person=#{passPerson},pass_time=#{passTime},remarks=#{remarks},cus_id=#{customer.cusId},preturn_id =#{purchasereturn.preturnId},warehouse_id=#{warehouse.warehouseId},ord_id=#{orders.ordId},wa_id=#{warehouseallocation.waId} where out_id = #{outId}
+    </update>
+    
+    <select id="queryAllOutdetailById" resultMap="outDetailsMap">
+        select * from outstockdetails outs
+        left join productspecification p on outs.spe_id = p.spe_id
+        left join outstock ou on outs.out_id = ou.out_id
+        left join warehouse w on ou.warehouse_id = w.warehouse_id where outs.out_id = #{outId}
+    </select>
+
+    <update id="updateOutDeatails" parameterType="Outstockdetails">
+        update outstockdetails set osd_id=#{osdId},osd_number=#{osdNumber},status=#{status} where osd_id=#{osdId}
+    </update>
+
+    <delete id="deleteOutstockByOutId" >
+        delete from outstock where out_Id=#{outId}
+    </delete>
+
+    <delete id="deleteOutstockDetailByOutId" >
+        delete from outstockdetails where out_Id=#{outId}
+    </delete>
+
+    <delete id="deleteOutstockDetailByOutIdAndSpeId">
+        delete from outstockdetails where out_Id=#{outId} and spe_id =#{speId}
+    </delete>
+
+    <select id="queryOutStockSelectAndInputByPage" resultMap="outStockMap">
+        select * from outstock ou
+        LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+        LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+        LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+        LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+        LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+        LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+        LEFT JOIN product p on prop.pro_id = p.pro_id
+        where ou.wa_id is null or ou.wa_id = 0
+            <if test="value!=null and value.length!=0 and value!='全部数据'">
+                <choose>
+                    <when test="value=='未出库' || value=='已出库' || value=='已发货'|| value=='订单终止'">
+                        and ou.status=#{value}
+                    </when>
+                </choose>
+            </if>
+            <choose>
+                <when test="input!=null and input!='' and select=='出库主题'">
+                    and ou.title like '%${input}%'
+                </when>
+            </choose>
+            order by ou.out_id desc
+     </select>
+
+    <select id="queryoutStockByAdvancedSearch" resultMap="outStockMap" parameterType="com.zktr.crmproject.vo.OutStockAdvancedSearch">
+        select * from outstock ou
+        LEFT JOIN customer cus on ou.cus_id = cus.cus_id
+        LEFT JOIN purchasereturn purr on ou.preturn_id = purr.preturn_id
+        LEFT JOIN warehouse w on ou.warehouse_id = w.warehouse_id
+        LEFT JOIN orders ord on ou.ord_id = ord.ord_id
+        LEFT JOIN outstockdetails osd on ou.out_id = osd.out_id
+        LEFT JOIN productspecification prop on osd.spe_id = prop.spe_id
+        LEFT JOIN product p on prop.pro_id = p.pro_id
+        where ou.wa_id is null or ou.wa_id = 0
+        <if test="title!=null and title.length!=0">
+            and ou.title = #{title}
+        </if>
+        <if test="warehouseId!=null and warehouseId.length!=0">
+            and ou.warehouse_id in
+            <foreach collection="warehouseId" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="fillTime!=null and fillTime.length!=0">
+            and ou.fill_time between #{s1} and #{s2}
+        </if>
+        <if test="status!=null and status.length!=0">
+            and ou.status in
+            <foreach collection="status" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="passPerson!=null and passPerson!=''">
+            and ou.pass_person = #{passPerson}
+        </if>
+        <if test="cusId!=null and cusId!=''">
+            and ou.cusId = #{cusId}
+        </if>
+        <if test="passTime!=null and passTime.length!=0">
+            and ou.pass_time between #{s3} and #{s4}
+        </if>
+        <if test="ordId!=null and ordId!=''">
+            and ou.ord_id = #{ordId}
+        </if>
+        <if test="proId!=null and proId!=''">
+            and prop.pro_id = #{proId}
+        </if>
+        <if test="preturnId!=null and preturnId!=''">
+            and purr.preturn_id =#{preturnId}
+        </if>
+        order by ou.out_id desc
+    </select>
+
+    <select id="queryOutstockByOrdId" resultMap="outStockMap">
+        select * from outstock where ord_id = #{ordId}
+    </select>
+
+    <select id="queryOsdByOutIdAndSpeId" resultMap="outDetailsMap">
+        select * from outstockdetails where out_id = #{outId} and spe_id =#{speId}
+    </select>
+
+    <select id="queryNoOutstock" resultType="Integer">
+        select count(*) from outstock where status = '未出库' and pass_person =#{uName}
+    </select>
+
+    <select id="queryNoOutStockList" resultMap="outStockMap">
+        select * from outstock o
+         LEFT JOIN warehouse w on o.warehouse_id = w.warehouse_id
+        where status = '未出库' and pass_person =#{uName}
+    </select>
+
+</mapper>

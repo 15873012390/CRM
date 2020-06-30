@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcQuoteDetailsMDao">
+
+    <resultMap id="quotedetailsMap" type="Quotedetails">
+        <id property="qdId" column="qd_id"></id>
+        <result property="specification" column="specification"></result>
+        <result property="unit" column="unit"></result>
+        <result property="quantity" column="quantity"></result>
+        <result property="unitPrice" column="unit_price"></result>
+        <result property="discount" column="discount"></result>
+        <result property="money" column="money"></result>
+        <result property="remarks" column="details_remarks"></result>
+        <result property="conQdid" column="con_qdid"></result>
+        <!--报价id-->
+        <association property="quote" javaType="Quote">
+            <id property="quoId" column="quo_id"></id>
+            <result property="quoTheme" column="quo_theme"></result>
+            <result property="toOrder" column="to_order"></result>
+            <result property="createdId" column="created_id"></result>
+            <association property="customer" javaType="Customer">
+                <id column="cus_id" property="cusId"></id>
+                <result column="cus_name" property="cusName"></result>
+            </association>
+
+        </association>
+        <!--规格id-->
+        <association property="productspecification" javaType="Productspecification">
+            <id property="speId" column="spe_id"></id>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit"></result>
+            <result property="proName" column="pro_name"></result>
+            <!--产品id-->
+            <association property="product" javaType="Product">
+                <id column="pro_id" property="proId"></id>
+                <result column="p_pro_name" property="proName"></result>
+            </association>
+        </association>
+
+
+    </resultMap>
+    <!--PL 根据报价id查询报价详情-->
+    <select id="queryByQuoId" resultMap="quotedetailsMap">
+        select quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks as details_remarks,spe.spe_id,spe.pro_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        where quo_id=#{quoid}
+    </select>
+    <!--PL 查询出服务类的产品的报价详情-->
+    <select id="findAllByClaIdId" resultMap="quotedetailsMap">
+        select q.quo_theme,q.quo_id,quo.qd_id,quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks as details_remarks,spe.spe_id,spe.pro_name,spe.pro_id,spe.spe_specification,cla.cla_id,c.cus_id,c.cus_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        LEFT JOIN quote q
+        on quo.quo_id=q.quo_id
+        LEFT JOIN product p
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        LEFT JOIN customer c
+        ON c.cus_id=q.cus_id
+        WHERE cla.cla_id_id=13
+    </select>
+    <!--PL 根据qdId查询 合同编辑-->
+    <select id="findByQuoteClaIdId" resultMap="quotedetailsMap">
+        select q.quo_theme,q.quo_id,quo.qd_id,quo.specification,quo.unit,quo.quantity,quo.unit_price,quo.discount,quo.money,quo.remarks as details_remarks,spe.spe_id,spe.pro_name,spe.pro_id,spe.spe_specification,cla.cla_id,c.cus_id,c.cus_name
+        from quotedetails quo
+        left join productspecification spe
+        on quo.spe_id=spe.spe_id
+        LEFT JOIN quote q
+        on quo.quo_id=q.quo_id
+        LEFT JOIN product p
+        ON p.pro_id=spe.pro_id
+        LEFT JOIN productclassification cla
+        ON cla.cla_id=p.cla_id
+        LEFT JOIN customer c
+        ON c.cus_id=q.cus_id
+        WHERE cla.cla_id_id=13 and quo.qd_id=#{qdid}
+    </select>
+    <select id="PLMOney" resultType="Double">
+        select sum (money) from quotedetails where quo_id=#{quoId}
+    </select>
+    <select id="queryQuoteDetailsByQuoId" resultMap="quotedetailsMap">
+        select q.qd_id,q.specification, q.unit, q.quantity, q.unit_price, q.discount, q.money, q.remarks as details_remarks,
+        p.spe_id,p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
+        q2.quo_id,q2.quo_theme
+        from quotedetails q
+        left join productspecification p on q.spe_id = p.spe_id
+        left join quote q2 on q.quo_id = q2.quo_id
+        where q.quo_id=#{quoId}
+    </select>
+
+    <select id="queryAllByPage" resultMap="quotedetailsMap">
+        select q.qd_id,q.specification, q.unit, q.quantity, q.unit_price, q.discount,
+        q.money, q.remarks as details_remarks,
+        p.spe_id,p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
+        p2.pro_id,p2.pro_name as p_pro_name,
+        q2.quo_id,q2.quo_theme,
+        c2.cus_id,c2.cus_name
+        from quotedetails q
+        left join productspecification p on q.spe_id = p.spe_id
+        left join product p2 on p.pro_id=p2.pro_id
+        left join quote q2 on q.quo_id = q2.quo_id
+        left join customer c2 on q2.cus_id = c2.cus_id
+        order by q.qd_id desc
+    </select>
+
+    <select id="queryLikeQuotedetails" resultMap="quotedetailsMap">
+        select q.qd_id,q.specification, q.unit, q.quantity, q.unit_price, q.discount,
+        q.money, q.remarks as details_remarks,
+        p.spe_id,p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
+        p2.pro_id,p2.pro_name as p_pro_name,
+        q2.quo_id,q2.quo_theme,
+        c2.cus_id,c2.cus_name
+        from quotedetails q
+        left join productspecification p on q.spe_id = p.spe_id
+        left join product p2 on p.pro_id=p2.pro_id
+        left join quote q2 on q.quo_id = q2.quo_id
+        left join customer c2 on q2.cus_id = c2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="input!=null and input.length>0">
+                and p2.pro_name like #{input}
+            </if>
+        </trim>
+        order by q.qd_id desc
+    </select>
+
+    <select id="queryAdvanceQuotedetails" parameterType="com.zktr.crmproject.vo.JrcQuoteDetailsAdvance" resultMap="quotedetailsMap">
+        select q.qd_id,q.specification, q.unit, q.quantity, q.unit_price, q.discount,
+        q.money, q.remarks as details_remarks,
+        p.spe_id,p.pro_name,p.spe_specification,p.spe_unit,p.spe_unit_conversion,
+        p2.pro_id,p2.pro_name as p_pro_name,
+        q2.quo_id,q2.quo_theme,
+        c2.cus_id,c2.cus_name
+        from quotedetails q
+        left join productspecification p on q.spe_id = p.spe_id
+        left join product p2 on p.pro_id=p2.pro_id
+        left join quote q2 on q.quo_id = q2.quo_id 
+        left join user u on u.u_id= q2.u_id 
+        left join customer c2 on q2.cus_id = c2.cus_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="userIds!=null and userIds.length>0">
+                and q2.created_id in
+                <foreach collection="userIds" open="(" separator="," close=")" item="uid">
+                    #{uid}
+                </foreach>
+            </if>
+            
+            <if test="cusId!=null">
+                and c2.cus_id = #{cusId}
+            </if>
+            
+            <if test="proId!=null">
+                and p2.pro_id =#{proId}
+            </if>
+            
+            <if test="quantity!=null">
+                <choose>
+                    <when test="quantitySelect=='大于'">
+                        and q.quantity>#{quantity}
+                    </when>
+                    <when test="quantitySelect=='小于'">
+                        and q.quantity&lt;#{quantity}
+                    </when>
+                    <when test="quantitySelect=='等于'">
+                        and q.quantity=#{quantity}
+                    </when>
+                    <when test="quantitySelect=='不等于'">
+                        and q.quantity!=#{quantity}
+                    </when>
+                    <otherwise>
+                        and q.quantity=#{quantity}
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="unitPrice!=null">
+                <choose>
+                    <when test="unitPriceSelect=='大于'">
+                        and q.unit_price>#{unitPrice}
+                    </when>
+                    <when test="unitPriceSelect=='小于'">
+                        and q.unit_price&lt;#{unitPrice}
+                    </when>
+                    <when test="unitPriceSelect=='等于'">
+                        and q.unit_price=#{unitPrice}
+                    </when>
+                    <when test="unitPriceSelect=='不等于'">
+                        and q.unit_price!=#{unitPrice}
+                    </when>
+                    <otherwise>
+                        and q.unit_price=#{unitPrice}
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="money!=null">
+                <choose>
+                    <when test="moneySelect=='大于'">
+                        and q.money>#{money}
+                    </when>
+                    <when test="moneySelect=='小于'">
+                        and q.money&lt;#{money}
+                    </when>
+                    <when test="moneySelect=='等于'">
+                        and q.money=#{money}
+                    </when>
+                    <when test="moneySelect=='不等于'">
+                        and q.money!=#{money}
+                    </when>
+                    <otherwise>
+                        and q.money=#{money}
+                    </otherwise>
+                </choose>
+            </if>
+        </trim>
+        order by q.qd_id desc
+    </select>
+
+    <delete id="deleteQuoteDetailsByquoId">
+        delete from quotedetails  where quo_id =#{quoId}
+    </delete>
+</mapper>

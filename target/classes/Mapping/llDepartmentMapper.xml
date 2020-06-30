@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.lliDeptDao">
+    <resultMap id="llDeptMap" type="com.zktr.crmproject.vo.DepartmentMes">
+        <id property="dId" column="d_id"></id>
+        <result property="dName" column="d_name"></result>
+        <result property="dFunction" column="d_function"></result>
+        <result property="dBoss" column="d_boss"></result>
+        <result property="parentId" column="parent_id"></result>
+        <result property="dName2" column="d_name1"></result>
+        <result property="uName" column="u_name"></result>
+    </resultMap>
+
+    <select id="findAllDepartment" resultMap="llDeptMap">
+        SELECT d.d_id,d.d_name,d.d_function,u_name,de.d_name d_name1,d.parent_id FROM department d
+        left join user u ON d.d_boss = u.u_id
+        left join department de ON d.parent_id = de.d_id
+    </select>
+
+</mapper>

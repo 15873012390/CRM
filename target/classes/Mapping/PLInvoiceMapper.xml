@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLInvoiceMDao">
+
+    <resultMap id="InvoiceMap" type="Invoice">
+        <id column="inv_id" property="invId"></id>
+        <result column="inv_content" property="invContent"></result>
+        <result column="inv_money" property="invMoney"></result>
+        <result column="inv_type" property="invType"></result>
+        <result column="inv_date" property="invDate"></result>
+        <result column="inv_rm" property="invRm"></result>
+        <result column="inv_plan" property="invPlan"></result>
+        <result column="inv_remark" property="invRemark"></result>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <!--签约人-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+    </resultMap>
+    <!--查询全部-->
+    <select id="findAllInvoice" resultMap="InvoiceMap">
+        SELECT i.inv_id,i.cus_id,i.ord_id,i.u_id,i.inv_content,i.inv_money,i.inv_type,i.inv_date,i.inv_plan,i.inv_remark,i.inv_rm,u.u_name,o.ord_theme,c.cus_name
+        FROM invoice i
+        LEFT JOIN `user` u
+        ON i.u_id=u.u_id
+        LEFT JOIN customer c
+        ON c.cus_id=i.cus_id
+        LEFT JOIN orders o
+        ON o.ord_id=i.ord_id
+        GROUP BY i.inv_id DESC
+    </select>
+    <!--根据id查找-->
+    <select id="findAllByInvId" resultMap="InvoiceMap">
+        SELECT i.inv_id,i.cus_id,i.ord_id,i.u_id,i.inv_content,i.inv_money,i.inv_type,i.inv_date,i.inv_plan,i.inv_remark,i.inv_rm,u.u_name,o.ord_theme,c.cus_name
+        FROM invoice i
+        LEFT JOIN `user` u
+        ON i.u_id=u.u_id
+        LEFT JOIN customer c
+        ON c.cus_id=i.cus_id
+        LEFT JOIN orders o
+        ON o.ord_id=i.ord_id
+        WHERE i.inv_id=#{invId}
+    </select>
+    <!--新增-->
+    <insert id="insertInvoice">
+        insert into invoice(cus_id,ord_id,u_id,inv_content,inv_money,inv_type,inv_date,inv_plan,inv_remark,inv_rm)
+        values(#{customer.cusId},#{orders.ordId},#{user.uId},#{invContent},#{invMoney},#{invType},#{invDate},#{invPlan},#{invRemark},#{invRm})
+    </insert>
+    <!--更新-->
+    <update id="updateInvoice">
+        update invoice
+        set
+        cus_id=#{customer.cusId},ord_id=#{orders.ordId},u_id=#{user.uId},inv_content=#{invContent},inv_money=#{invMoney},inv_type=#{invType},inv_date=#{invDate},inv_plan=#{invPlan},inv_remark=#{invRemark},inv_rm=#{invRm}
+        where inv_id=#{invId}
+    </update>
+    <!--删除-->
+    <delete id="deleteByInvId">
+        delete from invoice where inv_id=#{invId}
+    </delete>
+    <!--批量删除-->
+    <delete id="batchByInvId" parameterType="Invoice">
+        <if test="invIds!=null">
+            delete from invoice where inv_id in
+            <foreach collection="invIds" index="index" item="ids" open="(" separator="," close=")">
+                #{ids}
+            </foreach>
+        </if>
+    </delete>
+    <!--统计金额-->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(inv_money) as amount FROM invoice
+    </select>
+    <!--模糊条件查询-->
+    <select id="queryByLikeQuery" resultMap="InvoiceMap">
+        SELECT i.inv_id,i.cus_id,i.ord_id,i.u_id,i.inv_content,i.inv_money,i.inv_type,i.inv_date,i.inv_plan,i.inv_remark,i.inv_rm,u.u_name,o.ord_theme,c.cus_name
+        FROM invoice i
+        LEFT JOIN `user` u
+        ON i.u_id=u.u_id
+        LEFT JOIN customer c
+        ON c.cus_id=i.cus_id
+        LEFT JOIN orders o
+        ON o.ord_id=i.ord_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="input!=null and input.length!=0">
+                and date_format(i.inv_date,'%Y-%m-%d') like #{input}
+            </if>
+            <if test="value !=null || value.length!=0 and value!='全部数据' ">
+                <choose>
+                    <when test=" value=='增值税' || value=='普通国税' || value=='普通地税' || value=='收据'">
+                        and i.inv_type=#{value}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+        </trim>
+        GROUP BY i.inv_id DESC
+    </select>
+    <!--高级查询-->
+    <select id="InvoiceAdvancedSearch" resultMap="InvoiceMap" parameterType="com.zktr.crmproject.vo.PLInvoiceAdvancedSearch">
+        SELECT i.inv_id,i.cus_id,i.ord_id,i.u_id,i.inv_content,i.inv_money,i.inv_type,i.inv_date,i.inv_plan,i.inv_remark,i.inv_rm,u.u_name,o.ord_theme,c.cus_name
+        FROM invoice i
+        LEFT JOIN `user` u
+        ON i.u_id=u.u_id
+        LEFT JOIN customer c
+        ON c.cus_id=i.cus_id
+        LEFT JOIN orders o
+        ON o.ord_id=i.ord_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="invContent!=null and invContent!='' and invContent.length!=0">
+                <choose>
+                    <when test="invContentSelect!=null and invContentSelect.length!=0 and invContentSelect=='包含'">
+                        and i.inv_content like  #{invContent}
+                    </when>
+                    <when test="invContentSelect!=null and invContentSelect.length!=0 and invContentSelect=='不包含'">
+                        and i.inv_content not like  #{invContent}
+                    </when>
+                </choose>
+            </if>
+            <if test="invMoney!=null">
+                <choose>
+                    <when test="invMoneySelect!=null and invMoneySelect.length!=0 and invMoneySelect=='大于'">
+                        and i.inv_money&gt;#{invMoney}
+                    </when>
+                    <when test="invMoneySelect!=null and invMoneySelect.length!=0 and invMoneySelect=='小于'">
+                        and i.inv_money&lt;#{invMoney}
+                    </when>
+                    <when test="invMoneySelect!=null and invMoneySelect.length!=0 and invMoneySelect=='不等于'">
+                        and i.inv_money &gt;#{invMoney} and &lt;#{invMoney}
+                    </when>
+                </choose>
+            </if>
+            <if test="signingTimeStart!='' and signingTimeStart!=null">
+                and i.inv_date &gt;#{signingTimeStart}
+            </if>
+            <if test="signingTimeEnd!='' and signingTimeEnd!=null">
+                and i.inv_date &lt;#{signingTimeEnd}
+            </if>
+            <if test="uname!=null and uname!='' and uname.length!=0">
+                <choose>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='包含'">
+                        and u.u_name like #{uname}
+                    </when>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='不包含'">
+                        and u.u_name not like #{uname}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="invRemark!=null and invRemark!=''">
+                <choose>
+                    <when test="invRemarkSelect!='' and invRemarkSelect!=null and invRemarkSelect.length!=0 and invRemarkSelect=='包含'">
+                        and i.inv_remark like #{invRemark}
+                    </when>
+                    <when test="invRemarkSelect!='' and invRemarkSelect!=null and invRemarkSelect.length!=0 and invRemarkSelect=='不包含'">
+                        and i.inv_remark not like #{invRemark}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="invRm.size()>0">
+                and i.inv_rm in
+                <foreach collection="invRm" index="index" item="vrm" open="(" separator="," close=")">
+                    #{vrm}
+                </foreach>
+            </if>
+            <if test="invType.size()>0">
+                and i.inv_type in
+                <foreach collection="invType" index="index" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+            <if test="cusId!=null">
+                and i.cus_id=#{cusId}
+            </if>
+
+        </trim>
+        GROUP BY i.inv_id DESC
+    </select>
+
+</mapper>

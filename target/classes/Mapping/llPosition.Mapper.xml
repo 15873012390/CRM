@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.lliPositionDao">
+    <resultMap id="llpositionMap" type="com.zktr.crmproject.pojos.Position">
+        <id property="postId" column="post_id"></id>
+        <result property="postName" column="post_name"></result>
+        <result property="postMes" column="post_mes"></result>
+        <result property="creater" column="creater"></result>
+        <result property="createTime" column="create_time"></result>
+        <collection property="power" ofType="com.zktr.crmproject.pojos.Power">
+            <id property="powerId" column="power_id"></id>
+            <result property="powerMessage" column="power_message"></result>
+        </collection>
+    </resultMap>
+
+    <select id="findAllPosition" resultMap="llpositionMap">
+        select * from position p
+    </select>
+
+    <select id="qeryAllPosition" resultMap="llpositionMap">
+        select post_id,post_name from position p
+    </select>
+    <select id="queryLikePosition" resultMap="llpositionMap">
+        SELECT * FROM position p
+        where  p.post_name like CONCAT('%',#{postName},'%')
+    </select>
+</mapper>

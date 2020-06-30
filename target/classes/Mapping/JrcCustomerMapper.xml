@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcCustomerMDao">
+    
+    <resultMap id="customerMap" type="Customer">
+        <id property="cusId" column="cus_id"/>
+        <result property="cusName" column="cus_name"/>
+        <collection property="contacts" ofType="Contacts">
+            <id property="conId" column="con_id"></id>
+            <result property="conName" column="con_name"></result>
+            <result property="conMobile" column="con_mobile"></result>
+        </collection>
+    </resultMap>
+    
+    <select id="queryAll" resultMap="customerMap">
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile 
+        from customer cus
+        left join contacts con on cus.cus_id = con.cus_id
+    </select>
+
+    <select id="queryContactByCusid" resultMap="customerMap">
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile
+        from customer cus
+        left join contacts con on cus.cus_id = con.cus_id
+        where cus.cus_id=#{cusid}
+    </select>
+
+
+    <select id="queryByCusNameAndConName" resultMap="customerMap">
+        select cus.cus_id,cus.cus_name,
+        con.con_id,con.con_name,con.con_mobile
+        from customer cus
+        left join contacts con on cus.cus_id = con.cus_id
+        where cus.cus_name=#{cusName}
+        <if test="conName!=null and conName.length!=0">
+            and con.con_name=#{conName}
+        </if>
+    </select>
+</mapper>

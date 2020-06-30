@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcActionHistoryDetailMDao">
+    
+    <resultMap id="actionhistoryDetailsMap" type="Actionhistorydetails">
+        <id property="ahdId" column="ahd_id"/>
+        <association property="actionhistory" javaType="Actionhistory">
+            <id property="ahId" column="ah_id"/>
+            <result property="actDescribe" column="act_describe"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"/>
+            <result property="uName" column="u_name"/>
+        </association>
+    </resultMap>
+    
+    <select id="queryActionHistoryDetailsByAhid" resultMap="actionhistoryDetailsMap">
+            select
+            ahd.ahd_id,a.ah_id,a.act_describe,u.u_id,u.u_name
+            from actionhistorydetails ahd
+            left join actionhistory a on ahd.ah_id = a.ah_id
+            left join user u on u.u_id=ahd.u_id
+            where ahd.ah_id=#{ahid}
+            order by ahd.ahd_id desc
+    </select>
+
+
+</mapper>

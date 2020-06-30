@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLContractMDao">
+
+    <resultMap id="contractMap" type="Contract">
+        <id column="ctr_id" property="ctrId"></id>
+        <result column="con_classify" property="conClassify"></result>
+        <result column="con_send_out_money" property="conSendOutMoney"></result>
+        <result column="con_start_time" property="conStartTime"></result>
+        <result column="con_end_time" property="conEndTime"></result>
+        <result column="con_signing_date" property="conSigningDate"></result>
+        <result column="con_del_state" property="conDelState"></result>
+        <result column="con_theme" property="conTheme"></result>
+        <result column="ord_purchase_way" property="ordPurchaseWay"></result>
+        <result column="ord_executing_state" property="ordExecutingState"></result>
+        <result column="con_number" property="conNumber"></result>
+        <result column="con_qdid" property="conQdid"></result>
+        <result column="rm_or_rmp" property="rmOrRmp"></result>
+        <result column="con_money_way" property="conMoneyWay"></result>
+        <result column="con_payment"  property="conPayment"></result>
+        <!--员工-->
+        <association property="user" javaType="User">
+            <id column="u_id" property="uId"></id>
+            <result column="u_name" property="uName"></result>
+        </association>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--报价-->
+        <association property="quote" javaType="Quote">
+            <id column="quo_id" property="quoId"></id>
+            <result column="quo_theme" property="quoTheme"></result>
+        </association>
+        <!--规格-->
+        <association property="productspecification" javaType="Productspecification">
+            <id column="spe_id" property="speId"></id>
+            <result column="pro_name" property="proName"></result>
+        </association>
+    </resultMap>
+    <!--查询全部合同-->
+    <select id="queryAllContract" resultMap="contractMap">
+        select c.con_number,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        WHERE c.con_del_state=1 group by ctr_id desc
+    </select>
+    <!--根据合同id查询-->
+    <select id="queryByCtrId" resultMap="contractMap">
+        select c.con_number,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join quotedetails qd
+        on qd.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        WHERE c.con_del_state=1 AND c.ctr_id=#{ctrId}
+    </select>
+    <!--回款和计划回款 当o.rm_or_rmp为空时 表示并未被计划回款和回款记录-->
+    <select id="CqueryAllOrdersByRM" resultMap="contractMap">
+        select c.rm_or_rmp,c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_number,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        WHERE c.con_del_state=1 and c.rm_or_rmp is null group by ctr_id desc
+    </select>
+    <!--如果是计划回款 则表示被计划回款已记录 选择合同时不显示 根据合同id修改状态-->
+    <update id="updateRmOrRmp1">
+        update contract set rm_or_rmp=1 where ctr_id=#{ctrId}
+    </update>
+    <!--如果是回款 则表示被款已记录 选择合同时不显示 根据合同id修改状态-->
+    <update id="updateRmOrRmp2">
+        update contract set rm_or_rmp=2 where ctr_id=#{ctrId}
+    </update>
+    <!--查询最大id 自动编号-->
+    <select id="findMaxByCtrId" resultType="java.lang.Integer">
+        select max(ctr_id) from contract
+    </select>
+    <!--表格下方的合计金额-->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(con_send_out_money) as sendmoney FROM contract WHERE con_del_state=1
+    </select>
+    <!--新增-->
+    <insert id="insertContract">
+        insert into contract(con_classify,con_payment,con_send_out_money,con_start_time,con_end_time,con_signing_date,con_money_way,con_del_state,con_theme,ord_purchase_way,ord_executing_state,con_number,con_qdid,spe_id,quo_id,u_id,cus_id)
+        value (#{conClassify},#{conPayment},#{conSendOutMoney},#{conStartTime},#{conEndTime},#{conSigningDate},#{conMoneyWay},#{conDelState},#{conTheme},#{ordPurchaseWay},#{ordExecutingState},#{conNumber},#{conQdid},#{productspecification.speId},#{quote.quoId},#{user.uId},#{customer.cusId})
+    </insert>
+    <!--修改-->
+    <update id="updateContract">
+        update contract set
+        con_classify=#{conClassify},con_payment=#{conPayment},con_send_out_money=#{conSendOutMoney},con_start_time=#{conStartTime},con_end_time=#{conEndTime},con_signing_date=#{conSigningDate},con_money_way=#{conMoneyWay},con_del_state=#{conDelState},con_theme=#{conTheme},ord_purchase_way=#{ordPurchaseWay},ord_executing_state=#{ordExecutingState},con_qdid=#{conQdid},spe_id=#{productspecification.speId},quo_id=#{quote.quoId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where ctr_id=#{ctrId}
+    </update>
+
+
+    <!--删除-->
+    <update id="delByCtrId">
+        update contract set con_del_state=2 where ctr_id=#{ctrId}
+    </update>
+    <!--批量删除-->
+    <update id="BatchCtrIds">
+        <if test="ctrids != null">
+            update contract set con_del_state=2 where ctr_id in
+            <foreach collection="ctrids" index="index"  item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </update>
+    <!--条件模糊搜索-->
+    <select id="queryByLikeQuery" resultMap="contractMap">
+        select c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_number,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        WHERE 1=1 and c.con_del_state=1
+        <if test="value!=null and value.length and value!='全部数据' ">
+            <choose>
+                <when test="value=='执行中' || value=='意外终止' || value=='结束'  ">
+                    and c.ord_executing_state=#{value}
+                </when>
+                <when test=" value=='服务' || value=='业务合作' || value=='其他'  ">
+                    and c.con_classify=#{value}
+                </when>
+                <when test="value=='支票' || value=='现金' || value=='邮政汇款' || value=='网上银行' || value=='其他' ">
+                    and c.con_payment=#{value}
+                </when>
+                <when test="value=='本年签署的订单' || value=='本月签署的订单' ">
+                    <if test="value=='本年签署的订单' ">
+                        and  YEAR(c.con_signing_date)=YEAR(NOW())
+                    </if>
+                    <if test="value=='本月签署的订单'">
+                        and  DATE_FORMAT(c.con_signing_date,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+                    </if>
+                </when>
+                <when test="value=='现款现货' || value=='先款后货'">
+                        and c.con_money_way=#{value}
+                </when>
+                <when test="value=='在线下单' || value=='电话' || value=='店面' ">
+                        and c.ord_purchase_way=#{value}
+                </when>
+                <otherwise ></otherwise>
+            </choose>
+        </if>
+        <if test="input1!=null and input1.length!=0" >
+            <choose>
+                <when test="select=='合同编号' ">
+                    and lower (c.con_number) like lower (#{input1})
+                </when>
+                <when test="select=='主题' ">
+                    and lower (c.con_theme) like lower (#{input1})
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        </if>
+        group by ctr_id desc
+    </select>
+    <select id="ContractAdvancedSearch" resultMap="contractMap" parameterType="com.zktr.crmproject.vo.PLContractAdvancedSearch">
+        select c.con_qdid,c.u_id,c.quo_id,c.spe_id,c.ctr_id,c.cus_id,c.con_number,c.con_classify,c.con_send_out_money,c.con_start_time,c.con_end_time,c.con_signing_date,c.con_del_state,c.con_theme,c.ord_purchase_way,c.ord_executing_state,c.con_payment,c.con_money_way,
+        cus.cus_name,u.u_name,q.quo_theme
+        from contract c
+        LEFT JOIN customer cus
+        ON c.cus_id=cus.cus_id
+        LEFT JOIN `user` u
+        ON c.u_id=u.u_id
+        LEFT JOIN quote q
+        ON c.quo_id=q.quo_id
+        left join productspecification spe
+        on spe.spe_id=c.spe_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="conNumber!=null and conNumber!='' ">
+                <choose>
+                    <when test="conNumberSelect !=null and conNumberSelect!=''  and conNumberSelect=='包含' ">
+                        and lower (c.con_number) like lower (#{conNumber})
+                    </when>
+                    <when test="conNumberSelect !=null and conNumberSelect!='' and conNumberSelect=='不包含' ">
+                        and lower (c.con_number) not like lower (#{conNumber})
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="conTheme!=null and conTheme!='' ">
+                <choose>
+                    <when test="conThemeSelect !=null and conThemeSelect!='' and conThemeSelect=='包含' ">
+                        and c.con_theme like #{conTheme}
+                    </when>
+                    <when test="conThemeSelect !=null and conThemeSelect!='' and conThemeSelect=='不包含' ">
+                        and c.con_theme not like #{conTheme}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="cusId!='' and cusId!=null ">
+                and c.cus_id=#{cusId}
+            </if>
+            <if test="conSendOutMoney!=null">
+                <choose>
+                    <when test="conSendOutMoneySelect!=null and conSendOutMoneySelect!='' and conSendOutMoneySelect=='大于' ">
+                        and c.con_send_out_money &gt;#{conSendOutMoney}
+                    </when>
+                    <when test="conSendOutMoneySelect!=null and conSendOutMoneySelect!='' and conSendOutMoneySelect=='小于' ">
+                        and c.con_send_out_money &lt;#{conSendOutMoney}
+                    </when>
+                    <when test="conSendOutMoneySelect!=null and conSendOutMoneySelect!='' and conSendOutMoneySelect=='等于'">
+                        and c.con_send_out_money &gt;#{conSendOutMoney} and s.amount &lt;#{conSendOutMoney}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="uId!=null and uId!='' and uId.length!=0 ">
+                <choose>
+                    <when test="uIdSelect!=null and uIdSelect!='' and uIdSelect.length!=0 and uIdSelect=='包含'">
+                        and u.u_name like #{uId}
+                    </when>
+                    <when test="uIdSelect!=null and uIdSelect!='' and uIdSelect.length!=0 and uIdSelect=='不包含'">
+                        and u.u_name not like #{uId}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+
+            <if test="signingTimeStart!=null">
+                and c.con_signing_date &gt;#{signingTimeStart}
+            </if>
+            <if test="signingTimeEnd!=null">
+                and c.con_signing_date &lt;#{signingTimeEnd}
+            </if>
+            <if test="StartsigningTimeStart!=null">
+                and c.con_start_time &gt;#{StartsigningTimeStart}
+            </if>
+            <if test="StartsigningTimeEnd!=null">
+                and c.con_start_time &lt;#{StartsigningTimeEnd}
+            </if>
+            <if test="EndsigningTimeStart!=null">
+                and c.con_end_time &gt;#{EndsigningTimeStart}
+            </if>
+            <if test="EndsigningTimeEnd!=null">
+                and c.con_end_time &lt;#{EndsigningTimeEnd}
+            </if>
+
+            <if test="ordPurchaseWay.size()>0" >
+                and c.ord_purchase_way in
+                <foreach collection="ordPurchaseWay" item="purchase" index="index"
+                         open="(" separator="," close=")">
+                    #{purchase}
+                </foreach>
+            </if>
+
+            <if test="ordExecutingState.size()>0" >
+                and c.ord_executing_state in
+                <foreach collection="ordExecutingState" item="exect" index="index"
+                         open="(" separator="," close=")">
+                    #{exect}
+                </foreach>
+            </if>
+
+            <if test="conPayment.size()>0" >
+                and c.con_payment in
+                <foreach collection="conPayment" item="payment" index="index"
+                         open="(" separator="," close=")">
+                    #{payment}
+                </foreach>
+            </if>
+            <if test="conMoneyWay.size()>0" >
+                and c.con_money_way in
+                <foreach collection="conMoneyWay" item="way" index="index"
+                         open="(" separator="," close=")">
+                    #{way}
+                </foreach>
+            </if>
+        </trim>
+        and c.con_del_state=1
+        ORDER BY c.ctr_id DESC
+    </select>
+    <!--首页 根据员工id最新20条-->
+    <select id="statisticsHomePageCon" resultType="java.util.Map">
+        SELECT con.con_theme as theme, con.ctr_id as ctrid, c.cus_name as cname,spe.pro_name as pname,con.con_signing_date as times
+        FROM contract con
+        LEFT JOIN customer c
+        ON con.cus_id =c.cus_id
+        LEFT JOIN productspecification spe
+        ON con.spe_id=spe.spe_id
+        left join user u
+        on u.u_id=con.u_id
+        WHERE date_format(con_signing_date, '%Y%m') = date_format(curdate() , '%Y%m') and con.u_id=#{uId}
+        GROUP BY ctr_id DESC
+        limit 20
+    </select>
+    <!--首页-->
+    <select id="statisticsHomePageConNum" resultType="java.util.Map">
+        SELECT COUNT(con.ctr_id) num
+        FROM contract con
+        LEFT JOIN customer c
+        ON con.cus_id =c.cus_id
+        LEFT JOIN productspecification spe
+        ON con.spe_id=spe.spe_id
+        WHERE date_format(con_signing_date, '%Y%m') = date_format(curdate() , '%Y%m') and con.u_id=#{uId}
+        limit 20
+    </select>
+</mapper>

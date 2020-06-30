@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.JrcRepairMDao">
+    
+    <resultMap id="RepairMap" type="Repair">
+        <id property="repairId" column="repair_id"/>
+        <result property="title" column="title"/>
+    </resultMap>
+    
+    <select id="queryRepairAllByCusId" resultMap="RepairMap">
+        select c.repair_id,c.title
+        from repair c left join customer c2 on c.cus_id = c2.cus_id
+        where c.cus_id=#{cusid}
+        order by c.repair_id desc
+    </select>
+
+    <select id="queryByRepairId" resultMap="RepairMap">
+         select c.repair_id,c.title
+        from repair c where c.repair_id=#{repairid}
+        order by c.repair_id desc
+    </select>
+</mapper>

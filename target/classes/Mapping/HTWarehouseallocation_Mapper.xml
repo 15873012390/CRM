@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTIWarehouseAllocationDao">
+    <resultMap id="warehouseallocationMap" type="Warehouseallocation">
+        <id column="wa_id" property="waId"></id>
+        <result column="title" property="title"></result>
+        <result column="wa_date" property="waDate"></result>
+        <result column="wa_status" property="waStatus"></result>
+        <result column="remarks" property="remarks"></result>
+        <association column="in_wid" property="inwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+        <association column="out_wid" property="outwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+        <association column="in_confirm" property="inUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+        <association column="out_confirm" property="outUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+        <association column="ins_id" property="instock" javaType="Instock" select="com.zktr.crmproject.dao.mybatis.HTIInstockDao.queryByInsId"/>
+        <association column="out_id" property="outstock" javaType="Outstock" select="com.zktr.crmproject.dao.mybatis.HTIOutstockDao.queryOutstockByOutId"/>
+        <collection property="warehouseallocationdetails" ofType="Warehouseallocationdetail">
+            <id column="wad_id" property="wadId"></id>
+            <result column="wad_quantity" property="wadQuantity"></result>
+            <association column="spe_id" property="productspecification" javaType="Productspecification" select="com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao.queryBySepId">
+                <id property="speId" column="spe_id"></id>
+                <result property="proName" column="pro_name"></result>
+                <result property="speSpecification" column="spe_specification"></result>
+                <result property="speUnit" column="spe_unit" ></result>
+                <result property="speUnitConversion" column="spe_unit_conversion"></result>
+            </association>
+            <association property="warehouseallocation" javaType="Warehouseallocation">
+                <id column="wa_id" property="waId"></id>
+                <result column="wa_date" property="waDate"></result>
+                <result column="wa_status" property="waStatus"></result>
+                <result column="remarks" property="remarks"></result>
+                <association column="in_wid" property="inwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+                <association column="out_wid" property="outwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+                <association column="in_confirm" property="inUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+                <association column="out_confirm" property="outUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+                <association column="ins_id" property="instock" javaType="Instock" select="com.zktr.crmproject.dao.mybatis.HTIInstockDao.queryByInsId"/>
+                <association column="out_id" property="outstock" javaType="Outstock" select="com.zktr.crmproject.dao.mybatis.HTIOutstockDao.queryOutstockByOutId"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <resultMap id="wadMap" type="Warehouseallocationdetail">
+        <id column="wad_id" property="wadId"></id>
+        <result column="wad_quantity" property="wadQuantity"></result>
+        <association column="spe_id" property="productspecification" javaType="Productspecification" select="com.zktr.crmproject.dao.mybatis.PLProductSpecificationMDao.queryBySepId">
+            <id property="speId" column="spe_id"></id>
+            <result property="proName" column="pro_name"></result>
+            <result property="speSpecification" column="spe_specification"></result>
+            <result property="speUnit" column="spe_unit" ></result>
+            <result property="speUnitConversion" column="spe_unit_conversion"></result>
+        </association>
+        <association property="warehouseallocation" javaType="Warehouseallocation">
+            <id column="wa_id" property="waId"></id>
+            <result column="wa_date" property="waDate"></result>
+            <result column="wa_status" property="waStatus"></result>
+            <result column="remarks" property="remarks"></result>
+            <association column="in_wid" property="inwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+            <association column="out_wid" property="outwarehouse" javaType="Warehouse" select="com.zktr.crmproject.dao.mybatis.HTIWarehouseDao.queryByWarehouseId"/>
+            <association column="in_confirm" property="inUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+            <association column="out_confirm" property="outUser" javaType="User" select="com.zktr.crmproject.dao.mybatis.lliUserDao.findById"/>
+            <association column="ins_id" property="instock" javaType="Instock" select="com.zktr.crmproject.dao.mybatis.HTIInstockDao.queryByInsId"/>
+            <association column="out_id" property="outstock" javaType="Outstock" select="com.zktr.crmproject.dao.mybatis.HTIOutstockDao.queryOutstockByOutId"/>
+        </association>
+    </resultMap>
+
+
+
+    <select id="selectWaByPage" resultMap="warehouseallocationMap">
+        select * from warehouseallocation wa
+left join warehouseallocationdetail wad on wa.wa_id = wad.wa_id
+order by wa.wa_id desc
+    </select>
+
+    <insert id="insertWa" parameterType="Warehouseallocation" useGeneratedKeys="true" keyProperty="waId">
+        insert into warehouseallocation values(#{waId},#{title},#{waDate},#{inwarehouse.warehouseId},#{outwarehouse.warehouseId},#{instock.insId},#{outstock.outId},#{waStatus},#{inUser.uId},#{outUser.uId},#{remarks})
+    </insert>
+
+    <update id="updateWa" parameterType="Warehouseallocation">
+        update warehouseallocation set wa_id=#{waId},title=#{title},wa_date=#{waDate},wa_status=#{waStatus},remarks=#{remarks},in_wid=#{inwarehouse.warehouseId},out_wid=#{outwarehouse.warehouseId},
+        in_confirm=#{inUser.uId},out_confirm=#{outUser.uId},ins_id=#{instock.insId},out_id=#{outstock.outId} where wa_id=#{waId}
+    </update>
+
+    <insert id="insertWad" parameterType="Warehouseallocationdetail">
+        insert into warehouseallocationdetail values(#{wadId},#{productspecification.speId},#{wadQuantity},#{warehouseallocation.waId})
+    </insert>
+
+    <update id="updateWad" parameterType="Warehouseallocationdetail">
+        update warehouseallocationdetail set wad_id=#{wadId},wad_quantity=#{wadQuantity},spe_id=#{productspecification.speId},wa_id=#{warehouseallocation.waId}
+        where wad_id=#{wadId}
+    </update>
+
+    <select id="queryWaByWaId" resultMap="warehouseallocationMap">
+        select * from warehouseallocation wa
+        left join warehouseallocationdetail wad on wa.wa_id = wad.wa_id where wa.wa_id=#{waId}
+    </select>
+
+    <select id="queryWadByWaId" resultMap="wadMap">
+        select * from warehouseallocationdetail where wa_id=#{waId}
+    </select>
+
+    <select id="queryBySelectAndInput" resultMap="warehouseallocationMap">
+        select * from warehouseallocation where 1=1
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='未执行' || value=='已执行'">
+                    and wa_status=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='标题'">
+                and title like #{input}
+            </when>
+        </choose>
+        order by wa_id desc
+    </select>
+
+    <select id="queryByAdvanced" resultMap="warehouseallocationMap" parameterType="com.zktr.crmproject.vo.WarehouseallocationAdvancedSearch">
+         select * from warehouseallocation wa
+        left join warehouseallocationdetail wad on wa.wa_id = wad.wa_id where 1=1
+        <if test="title!=null and title.length!=0">
+            and wa.title like '%${title}%'
+        </if>
+        <if test="waDate!=null and waDate.length!=0">
+            and wa.wa_date between #{s1} and #{s2}
+        </if>
+        <if test="waStatus!=null and waStatus.length!=0">
+            and wa.wa_status in
+            <foreach collection="waStatus" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="inwarhouseId!=null and inwarhouseId.length!=0">
+            and wa.in_wid in
+            <foreach collection="inwarhouseId" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="outwarehouseId!=null and outwarehouseId.length!=0">
+            and wa.out_wid in
+            <foreach collection="outwarehouseId" index="index" item="s"
+                     open="(" separator="," close=")">
+                #{s}
+            </foreach>
+        </if>
+        <if test="inUserId!=0 and inUserId!=null">
+            and wa.in_confirm =#{inUserId}
+        </if>
+        <if test="outUserId!=0 and outUserId!=null">
+            and wa.out_confirm =#{outUserId}
+        </if>
+        order by wa.wa_id desc
+    </select>
+
+    <delete id="deleteWaByWaId" >
+        delete from warehouseallocation where wa_id = #{waId}
+    </delete>
+
+    <delete id="deleteWaByWaIdAndSpeId" >
+        delete from warehouseallocationdetail where wa_id = #{waId} and spe_id =#{speId}
+    </delete>
+
+
+</mapper>

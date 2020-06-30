@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLReturnedMoneyPlanMDao">
+
+    <resultMap id="ReturnedmoneyplanMap" type="Returnedmoneyplan">
+        <id column="rmp_id" property="rmpId"></id>
+        <result column="rmp_money" property="rmpMoney"></result>
+        <result column="rmp_rmp" property="rmpRmp"></result>
+        <result column="rmp_billing" property="rmpBilling"></result>
+        <result column="rmp_issue" property="rmpIssue"></result>
+        <result column="rmp_date" property="rmpDate"></result>
+        <result column="rmp_remark" property="rmpRemark"></result>
+
+        <!--合同对象-->
+        <association property="contract" javaType="Contract">
+            <id column="ctr_id" property="ctrId"></id>
+            <result column="con_theme" property="conTheme"></result>
+        </association>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <!--签约人-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+    </resultMap>
+
+    <!--查询全部计划回款的订单 订单id不为空的-->
+    <select id="findAllRMP" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ord_id is not null
+        GROUP BY rmp.rmp_id DESC
+    </select>
+
+    <!--查找 计划回款订单-->
+    <select id="findByRmpId" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        where rmp.ord_id is not null  and rmp.rmp_id=#{rmpId}
+    </select>
+    <!--查找 一个 计划回款 合同-->
+    <select id="findByRmpIdByContract" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ctr_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,c.cus_name,u.u_name,c2.con_theme
+        FROM returnedmoneyplan rmp
+        LEFT JOIN contract c2
+        ON rmp.ctr_id=c2.ctr_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ctr_id is not null and rmp.rmp_id=#{rmpId}
+        GROUP BY rmp.rmp_id DESC
+    </select>
+    <select id="findByRmpIdContractAll" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ctr_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,c.cus_name,u.u_name,c2.con_theme
+        FROM returnedmoneyplan rmp
+        LEFT JOIN contract c2
+        ON rmp.ctr_id=c2.ctr_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ctr_id is not null and rmp.ctr_id=#{ctrId}
+        GROUP BY rmp.rmp_id DESC
+    </select>
+    <!--新增 计划回款 合同-->
+    <insert id="insertRMPByContract">
+        insert into returnedmoneyplan(rmp_money,rmp_rmp,rmp_billing,rmp_issue,rmp_date,rmp_remark,ctr_id,u_id,cus_id)
+        value (#{rmpMoney},#{rmpRmp},#{rmpBilling},#{rmpIssue},#{rmpDate},#{rmpRemark},#{contract.ctrId},#{user.uId},#{customer.cusId})
+    </insert>
+    <!--修改 计划回款 合同-->
+    <update id="updateRMPByContract">
+        update returnedmoneyplan set
+        rmp_money=#{rmpMoney},rmp_rmp=#{rmpRmp},rmp_billing=#{rmpBilling},rmp_issue=#{rmpIssue},rmp_date=#{rmpDate},rmp_remark=#{rmpRemark},ctr_id=#{contract.ctrId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where rmp_id=#{rmpId}
+    </update>
+    <!--新增 计划回款订单-->
+    <insert id="insertRMPByOrders">
+        insert into returnedmoneyplan(rmp_money,rmp_rmp,rmp_billing,rmp_issue,rmp_date,rmp_remark,ord_id,u_id,cus_id)
+        value (#{rmpMoney},#{rmpRmp},#{rmpBilling},#{rmpIssue},#{rmpDate},#{rmpRemark},#{orders.ordId},#{user.uId},#{customer.cusId})
+    </insert>
+    <!--修改 计划回款订单-->
+    <update id="updateRMPByOrders">
+        update returnedmoneyplan set
+        rmp_money=#{rmpMoney},rmp_rmp=#{rmpRmp},rmp_billing=#{rmpBilling},rmp_issue=#{rmpIssue},rmp_date=#{rmpDate},rmp_remark=#{rmpRemark},ord_id=#{orders.ordId},u_id=#{user.uId},cus_id=#{customer.cusId}
+        where rmp_id=#{rmpId}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteByrmpId">
+        delete from returnedmoneyplan  where rmp_id=#{rmpId}
+    </delete>
+    <!--批量删除-->
+    <delete id="batchByrmpId" parameterType="Returnedmoneyplan">
+        <if test="rmpId !=null">
+            delete from returnedmoneyplan  where rmp_id in
+            <foreach collection="rmpId" index="index"  item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+    <!--统计每期金额-->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(rmp_money) as amount FROM returnedmoneyplan
+    </select>
+    <!--模糊条件查询-->
+    <select id="queryByLikeQuery" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            and rmp.ord_id is not null
+            <if test="statevalue !=null || statevalue.length!=0 and statevalue!='全部数据' ">
+                <choose>
+                    <when test="statevalue=='已回' || statevalue=='未回'">
+                        and rmp.rmp_rmp=#{statevalue}
+                    </when>
+                    <when test="statevalue=='已开发票' || statevalue=='未开发票'">
+                        and rmp.rmp_billing=#{statevalue}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="input1!=null and input1.length!=0" >
+                and date_format(rmp.rmp_date,'%Y-%m-%d') like #{input1}
+            </if>
+        </trim>
+        group by rmp.rmp_id desc
+    </select>
+    <!--高级查询-->
+    <select id="RMPAdvancedSearch" parameterType="com.zktr.crmproject.vo.PLRmpAdvancedSearch" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        <trim prefix="where" prefixOverrides="and">
+            and rmp.ord_id is not null
+            <if test="signingTimeStart!=null signingTimeStart!=''">
+                and rmp.rmp_date &gt;#{signingTimeStart}
+            </if>
+            <if test="signingTimeEnd!=null signingTimeEnd!=''">
+                and rmp.rmp_date &lt;#{signingTimeEnd}
+            </if>
+            <if test="rmpMoney!=null">
+                <choose>
+                    <when test="rmpMoneySelect!=null and rmpMoneySelect.length!=0 and rmpMoneySelect=='大于'">
+                        and rmp.rmp_money &gt;#{rmpMoney}
+                    </when>
+                    <when test="rmpMoneySelect!=null and rmpMoneySelect.length!=0 and rmpMoneySelect=='小于'">
+                        and rmp.rmp_money &lt;#{rmpMoney}
+                    </when>
+                    <when test="rmpMoneySelect!=null and rmpMoneySelect.length!=0 and rmpMoneySelect=='等于'">
+                        and rmp.rmp_money &gt;#{rmpMoney} and &lt;#{rmpMoney}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+
+
+            <if test="cusId!=null and cusId!='' ">
+                and c.cus_id=#{cusId}
+            </if>
+            <if test="rmpRmp.size() > 0">
+                and rmp.rmp_rmp in
+                <foreach collection="rmpRmp" index="index" item="rmprmp" open="(" separator="," close=")">
+                    #{rmprmp}
+                </foreach>
+            </if>
+            <if test="rmpIssue.size() > 0">
+                and rmp.rmp_issue in
+                <foreach collection="rmpIssue" index="index" item="issue" open="(" separator="," close=")">
+                    #{issue}
+                </foreach>
+            </if>
+            <if test="rmpRemark!=null and rmpRemark!=''">
+                <choose>
+                    <when test="rmpRemarkSelect!=null and rmpRemarkSelect!='' and rmpRemarkSelect.length!=0 and rmpRemarkSelect=='包含'">
+                        and lower (rmp.rmp_remark) like lower (#{rmpRemark})
+                    </when>
+                    <when test="rmpRemarkSelect!=null and rmpRemarkSelect!='' and rmpRemarkSelect.length!=0 and rmpRemarkSelect=='不包含'">
+                        and lower (rmp.rmp_remark) not like lower (#{rmpRemark})
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="uname!=null and uname!=''">
+                <choose>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='包含'">
+                        and lower(u.u_name) like lower (#{uname})
+                    </when>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='不包含'">
+                        and lower(u.u_name) not like lower (#{uname})
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+        </trim>
+        group by rmp.rmp_id desc
+    </select>
+    <!--首页 回款计划 订单不为空 top20-->
+    <select id="findAllRMPTop" resultMap="ReturnedmoneyplanMap">
+        SELECT rmp.rmp_rmp,rmp.ord_id,rmp.rmp_id,rmp.cus_id,rmp.u_id,rmp.rmp_money,rmp.rmp_billing,rmp.rmp_issue,rmp.rmp_date,rmp.rmp_remark,o.ord_theme,c.cus_name,u.u_name
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ord_id is not null and rmp.u_id=#{uId}
+        GROUP BY rmp.rmp_id DESC LIMIT 20
+    </select>
+    <!--首页 回款计划 订单不为空 top20-->
+    <select id="findAllRMPTopNum" resultType="java.util.Map">
+       SELECT COUNT(rmp.rmp_id) as  num
+        FROM returnedmoneyplan rmp
+        LEFT JOIN orders o
+        ON rmp.ord_id=o.ord_id
+        LEFT JOIN customer c
+        ON c.cus_id=rmp.cus_id
+        LEFT JOIN `user` u
+        ON rmp.u_id=u.u_id
+        WHERE rmp.ord_id is not null and rmp.u_id=#{uId} LIMIT 20
+    </select>
+
+
+
+</mapper>

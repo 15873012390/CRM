@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTICustomerCareDao">
+
+    <resultMap id="customerCareMap" type="com.zktr.crmproject.pojos.Customercare">
+        <id column="cc_id" property="ccId"></id>
+        <result column="title" property="title"></result>
+        <result column="contacts" property="contacts"></result>
+        <result column="cc_date" property="ccDate"></result>
+        <result column="executor" property="executor"></result>
+        <result column="type" property="type"></result>
+        <result column="cc_content" property="ccContent"></result>
+        <result column="cus_feedback" property="cusFeedback"></result>
+        <result column="remarks" property="remarks"></result>
+        <association property="customer" javaType="com.zktr.crmproject.pojos.Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+    </resultMap>
+
+    <select id="queryAllByPage" resultMap="customerCareMap">
+        select * from customercare left join customer on customercare.cus_id = customer.cus_id order by customercare.cc_id desc
+    </select>
+
+    <select id="queryById" resultMap="customerCareMap">
+    select * from customercare left join customer on customercare.cus_id = customer.cus_id where cc_id = #{ccId} order by customercare.cc_id desc
+    </select>
+
+    <select id="queryConditionByPage" resultMap="customerCareMap" parameterType="com.zktr.crmproject.vo.CustomerCareAdvancedSearch">
+        select * from customercare left join customer on customercare.cus_id = customer.cus_id
+        <where>
+            <if test="title!=null and title.length!=0">
+                customercare.title = #{title}
+            </if>
+            <if test="executor!=null and executor.length!=0">
+                and customercare.executor = #{executor}
+            </if>
+            <if test="type!=null and type.length!=0">
+                and customercare.type = #{type}
+            </if>
+            <if test="ccDate!=null and ccDate.length!=0">
+                and customercare.cc_date between #{s1} and #{s2}
+            </if>
+            <if test="cusId!=null and cusId!=''">
+                and customer.cus_id = #{cusId}
+            </if>
+        </where>
+        order by customercare.cc_id desc
+    </select>
+
+    <select id="queryLikeCustomerCare" resultMap="customerCareMap">
+        select * from customercare,customer where customercare.cus_id = customer.cus_id
+        <if test="value!=null and value.length!=0 and value!='全部数据'">
+            <choose>
+                <when test="value=='分类一' || value=='分类二' || value=='分类三'">
+                    and customercare.type=#{value}
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="input!=null and select=='关怀主题'">
+                and customercare.title like #{input}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by customercare.cc_id desc
+    </select>
+
+    <insert id="insertCustomerCare" parameterType="Customercare" useGeneratedKeys="true" keyProperty="ccId">
+        insert into customercare values(#{ccId},#{title},#{customer.cusId},#{contacts},#{ccDate},#{executor},#{type},#{ccContent},#{cusFeedback},#{remarks})
+    </insert>
+
+    <update id="updateCustomserCare" parameterType="Customercare">
+        update customercare set cc_id=#{ccId} ,title=#{title} ,cus_id=#{customer.cusId} , contacts=#{contacts} ,cc_date=#{ccDate} ,executor=#{executor} ,type=#{type} ,cc_content=#{ccContent} ,cus_feedback=#{cusFeedback} ,remarks=#{remarks}
+        where cc_id = #{ccId}
+    </update>
+
+
+</mapper>

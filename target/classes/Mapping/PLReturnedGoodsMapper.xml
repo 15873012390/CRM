@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.PLReturnedGoodsMDao">
+
+    <resultMap id="ReturnedgoodsMap" type="Returnedgoods">
+        <id column="reg_id" property="regId"></id>
+        <result column="reg_date" property="regDate"></result>
+        <result column="refundable_money" property="refundableMoney"></result>
+        <result column="retired_money" property="retiredMoney"></result>
+        <result column="reg_state" property="regState"></result>
+        <result column="reg_delState" property="regDelState"></result>
+        <!--客户-->
+        <association property="customer" javaType="Customer">
+            <id column="cus_id" property="cusId"></id>
+            <result column="cus_name" property="cusName"></result>
+        </association>
+        <!--订单-->
+        <association property="orders" javaType="Orders">
+            <id column="ord_id" property="ordId"></id>
+            <result column="ord_theme" property="ordTheme"></result>
+        </association>
+        <!--签约人-->
+        <association property="user" javaType="User">
+            <id property="uId" column="u_id"></id>
+            <result property="uName" column="u_name"></result>
+        </association>
+        <!--仓库id-->
+        <association property="warehouse" javaType="Warehouse">
+            <id column="warehouse_id" property="warehouseId"></id>
+            <result column="warehouse_name" property="warehouseName"></result>
+            <result column="stock_type" property="stockType"></result>
+            <result column="stock_value" property="stockValue"></result>
+            <result column="remarks" property="remarks"></result>
+        </association>
+    </resultMap>
+    <!--退货详情-->
+   <resultMap id="ReturnedgoodsdetialMap" type="Returnedgoodsdetial">
+       <id column="rgd_id" property="rgdId"></id>
+       <result column="rgd_cause" property="rgdCause"></result>
+       <result column="rgd_amount" property="rgdAmount"></result>
+       <result column="rgd_money" property="rgdMoney"></result>
+       <result column="rgd_remark" property="rgdRemark"></result>
+       <!--退货单-->
+       <association property="returnedgoods" javaType="Returnedgoods">
+           <id column="reg_id" property="regId"></id>
+           <result column="reg_date" property="regDate"></result>
+           <result column="refundable_money" property="refundableMoney"></result>
+           <result column="retired_money" property="retiredMoney"></result>
+           <result column="reg_state" property="regState"></result>
+           <result column="reg_delState" property="regDelState"></result>
+       </association>
+       <!--规格-->
+       <association property="productspecification" javaType="Productspecification">
+           <id property="speId" column="spe_id"></id>
+           <result property="proName" column="pro_name"></result>
+           <result property="speSpecification" column="spe_specification"></result>
+           <result property="speUnit" column="spe_unit" ></result>
+           <result property="speUnitConversion" column="spe_unit_conversion"></result>
+           <association property="product" javaType="Product">
+               <id property="proId" column="pro_id"></id>
+               <result property="proName" column="pro_name"></result>
+               <result property="proMode" column="pro_mode"></result>
+               <result property="proState" column="pro_state"></result>
+               <result property="proPrice" column="pro_price"></result>
+               <result property="proCostprice" column="pro_costprice"></result>
+           </association>
+       </association>
+   </resultMap>
+    <!--新增退货-->
+    <insert id="insertRG" parameterType="Returnedgoods" useGeneratedKeys="true" keyProperty="regId">
+        insert into returnedgoods values (#{regId},#{orders.ordId},#{user.uId},#{regDate},#{refundableMoney},#{retiredMoney},#{regState},1,#{customer.cusId},#{warehouse.warehouseId})
+    </insert>
+    <!--新增退货详情-->
+    <insert id="insertRGD" parameterType="Returnedgoodsdetial">
+        insert into returnedgoodsdetial values (#{rgdId},#{returnedgoods.regId},#{productspecification.speId},#{rgdCause},#{rgdAmount},#{rgdMoney},#{rgdRemark})
+    </insert>
+    <!--查询退货-->
+    <select id="findAllRG" resultMap="ReturnedgoodsMap">
+        select rg.reg_id,rg.ord_id,rg.u_id,rg.cus_id,rg.reg_date,rg.refundable_money,rg.retired_money,rg.reg_state,rg.reg_del_state,o.ord_theme,u.u_name,c.cus_name,w.warehouse_id,w.warehouse_name from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+        left join warehouse w
+        on rg.warehouse_id = w.warehouse_id
+        where rg.reg_del_state=1
+        group by rg.reg_id desc
+    </select>
+    <!--根据退货id查询退货详情-->
+    <select id="findAllByRGDRegId" resultMap="ReturnedgoodsdetialMap">
+        select rgd.rgd_id,rgd.spe_id,rgd.reg_id,rgd.rgd_cause,rgd.rgd_amount,rgd.rgd_remark,rg.ord_id,rg.u_id,rg.cus_id,o.ord_theme,c2.cus_name,u.u_name,p.pro_name from returnedgoodsdetial rgd
+        left join returnedgoods rg on rgd.reg_id=rg.reg_id
+        left join productspecification p on rgd.spe_id = p.spe_id
+        left join customer c2 on rg.cus_id = c2.cus_id
+        left join orders o on rg.ord_id=o.ord_id
+        left join `user` u on rg.u_id=u.u_id
+        where rg.reg_del_state=1 and rg.reg_id=#{regId}
+    </select>
+    <!--模糊条件查询-->
+    <select id="queryByLikeQuery" resultMap="ReturnedgoodsMap">
+        select rg.reg_id,rg.ord_id,rg.u_id,rg.cus_id,rg.reg_date,rg.refundable_money,rg.retired_money,rg.reg_state,rg.reg_del_state,o.ord_theme,u.u_name,c.cus_name,w.warehouse_id,w.warehouse_name from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+        left join warehouse w
+        on rg.warehouse_id = w.warehouse_id
+        <trim prefix="where" prefixOverrides="and">
+            and rg.reg_del_state=1
+        <if test="input!=null and input.length!=0">
+            and o.ord_theme like #{input}
+        </if>
+        <if test="statevalue !=null || statevalue.length!=0 and statevalue!='全部数据'">
+            <choose>
+                <when test="statevalue=='待处理' || statevalue=='执行中' || statevalue=='结束'|| statevalue=='终止' ">
+                    and rg.reg_state=#{statevalue}
+                </when>
+                <when test="statevalue=='本季度退货单' || statevalue=='本月退货单' || statevalue=='本周退货单' || statevalue=='今天退货单'">
+                    <if test="statevalue=='本季度退货单'">
+                        and	QUARTER(rg.reg_date)=QUARTER(now())
+                    </if>
+                    <if test="statevalue=='本月退货单'">
+                        and DATE_FORMAT(rg.reg_date,'%Y%m')= DATE_FORMAT(CURDATE(),'%Y%m')
+                    </if>
+                    <if test="statevalue=='今天退货单'">
+                        and to_days(rg.reg_date) = to_days(now())
+                    </if>
+                    <if test="statevalue=='本周退货单'">
+                        and YEARWEEK(date_format(rg.reg_date,'%Y-%m-%d')) = YEARWEEK(date_format(now(),'%Y-%m-%d'))
+                    </if>
+                </when>
+                <otherwise></otherwise>
+            </choose>
+        </if>
+
+    </trim>
+        group by rg.reg_id desc
+    </select>
+    <!--高级查询-->
+    <select id="RGAdvancedSearch" resultMap="ReturnedgoodsMap" parameterType="com.zktr.crmproject.vo.PLReturnedgoodsAdvancedSearch">
+        select rg.reg_id,rg.ord_id,rg.u_id,rg.cus_id,rg.reg_date,rg.refundable_money,rg.retired_money,rg.reg_state,rg.reg_del_state,o.ord_theme,u.u_name,c.cus_name,w.warehouse_id,w.warehouse_name from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+        left join warehouse w
+        on rg.warehouse_id = w.warehouse_id
+        <trim prefix="where" prefixOverrides="and">
+            and rg.reg_del_state=1
+            <if test="cusId!=null">
+                and c.cus_id=#{cusId}
+            </if>
+            <if test="regState.size() > 0">
+                and rg.reg_state in
+                <foreach collection="regState" index="index" item="state" open="(" separator="," close=")">
+                    #{state}
+                </foreach>
+            </if>
+            <if test="warehouse.size() > 0">
+                and w.warehouse_name in
+                <foreach collection="warehouse" index="index" item="warehouse" open="(" separator="," close=")">
+                    #{warehouse}
+                </foreach>
+            </if>
+            <if test="uname!=null and uname!='' and uname.length!=0">
+                <choose>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='包含'">
+                        and u.u_name like #{uname}
+                    </when>
+                    <when test="unameSelect!=null and unameSelect!='' and unameSelect.length!=0 and unameSelect=='不包含'">
+                        and u.u_name not like #{uname}
+                    </when>
+                    <otherwise></otherwise>
+                </choose>
+            </if>
+            <if test="retiredMoney!=null and retiredMoney!=''">
+                <choose>
+                    <when test="retiredMoneySelect!=null and retiredMoneySelect!='' and retiredMoneySelect.length!=0 and retiredMoneySelect=='大于'">
+                        and rg.retired_money&gt;#{retiredMoney}
+                    </when>
+                    <when test="retiredMoneySelect!=null and retiredMoneySelect!='' and retiredMoneySelect.length!=0 and retiredMoneySelect=='小于'">
+                        and rg.retired_money&lt;#{retiredMoney}
+                    </when>
+                    <when test="retiredMoneySelect!=null and retiredMoneySelect!='' and retiredMoneySelect.length!=0 and retiredMoneySelect=='等于'">
+                        and rg.retired_money&gt;#{retiredMoney} and &lt;#{retiredMoney}
+                    </when>
+                </choose>
+            </if>
+            <if test="signingTimeStart!=null and signingTimeStart!=''">
+                and rg.reg_date &gt;#{signingTimeStart}
+            </if>
+            <if test="signingTimeEnd!=null and signingTimeEnd!=''">
+                and rg.reg_date &lt;#{signingTimeEnd}
+            </if>
+        </trim>
+        group by rg.reg_id desc
+    </select>
+
+    <!--统计退还金额-->
+    <select id="statisticsByMoney" resultType="java.util.Map">
+        SELECT SUM(retired_money) as amount,SUM(refundable_money) as money FROM returnedgoods where reg_del_state=1
+    </select>
+    <!--批量删除 -->
+    <update id="batchByregId" parameterType="returnedgoods">
+        <if test="regId!=null">
+            update returnedgoods set reg_del_state=2 where reg_id in
+            <foreach collection="regId" index="index" item="regId" open="(" separator="," close=")">
+                #{regId}
+            </foreach>
+        </if>
+    </update>
+    <!--本周退货单未处理的-->
+    <select id="statisticsHomePageRGWeek" resultType="java.util.Map">
+        select rg.reg_date as times,rg.refundable_money as remoney,rg.reg_state as state,o.ord_theme as ordtheme,c.cus_name as cname,w.warehouse_name as warehousename from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+        left join warehouse w
+        on rg.warehouse_id = w.warehouse_id
+		WHERE rg.reg_state='待处理' and YEARWEEK(date_format(rg.reg_date,'%Y-%m-%d')) = YEARWEEK(date_format(now(),'%Y-%m-%d')) and rg.u_id=#{uId}
+    </select>
+    <!--本周退货未处理的数量-->
+    <select id="statisticsHomePageRGWeekNum" resultType="java.util.Map">
+        select count(rg.reg_id) as num from returnedgoods rg
+        left join orders o
+        on rg.ord_id=o.ord_id
+        left join `user` u
+        on rg.u_id=u.u_id
+        left join customer c
+        on rg.cus_id=c.cus_id
+        left join warehouse w
+        on rg.warehouse_id = w.warehouse_id
+		WHERE rg.reg_state='待处理' and YEARWEEK(date_format(rg.reg_date,'%Y-%m-%d')) = YEARWEEK(date_format(now(),'%Y-%m-%d')) and rg.u_id=#{uId}
+    </select>
+</mapper>

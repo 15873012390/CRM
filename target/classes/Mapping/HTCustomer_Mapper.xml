@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktr.crmproject.dao.mybatis.HTICustomerDao">
+
+    <resultMap id="customerMap" type="com.zktr.crmproject.pojos.Customer">
+        <id column="cus_id" property="cusId"></id>
+        <result column="cus_name" property="cusName"></result>
+        <result column="cus_tel" property="cusTel"></result>
+        <collection property="customerservice" ofType="com.zktr.crmproject.pojos.Customerservice">
+            <id column="cs_id" property="csId"></id>
+            <result column="title" property="title"></result>
+            <result column="service_type" property="serviceType"></result>
+            <result column="service_way" property="serviceWay"></result>
+            <result column="start_time" property="startTime"></result>
+            <result column="spend_time" property="spendTime"></result>
+            <result column="executor" property="executor"></result>
+            <result column="status" property="status"></result>
+            <result column="service_content" property="serviceContent"></result>
+            <result column="customer_feedback" property="customerFeedback"></result>
+            <result column="remarks" property="remarks"></result>
+        </collection>
+        <collection property="customercare" ofType="com.zktr.crmproject.pojos.Customercare">
+            <id column="cc_id" property="ccId"></id>
+            <result column="title" property="title"></result>
+            <result column="contacts" property="contacts"></result>
+            <result column="cc_date" property="ccDate"></result>
+            <result column="executor" property="executor"></result>
+            <result column="type" property="type"></result>
+            <result column="cc_content" property="ccContent"></result>
+            <result column="cus_feedback" property="cusFeedback"></result>
+            <result column="remarks" property="remarks"></result>
+        </collection>
+        <collection property="contacts" ofType="com.zktr.crmproject.pojos.Contacts">
+            <id column="con_id" property="conId"></id>
+            <result column="con_name" property="conname"></result>
+        </collection>
+    </resultMap>
+
+    <select id="queryAllCustomer" resultMap="customerMap">
+        select cus_id,cus_name from customer
+    </select>
+
+    <select id="queryByLike" resultMap="customerMap">
+        select cus_id,cus_name from customer
+        where cus_id = #{value} or cus_name like '%${value}%' or cus_tel= #{value}
+    </select>
+</mapper>
